@@ -770,15 +770,18 @@
                     <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-400"></i> PremiumStore Digital Marketplace
                 </p>
                 <p class="text-[11px] text-slate-500">Secure automated application distribution & instant license delivery.</p>
-                <p class="text-[11px] text-emerald-400 font-mono font-semibold pt-1 flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                    <a href="https://wa.me/447455909204" target="_blank" class="hover:underline flex items-center gap-1">
-                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> WhatsApp: +44 7455 909204
+                <div class="pt-2 flex items-center justify-center sm:justify-start gap-2.5">
+                    <a href="https://wa.me/447455909204?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application." target="_blank" rel="noopener noreferrer" title="WhatsApp Support"
+                        class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 transition-all text-xs font-semibold">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>WhatsApp Support</span>
                     </a>
-                    <span>•</span>
-                    <a href="tel:+447455909204" class="hover:underline flex items-center gap-1">
-                        <i data-lucide="phone" class="w-3.5 h-3.5"></i> Call: +44 7455 909204
+                    <a href="tel:+447455909204" title="Direct Phone Support"
+                        class="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center gap-1.5 transition-all text-xs font-semibold">
+                        <i data-lucide="phone-call" class="w-4 h-4"></i>
+                        <span>Direct Call</span>
                     </a>
-                </p>
+                </div>
             </div>
             <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold">
                 <a href="#" onclick="showPage('home'); return false;" class="text-slate-300 hover:text-white transition-colors">Storefront</a>
@@ -812,15 +815,14 @@
 
     <!-- Floating Interactive WhatsApp & Call Support Widget -->
     <aside aria-label="Support Widget" class="fixed bottom-16 md:bottom-6 right-4 md:right-6 z-40 flex items-center gap-2">
-        <a id="floating-call-btn" href="tel:+447455909204" title="Direct Phone Call: +44 7455 909204"
-            class="hidden sm:flex bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white px-3.5 py-3 rounded-2xl shadow-2xl border border-slate-700/80 transition-all hover:scale-105 items-center gap-2 group">
-            <i data-lucide="phone" class="w-4 h-4 text-emerald-400"></i>
-            <span class="text-xs font-bold font-mono">Call</span>
+        <a id="floating-call-btn" href="tel:+447455909204" title="Direct Phone Call Support"
+            class="hidden sm:flex bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl border border-slate-700/80 transition-all hover:scale-105 items-center justify-center group">
+            <i data-lucide="phone-call" class="w-5 h-5 text-indigo-400 group-hover:text-white transition-colors"></i>
         </a>
-        <a id="floating-whatsapp-btn" href="https://wa.me/447455909204?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application%20purchase." target="_blank" rel="noopener noreferrer"
-            class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-3 rounded-2xl shadow-2xl shadow-emerald-600/30 transition-all hover:scale-105 flex items-center gap-2 border border-emerald-400/30 group">
-            <i data-lucide="message-circle" class="w-5 h-5"></i>
-            <span class="text-xs font-bold font-mono pr-0.5">WhatsApp / Call: +44 7455 909204</span>
+        <a id="floating-whatsapp-btn" href="https://wa.me/447455909204?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application%20purchase." target="_blank" rel="noopener noreferrer" title="WhatsApp Support Chat"
+            class="bg-emerald-600 hover:bg-emerald-500 text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl shadow-emerald-600/30 transition-all hover:scale-105 flex items-center gap-2 border border-emerald-400/30 group">
+            <i data-lucide="message-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+            <span class="hidden group-hover:inline-block text-xs font-bold pr-1 transition-all">Support Chat</span>
         </a>
     </aside>
 
