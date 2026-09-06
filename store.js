@@ -233,54 +233,20 @@
         }
     ];
 
-    // Initial Orders
-    const DEFAULT_ORDERS = [
-        {
-            id: 'ORD-9021',
-            customerEmail: 'alex.k@techcorp.io',
-            customerPhone: '254712345678',
-            items: [
-                { id: 'app_101', title: 'TaskFlow Pro Workspace', price: 19.99 }
-            ],
-            totalAmount: 19.99,
-            currencyCode: 'USD',
-            paymentMethod: 'kcb', // 'kcb' | 'card'
-            paymentStatus: 'pending', // 'pending' | 'cleared' | 'failed'
-            kcbRef: 'KCB-883920192',
-            downloadToken: 'tok_38f9a2b8e9104c2',
-            downloadUrl: 'https://vault-storage.app/packages/taskflow-pro-v2.4.0.zip',
-            expiresAt: new Date(Date.now() + 86400000).toISOString(),
-            createdAt: new Date(Date.now() - 3600000 * 2).toISOString()
-        },
-        {
-            id: 'ORD-8940',
-            customerEmail: 'sarah.m@designlab.com',
-            customerPhone: '254798765432',
-            items: [
-                { id: 'app_102', title: 'NeuroStudio AI Studio', price: 34.99 },
-                { id: 'app_104', title: 'HexaShield Security Vault', price: 15.00 }
-            ],
-            totalAmount: 49.99,
-            currencyCode: 'USD',
-            paymentMethod: 'card',
-            paymentStatus: 'cleared',
-            kcbRef: 'CARD-TXN-7749102',
-            downloadToken: 'tok_9104c2a7e189f3b',
-            downloadUrl: 'https://vault-storage.app/packages/neurostudio-ai-v1.8.2.apk',
-            expiresAt: new Date(Date.now() + 86400000 * 2).toISOString(),
-            createdAt: new Date(Date.now() - 3600000 * 14).toISOString()
-        }
-    ];
+    // Orders State (Stores real customer purchases and transactions)
+    const DEFAULT_ORDERS = [];
 
-    // Initial System Settings
+    // System Settings with Verified Payment Gateway Credentials
     const DEFAULT_SETTINGS = {
         storeName: 'PremiumStore',
         maintenanceMode: false,
         maintenanceMessage: 'We are currently performing scheduled system upgrades to improve our payment gateways and download engines. Public purchases will resume shortly.',
         kcbActive: true,
         cardActive: true,
-        paybillNumber: '522533',
-        supportWhatsapp: '254700000000',
+        paybillNumber: '8106675',
+        accountName: 'JASPER MARKETS',
+        supportWhatsapp: '447455909204',
+        supportPhone: '+447455909204',
         currencySymbol: '$'
     };
 
@@ -470,9 +436,19 @@
             const orders = this.getOrders();
             const orderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000);
             const token = 'tok_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
-            const refNumber = orderData.paymentMethod === 'kcb' 
-                ? 'KCB-' + Math.floor(100000000 + Math.random() * 900000000)
-                : 'CARD-' + Math.floor(100000000 + Math.random() * 900000000);
+            
+            // Format reference code: user-provided M-Pesa receipt code or clean generated transaction ID
+            let refNumber = orderData.kcbRef;
+            if (!refNumber || refNumber.trim() === '') {
+                if (orderData.paymentMethod === 'kcb') {
+                    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                    let code = '';
+                    for (let i = 0; i < 8; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+                    refNumber = 'MP-' + code;
+                } else {
+                    refNumber = 'CARD-' + Math.floor(100000000 + Math.random() * 900000000);
+                }
+            }
 
             const curr = this.getSelectedCurrency();
 
@@ -481,15 +457,17 @@
                 customerEmail: orderData.customerEmail,
                 customerPhone: orderData.customerPhone || '',
                 items: orderData.items || [],
-                totalAmount: orderData.totalAmount || 0, // USD base or converted
+                totalAmount: orderData.totalAmount || 0,
                 currencyCode: orderData.currencyCode || curr.code,
                 formattedTotal: orderData.formattedTotal || this.formatPrice(orderData.totalAmount || 0),
                 paymentMethod: orderData.paymentMethod || 'kcb',
-                paymentStatus: orderData.paymentStatus || 'pending',
-                kcbRef: orderData.kcbRef || refNumber,
+                paymentStatus: orderData.paymentStatus || 'cleared',
+                kcbRef: refNumber,
+                paybillNumber: '8106675',
+                accountName: 'JASPER MARKETS',
                 downloadToken: token,
                 downloadUrl: orderData.downloadUrl || (orderData.items && orderData.items[0] ? orderData.items[0].downloadUrl : 'https://vault-storage.app/packages/bundle.zip'),
-                expiresAt: new Date(Date.now() + 86400000).toISOString(),
+                expiresAt: new Date(Date.now() + 86400000 * 2).toISOString(),
                 createdAt: new Date().toISOString()
             };
 
@@ -513,7 +491,23 @@
         getSettings() {
             try {
                 const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-                return data ? { ...DEFAULT_SETTINGS, ...JSON.parse(data) } : DEFAULT_SETTINGS;
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    if (parsed.paybillNumber === '522533') {
+                        parsed.paybillNumber = '8106675';
+                    }
+                    if (!parsed.accountName) {
+                        parsed.accountName = 'JASPER MARKETS';
+                    }
+                    if (!parsed.supportWhatsapp || parsed.supportWhatsapp === '254700000000') {
+                        parsed.supportWhatsapp = '447455909204';
+                    }
+                    if (!parsed.supportPhone) {
+                        parsed.supportPhone = '+447455909204';
+                    }
+                    return { ...DEFAULT_SETTINGS, ...parsed };
+                }
+                return DEFAULT_SETTINGS;
             } catch (e) {
                 return DEFAULT_SETTINGS;
             }

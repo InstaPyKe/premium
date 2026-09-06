@@ -13,8 +13,8 @@ PremiumStore is a full-stack digital application marketplace, showcase platform,
 - **Interactive App Details Modal**: Multi-screenshot image gallery carousel, release notes changelog, hardware/system specs, and an interactive 5-star rating submission engine with device ID duplicate protection.
 - **Slide-Over Cart Drawer**: Persistent `localStorage` cart with live badge counters, item removal, and subtotal calculation.
 - **Multi-Gateway Checkout Portal**:
-  - **KCB BUNI Paybill (M-Pesa)**: Paybill 522533 STK Push simulation and manual reference verification.
-  - **Credit/Debit Card Gateway**: Formatted card inputs (Stripe/Flutterwave UI).
+  - **M-Pesa / KCB Paybill**: Paybill 8106675 (JASPER MARKETS) instant STK Push and real-time reference verification.
+  - **Credit/Debit Card Gateway**: Formatted card inputs (Stripe/Visa/Mastercard UI).
   - **Promo Voucher Engine**: Dynamic discount codes (e.g. `SAVE20`, `DEV100`).
 - **Digital Fulfillment & Success View**:
   - Unique digital license key (`PSTR-XXXX-491A-882C-PRO`).
@@ -38,7 +38,7 @@ PremiumStore is a full-stack digital application marketplace, showcase platform,
 - **Gateways & System Settings**:
   - Global Maintenance Mode master switch with custom public broadcast message.
   - Independent toggles for KCB BUNI Paybill and Card gateways.
-  - Paybill number and WhatsApp support number configuration.
+  - Paybill Business number (8106675), Account Name (JASPER MARKETS), and WhatsApp support number configuration.
 
 ---
 

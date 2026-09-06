@@ -461,16 +461,21 @@
                             <input type="checkbox" id="settings-card-switch" class="w-5 h-5 accent-brand-600 rounded cursor-pointer">
                         </div>
 
-                        <!-- Paybill Number & Support Phone -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <!-- Paybill Number, Account Name & Support Phone -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Paybill Business Number</label>
-                                <input type="text" id="settings-paybill-num" value="522533"
+                                <input type="text" id="settings-paybill-num" value="8106675"
                                     class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-brand-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Support WhatsApp Number</label>
-                                <input type="text" id="settings-whatsapp-num" value="254700000000"
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Paybill Account Name</label>
+                                <input type="text" id="settings-account-name" value="JASPER MARKETS"
+                                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Support WhatsApp / Call Number</label>
+                                <input type="text" id="settings-whatsapp-num" value="447455909204"
                                     class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white font-mono focus:outline-none focus:border-brand-500">
                             </div>
                         </div>
@@ -1173,8 +1178,9 @@
             document.getElementById('settings-maintenance-msg').value = s.maintenanceMessage || '';
             document.getElementById('settings-kcb-switch').checked = !!s.kcbActive;
             document.getElementById('settings-card-switch').checked = !!s.cardActive;
-            document.getElementById('settings-paybill-num').value = s.paybillNumber || '522533';
-            document.getElementById('settings-whatsapp-num').value = s.supportWhatsapp || '254700000000';
+            document.getElementById('settings-paybill-num').value = s.paybillNumber || '8106675';
+            document.getElementById('settings-account-name').value = s.accountName || 'JASPER MARKETS';
+            document.getElementById('settings-whatsapp-num').value = s.supportWhatsapp || '447455909204';
         }
 
         function saveMaintenanceSettings() {
@@ -1192,12 +1198,14 @@
             const kcb = document.getElementById('settings-kcb-switch').checked;
             const card = document.getElementById('settings-card-switch').checked;
             const paybill = document.getElementById('settings-paybill-num').value.trim();
+            const accName = document.getElementById('settings-account-name').value.trim();
             const wa = document.getElementById('settings-whatsapp-num').value.trim();
 
             window.PremiumStore.saveSettings({
                 kcbActive: kcb,
                 cardActive: card,
-                paybillNumber: paybill,
+                paybillNumber: paybill || '8106675',
+                accountName: accName || 'JASPER MARKETS',
                 supportWhatsapp: wa
             });
             showAdminToast('Payment gateways configuration saved!', 'success');
