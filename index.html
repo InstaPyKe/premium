@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PremiumStore — Digital Application Marketplace & Download Portal</title>
+    <meta name="description" content="Discover, purchase, and securely download premium enterprise and utility applications with instant automated delivery and multi-gateway payments.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                            950: '#1e1b4b',
+                        },
+                        kcb: {
+                            500: '#00843D',
+                            600: '#006C32',
+                            700: '#005527'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(15px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+                            '50%': { opacity: '1', transform: 'scale(1.03)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Glassmorphism & Micro-Styling */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .glass-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.2);
+        }
+        .glow-indigo {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        .hero-slide {
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+
+<body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Global System Maintenance Screen Overlay -->
+    <div id="view-maintenance" class="hidden fixed inset-0 bg-[#070b14]/95 z-[999] flex flex-col items-center justify-center text-center p-6 backdrop-blur-2xl animate-fade-in">
+        <div class="relative mb-6">
+            <div class="absolute inset-0 bg-amber-500/20 rounded-full blur-xl animate-pulse"></div>
+            <div class="relative p-6 bg-gradient-to-br from-amber-500/20 to-amber-700/10 text-amber-400 rounded-full border border-amber-500/30 shadow-2xl">
+                <i data-lucide="wrench" class="w-14 h-14 animate-bounce"></i>
+            </div>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/30 mb-3 tracking-wider uppercase">System Maintenance Active</span>
+        <h1 class="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight mb-3">Service Temporarily Paused</h1>
+        <p id="maintenance-msg" class="text-slate-400 max-w-lg text-sm sm:text-base leading-relaxed mb-6 font-normal">
+            We are performing essential database optimizations and gateway enhancements. Purchases and downloads will resume momentarily.
+        </p>
+        <div class="flex items-center gap-3 bg-slate-900/80 border border-slate-800 rounded-xl px-5 py-3 mb-6">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span class="text-xs text-slate-400 font-mono">Status: HTTP 503 Service Unavailable</span>
+        </div>
+        <button onclick="checkMaintenanceStatus()" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium rounded-xl border border-slate-700/80 transition-all flex items-center gap-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Check Status Again
+        </button>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky top-0 z-40 bg-[#070b14]/80 backdrop-blur-xl border-b border-slate-800/80 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 sm:gap-4">
+            
+            <!-- Logo -->
+            <a href="#" onclick="showPage('home'); return false;" class="flex items-center space-x-3 group shrink-0">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-purple-500 p-0.5 shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-full bg-[#0b101d] rounded-[14px] flex items-center justify-center">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 sm:w-6 sm:h-6 text-brand-400 group-hover:text-white transition-colors"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-display font-bold text-xl sm:text-2xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">PremiumStore</span>
+                    <span class="hidden lg:inline-block text-[10px] font-semibold tracking-wider text-brand-400 uppercase bg-brand-950/80 border border-brand-800/50 px-2 py-0.5 rounded-md ml-1.5 align-middle">OFFICIAL</span>
+                </div>
+            </a>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex flex-1 max-w-md mx-4">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search apps by title, keyword, or workflow..."
+                        class="w-full bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-2xl pl-11 pr-10 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 transition-all">
+                    <button id="clear-search-btn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Header Actions: Currency Selector, Admin Link & Cart -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                
+                <!-- Country & Currency Selector Dropdown -->
+                <div class="relative" id="currency-dropdown-container">
+                    <button id="currency-selector-btn" onclick="toggleCurrencyDropdown()"
+                        class="flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all text-xs font-semibold shadow-md">
+                        <span id="header-currency-flag" class="text-base leading-none">🇺🇸</span>
+                        <span id="header-currency-code" class="font-mono font-bold text-white">USD</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="currency-menu" class="hidden absolute right-0 mt-2 w-64 sm:w-72 bg-[#0b101d] border border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in max-h-80 overflow-y-auto">
+                        <div class="px-3 py-2 border-b border-slate-800/80 mb-1">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Choose Country / Currency</span>
+                        </div>
+                        <div id="currency-options-list" class="space-y-1">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Portal Link -->
+                <a href="admin/admin.html" target="_blank" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+                    <i data-lucide="shield" class="w-3.5 h-3.5 text-brand-400"></i>
+                    <span class="hidden md:inline">Admin Portal</span>
+                </a>
+
+                <!-- Cart Toggle Button -->
+                <button id="cart-toggle-btn" onclick="toggleCart()" class="relative p-2.5 sm:p-3 text-slate-300 hover:text-white rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-center">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-badge" class="hidden absolute -top-1.5 -right-1.5 bg-gradient-to-r from-brand-500 to-indigo-600 text-white text-[11px] font-extrabold rounded-full h-5 min-w-[20px] px-1 flex items-center justify-center shadow-lg shadow-brand-500/30">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="relative w-full">
+                <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                <input type="text" oninput="handleSearch(this.value)" placeholder="Search apps & utilities..."
+                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-brand-500">
+            </div>
+        </div>
+    </header>
+
+    <!-- Page: Marketplace Home View -->
+    <main id="page-home" class="page-view flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10">
+        
+        <!-- Picture-Dominated Hero Section with Interactive Slider -->
+        <section class="relative rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-950 min-h-[380px] sm:min-h-[440px] flex items-end shadow-2xl group">
+            
+            <!-- Slider Container -->
+            <div id="hero-slider" class="absolute inset-0 w-full h-full">
+                <!-- Slides injected dynamically by JS -->
+            </div>
+
+            <!-- Slide Navigation Buttons -->
+            <div class="absolute top-6 right-6 z-20 flex items-center space-x-2">
+                <button onclick="prevSlide()" class="p-2 rounded-xl bg-slate-950/70 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/50 backdrop-blur-md transition-all">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                </button>
+                <button onclick="nextSlide()" class="p-2 rounded-xl bg-slate-950/70 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/50 backdrop-blur-md transition-all">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Slide Indicators -->
+            <div id="hero-dots" class="absolute bottom-6 right-8 z-20 flex items-center space-x-2">
+                <!-- Dots injected by JS -->
+            </div>
+
+            <!-- Hero Active Slide Content Overlay -->
+            <div class="relative z-10 p-6 sm:p-10 max-w-2xl space-y-4">
+                <div class="flex items-center gap-2">
+                    <span id="hero-category" class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 backdrop-blur-md">
+                        <i data-lucide="sparkles" class="w-3 h-3"></i> Featured Selection
+                    </span>
+                    <span id="hero-rating" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md">
+                        <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> 4.9
+                    </span>
+                </div>
+                <h1 id="hero-title" class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
+                    NextGen Enterprise Workspace
+                </h1>
+                <p id="hero-description" class="text-slate-300 text-sm sm:text-base leading-relaxed line-clamp-2 max-w-xl drop-shadow">
+                    Engineered with offline synchronization, high-speed execution, and secure data enclaves.
+                </p>
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <button id="hero-buy-btn" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-brand-600/30 text-sm flex items-center gap-2">
+                        <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy — <span id="hero-price">$19.99</span>
+                    </button>
+                    <button id="hero-details-btn" class="bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-semibold px-5 py-3 rounded-xl transition-all text-sm backdrop-blur-md flex items-center gap-2">
+                        <i data-lucide="info" class="w-4 h-4"></i> View Details
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filter & Sort Engine Bar -->
+        <section class="space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+                
+                <!-- Category Tags Filter -->
+                <div id="category-bar" class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                    <!-- Dynamic categories rendered by JS -->
+                </div>
+
+                <!-- Sort & View Controls -->
+                <div class="flex items-center space-x-3 self-end md:self-auto shrink-0">
+                    <div class="flex items-center space-x-2 bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5">
+                        <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                        <label for="sort-select" class="text-xs text-slate-400 font-medium hidden sm:inline">Sort:</label>
+                        <select id="sort-select" onchange="handleSortChange(this.value)" class="bg-transparent text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer">
+                            <option value="popularity" class="bg-slate-900">Most Popular</option>
+                            <option value="rating" class="bg-slate-900">Highest Rating</option>
+                            <option value="price-asc" class="bg-slate-900">Price: Low to High</option>
+                            <option value="price-desc" class="bg-slate-900">Price: High to Low</option>
+                            <option value="newest" class="bg-slate-900">Newest Releases</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Search/Filter Feedback Banner -->
+            <div id="filter-feedback" class="hidden flex items-center justify-between bg-brand-950/40 border border-brand-800/30 rounded-xl px-4 py-2.5 text-xs text-brand-300">
+                <span id="filter-feedback-text">Showing applications</span>
+                <button onclick="resetFilters()" class="font-bold underline hover:text-white">Reset Filters</button>
+            </div>
+        </section>
+
+        <!-- Picture-Dominated App Cards Grid -->
+        <section id="apps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- App cards injected dynamically by JS -->
+        </section>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden py-16 text-center space-y-4">
+            <div class="w-16 h-16 rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center mx-auto text-slate-500">
+                <i data-lucide="search-x" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">No Applications Found</h3>
+            <p class="text-slate-400 text-sm max-w-sm mx-auto">We couldn't find any applications matching your current filter criteria.</p>
+            <button onclick="resetFilters()" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-xl">Clear All Filters</button>
+        </div>
+
+    </main>
+
+    <!-- Page: Checkout Portal View -->
+    <main id="page-checkout" class="page-view hidden flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
+        
+        <button onclick="showPage('home')" class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm font-medium transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Return to PremiumStore
+        </button>
+
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div>
+                <h1 class="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">Checkout Portal</h1>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">Multi-gateway instant verification & encrypted digital fulfillment</p>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full">
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i> 256-Bit SSL Encrypted
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Order Summary -->
+            <div class="lg:col-span-5 space-y-4">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 space-y-5">
+                    <h3 class="font-display font-bold text-lg text-white border-b border-slate-800 pb-3 flex items-center justify-between">
+                        <span>Items in Order</span>
+                        <span id="checkout-item-count" class="text-xs font-medium text-brand-400 bg-brand-950/60 border border-brand-800/40 px-2.5 py-0.5 rounded-full">1 Item</span>
+                    </h3>
+
+                    <!-- Order Items List -->
+                    <div id="checkout-items-list" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                        <!-- Dynamic Checkout Items -->
+                    </div>
+
+                    <!-- Voucher Input -->
+                    <div class="pt-3 border-t border-slate-800/80 space-y-2">
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Promo Voucher</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="promo-code-input" placeholder="Enter code (e.g. SAVE20)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white uppercase tracking-wider focus:outline-none focus:border-brand-500">
+                            <button type="button" onclick="applyPromoCode()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors">Apply</button>
+                        </div>
+                        <p id="promo-message" class="text-[11px] text-emerald-400 hidden">✓ Promo code applied: 20% discount!</p>
+                    </div>
+
+                    <!-- Calculation Totals -->
+                    <div class="border-t border-slate-800 pt-4 space-y-2 text-sm">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Subtotal</span>
+                            <span id="checkout-subtotal" class="font-semibold text-white">$19.99</span>
+                        </div>
+                        <div id="checkout-discount-row" class="flex justify-between text-emerald-400 hidden">
+                            <span>Discount</span>
+                            <span id="checkout-discount">-$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-slate-400">
+                            <span>Platform Fee</span>
+                            <span class="text-emerald-400 font-medium">FREE ($0.00)</span>
+                        </div>
+                        <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-lg font-bold">
+                            <span class="text-white">Total Amount</span>
+                            <span id="checkout-total" class="text-brand-400 font-display text-2xl font-extrabold">$19.99</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guarantee Box -->
+                <div class="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-800/30 flex items-start gap-3 text-xs text-emerald-300">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+                    <div>
+                        <p class="font-semibold text-emerald-200">Instant Automated Delivery</p>
+                        <p class="text-emerald-400/80 mt-0.5">Download credentials and license tokens are generated automatically upon payment confirmation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Gateway Selector & Payment Form -->
+            <div class="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
+                
+                <div class="space-y-3">
+                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Select Payment Gateway</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="gateways-container">
+                        
+                        <!-- KCB / M-Pesa Gateway Tab -->
+                        <button type="button" id="btn-gw-kcb" onclick="selectGateway('kcb')"
+                            class="p-4 border-2 border-brand-500 bg-brand-500/10 rounded-2xl flex items-center gap-3 transition-all text-left">
+                            <div class="w-10 h-10 rounded-xl bg-kcb-500/20 border border-kcb-500/30 flex items-center justify-center shrink-0">
+                                <i data-lucide="smartphone" class="w-5 h-5 text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white leading-tight">KCB BUNI / M-Pesa</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5">STK Push & Paybill 522533</p>
+                            </div>
+                        </button>
+
+                        <!-- Card Gateway Tab -->
+                        <button type="button" id="btn-gw-card" onclick="selectGateway('card')"
+                            class="p-4 border border-slate-800 bg-slate-950/60 rounded-2xl flex items-center gap-3 transition-all text-left hover:border-slate-700">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                                <i data-lucide="credit-card" class="w-5 h-5 text-indigo-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-300 leading-tight">Credit / Debit Card</h4>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Stripe / Visa / Mastercard</p>
+                            </div>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- Interactive Checkout Form -->
+                <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-5">
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                            Email Address <span class="text-brand-400">*</span> <span class="text-[11px] text-slate-500 font-normal lowercase">(for license delivery)</span>
+                        </label>
+                        <div class="relative">
+                            <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                            <input type="email" id="input-customer-email" required placeholder="name@domain.com"
+                                class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors">
+                        </div>
+                    </div>
+
+                    <!-- KCB Paybill / M-Pesa Fields -->
+                    <div id="fields-kcb" class="space-y-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 p-5">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                            <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> KCB Paybill: <strong class="text-white font-mono" id="display-paybill">522533</strong>
+                            </span>
+                            <span class="text-[11px] text-brand-400 bg-brand-950/80 px-2 py-0.5 rounded border border-brand-800/40">BUNI Instant API</span>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                                M-Pesa Phone Number (for STK Push)
+                            </label>
+                            <div class="relative">
+                                <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                                <input type="tel" id="input-kcb-phone" placeholder="254712345678" value="254712345678"
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-400 space-y-1">
+                            <p>1. Enter your phone number and tap <strong>Initiate KCB STK Push</strong>.</p>
+                            <p>2. Enter your M-Pesa PIN on your phone prompt to authorize <span id="kcb-payable-amount" class="font-bold text-white">$19.99</span>.</p>
+                            <p>3. Or pay manually to Paybill <strong>522533</strong> and enter the transaction reference code.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                                Optional: Manual M-Pesa / KCB Reference
+                            </label>
+                            <input type="text" id="input-kcb-manual-ref" placeholder="e.g. SH729012KA"
+                                class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-300 font-mono focus:outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+
+                    <!-- Card Gateway Fields -->
+                    <div id="fields-card" class="hidden space-y-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 p-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Card Number</label>
+                            <div class="relative">
+                                <i data-lucide="credit-card" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                                <input type="text" id="input-card-number" placeholder="4532 •••• •••• 8899" maxlength="19"
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Expiry Date</label>
+                                <input type="text" id="input-card-expiry" placeholder="MM/YY" maxlength="5"
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-brand-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">CVC / CVV</label>
+                                <input type="password" id="input-card-cvc" placeholder="•••" maxlength="4"
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative pt-2">
+                        <button type="submit" id="btn-submit-payment"
+                            class="w-full py-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-brand-600/30 flex items-center justify-center gap-2 text-base">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            <span>Complete Purchase & Get Download Link</span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Page: Digital Fulfillment & Success Portal -->
+    <main id="page-success" class="page-view hidden flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center text-center space-y-8 animate-fade-in">
+        
+        <div class="relative">
+            <div class="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"></div>
+            <div class="relative p-5 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 text-emerald-400 rounded-full border border-emerald-500/30 shadow-2xl">
+                <i data-lucide="check-circle-2" class="w-16 h-16 animate-pulse"></i>
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">Payment Verified & Cleared</span>
+            <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Your Digital Package Is Ready!</h1>
+            <p class="text-slate-400 text-sm max-w-md mx-auto">
+                Transaction ID: <span id="success-ref" class="font-mono text-slate-200 font-bold">KCB-883920192</span>
+            </p>
+        </div>
+
+        <!-- Fulfillment Details Card -->
+        <div class="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-left space-y-6 shadow-2xl">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-800/80 text-sm">
+                <div>
+                    <span class="text-xs text-slate-500 block uppercase font-semibold">Purchased Software</span>
+                    <span id="success-app-title" class="text-base font-bold text-white mt-0.5 block">TaskFlow Pro Workspace</span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-500 block uppercase font-semibold">Delivery Email</span>
+                    <span id="success-customer-email" class="text-slate-300 font-medium mt-0.5 block">user@example.com</span>
+                </div>
+            </div>
+
+            <!-- License Key Token Box -->
+            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="key" class="w-3.5 h-3.5 text-brand-400"></i> Unique Digital License Key
+                    </span>
+                    <span class="text-emerald-400 font-mono">1 Device Permanent License</span>
+                </div>
+                <div class="flex items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-2.5">
+                    <span id="success-license-key" class="font-mono text-sm sm:text-base font-extrabold text-brand-300 tracking-wider">PSTR-89F2-491A-882C-PRO</span>
+                    <button onclick="copyToClipboard('success-license-key', 'License Key')" class="text-xs font-semibold text-slate-300 hover:text-white px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors">Copy</button>
+                </div>
+            </div>
+
+            <!-- Expiring Download Token Box -->
+            <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                    <span class="font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i> Secure Signed Download URL
+                    </span>
+                    <span class="text-amber-400 font-semibold flex items-center gap-1">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> Expires in <span id="download-timer">23:59:59</span>
+                    </span>
+                </div>
+
+                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
+                    <span id="success-token-url" class="text-xs text-slate-400 font-mono truncate">https://vault-storage.app/dl/signed-tok-38f9a2b8e9104c2</span>
+                    <button onclick="copyToClipboard('success-token-url', 'Download Link')" class="text-brand-400 hover:text-brand-300 text-xs font-bold px-3 py-1.5 bg-brand-950/60 rounded-lg border border-brand-800/40 hover:bg-brand-900/60 shrink-0 transition-colors">
+                        Copy Link
+                    </button>
+                </div>
+            </div>
+
+            <!-- Direct Download CTA Button -->
+            <div class="space-y-2 pt-2">
+                <a id="success-download-btn" href="#" onclick="triggerDigitalDownload(event)"
+                    class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-emerald-600/20 text-base">
+                    <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                    <span>Download Direct Package (APK / ZIP)</span>
+                </a>
+                <p class="text-center text-[11px] text-slate-500">Digital receipt and installation instructions were dispatched to your email.</p>
+            </div>
+
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button onclick="showPage('home')" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-sm font-medium transition-colors">
+                Back to PremiumStore
+            </button>
+            <button onclick="openSupportWithRef()" class="px-6 py-2.5 text-slate-400 hover:text-emerald-400 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Need Help with this Order?
+            </button>
+        </div>
+
+    </main>
+
+    <!-- App Details Modal -->
+    <div id="modal-app-details" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl space-y-6 p-6 sm:p-8 max-h-[92vh] overflow-y-auto relative my-auto">
+            
+            <button onclick="closeModal()" class="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-700 transition-colors z-10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="space-y-1.5 pr-12">
+                <div class="flex items-center gap-2">
+                    <span id="modal-category" class="text-xs font-bold text-brand-400 uppercase tracking-wider bg-brand-950/80 border border-brand-800/40 px-2.5 py-0.5 rounded-full">Productivity</span>
+                    <span id="modal-version-badge" class="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">v2.4.0</span>
+                </div>
+                <h2 id="modal-title" class="font-display text-2xl sm:text-3xl font-bold text-white">TaskFlow Pro Workspace</h2>
+                <p id="modal-tagline" class="text-sm text-slate-400">Enterprise-grade automation & offline project synchronization</p>
+            </div>
+
+            <!-- Gallery Slider / Preview -->
+            <div class="space-y-3">
+                <div class="relative h-60 sm:h-80 rounded-2xl overflow-hidden border border-slate-800 bg-slate-950">
+                    <img id="modal-main-image" src="" alt="App Preview" class="w-full h-full object-cover">
+                </div>
+                <div id="modal-gallery-thumbs" class="flex gap-2 overflow-x-auto pb-1">
+                    <!-- Thumbnails dynamically rendered -->
+                </div>
+            </div>
+
+            <!-- Meta Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 text-xs">
+                <div>
+                    <span class="text-slate-500 block">Rating Score</span>
+                    <span id="modal-rating-score" class="font-bold text-amber-400 text-sm mt-0.5 flex items-center gap-1">
+                        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i> 4.9 (128 reviews)
+                    </span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">Package Size</span>
+                    <span id="modal-size" class="font-bold text-white text-sm mt-0.5">48.5 MB</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">Compatibility</span>
+                    <span id="modal-platform" class="font-bold text-white text-sm mt-0.5">Android / Windows</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">Fulfillment</span>
+                    <span class="font-bold text-emerald-400 text-sm mt-0.5">Instant Automated</span>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="space-y-3 text-sm">
+                <h4 class="font-bold text-white">About the Application</h4>
+                <p id="modal-description" class="text-slate-300 leading-relaxed text-xs sm:text-sm">
+                    TaskFlow Pro is a high-performance productivity workstation engineered for modern teams and individual power users.
+                </p>
+                <div class="space-y-1.5 pt-2">
+                    <h5 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Key Capabilities:</h5>
+                    <ul id="modal-features-list" class="space-y-1 text-xs text-slate-300 list-disc pl-4">
+                        <!-- Dynamic features -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Release Notes -->
+            <div class="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-1.5">
+                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <i data-lucide="file-text" class="w-3.5 h-3.5 text-brand-400"></i> Release Notes & Changelog
+                </h4>
+                <p id="modal-release-notes" class="text-xs text-slate-400 leading-relaxed">
+                    v2.4.0: Added sub-task dependency tracking, optimized memory footprint by 35%, and introduced dark neo-glass interface themes.
+                </p>
+            </div>
+
+            <!-- Interactive Rating Submission -->
+            <div class="border-t border-slate-800 pt-4 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-300">Rate this Application (Device-Locked)</span>
+                    <span id="rating-feedback-msg" class="text-xs text-slate-500">Tap a star to vote</span>
+                </div>
+                <div class="flex items-center space-x-2 text-slate-600" id="star-rating-buttons">
+                    <button type="button" onclick="submitAppRating(1)" class="p-1 hover:scale-125 transition-transform"><i data-lucide="star" class="w-6 h-6 hover:text-amber-400"></i></button>
+                    <button type="button" onclick="submitAppRating(2)" class="p-1 hover:scale-125 transition-transform"><i data-lucide="star" class="w-6 h-6 hover:text-amber-400"></i></button>
+                    <button type="button" onclick="submitAppRating(3)" class="p-1 hover:scale-125 transition-transform"><i data-lucide="star" class="w-6 h-6 hover:text-amber-400"></i></button>
+                    <button type="button" onclick="submitAppRating(4)" class="p-1 hover:scale-125 transition-transform"><i data-lucide="star" class="w-6 h-6 hover:text-amber-400"></i></button>
+                    <button type="button" onclick="submitAppRating(5)" class="p-1 hover:scale-125 transition-transform"><i data-lucide="star" class="w-6 h-6 hover:text-amber-400"></i></button>
+                </div>
+            </div>
+
+            <!-- Modal Footer Purchase Bar -->
+            <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+                <div>
+                    <span class="text-xs text-slate-500 block uppercase font-medium">One-Time License</span>
+                    <span id="modal-price" class="font-display text-2xl font-extrabold text-white">$19.99</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button id="modal-add-cart-btn" onclick="addCurrentModalToCart()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-colors">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i> Add to Cart
+                    </button>
+                    <button id="modal-direct-buy-btn" onclick="directBuyModalApp()" class="px-6 py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center gap-1.5">
+                        <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Slide-Over Cart Drawer -->
+    <div id="cart-overlay" onclick="toggleCart()" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 transition-opacity"></div>
+    <aside id="cart-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-900 border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+        
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+            <h2 class="font-display text-lg font-bold text-white flex items-center gap-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-500"></i> Your Cart (<span id="cart-drawer-count">0</span>)
+            </h2>
+            <button onclick="toggleCart()" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div id="cart-items-container" class="p-5 flex-grow overflow-y-auto space-y-3">
+            <!-- Dynamic Cart Items injected by JS -->
+        </div>
+
+        <div class="p-5 border-t border-slate-800 bg-slate-950/60 space-y-4">
+            <div class="space-y-1.5 text-sm">
+                <div class="flex justify-between text-slate-400">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal" class="font-semibold text-white">$0.00</span>
+                </div>
+                <div class="flex justify-between text-xs text-slate-500">
+                    <span>Delivery:</span>
+                    <span class="text-emerald-400 font-medium">Instant Token Generated</span>
+                </div>
+            </div>
+
+            <button id="cart-checkout-btn" onclick="proceedCartToCheckout()"
+                class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all text-center flex items-center justify-center gap-2">
+                <i data-lucide="arrow-right" class="w-4 h-4"></i> Proceed to Checkout
+            </button>
+            <button onclick="clearAllCart()" class="w-full text-center text-xs text-slate-500 hover:text-red-400 transition-colors">
+                Clear Cart
+            </button>
+        </div>
+    </aside>
+
+    <!-- Floating Interactive WhatsApp Support Widget -->
+    <aside aria-label="Support Widget">
+        <a id="floating-whatsapp-btn" href="https://wa.me/254700000000?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application%20purchase." target="_blank" rel="noopener noreferrer"
+            class="fixed bottom-6 right-6 z-40 bg-emerald-600 hover:bg-emerald-500 text-white p-3.5 sm:p-4 rounded-2xl shadow-2xl shadow-emerald-600/30 transition-all hover:scale-105 flex items-center gap-2 border border-emerald-400/30 group">
+            <i data-lucide="message-circle" class="w-6 h-6"></i>
+            <span class="hidden group-hover:inline-block text-xs font-bold pr-1 transition-all">Support Chat</span>
+        </a>
+    </aside>
+
+    <!-- Global Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 left-6 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- Scripts -->
+    <script src="store.js"></script>
+    <script>
+        // Global Application State & Controller
+        let currentSlideIndex = 0;
+        let slideInterval = null;
+        let selectedCategory = 'All';
+        let searchQuery = '';
+        let currentSort = 'popularity';
+        let activeModalApp = null;
+        let selectedGateway = 'kcb';
+        let discountMultiplier = 1.0;
+        let singleDirectItem = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initMarketplace();
+            setupEventListeners();
+            checkMaintenanceStatus();
+        });
+
+        function initMarketplace() {
+            renderCurrencySelector();
+            renderHeroSlider();
+            renderCategories();
+            renderAppsGrid();
+            updateCartUI();
+            lucide.createIcons();
+        }
+
+        function setupEventListeners() {
+            window.addEventListener('premiumstore:statechange', () => {
+                checkMaintenanceStatus();
+                renderAppsGrid();
+                updateCartUI();
+                renderCategories();
+                renderHeroSlider();
+                updateCurrencyHeader();
+            });
+            window.addEventListener('appvault:statechange', () => {
+                checkMaintenanceStatus();
+                renderAppsGrid();
+                updateCartUI();
+                renderCategories();
+                renderHeroSlider();
+                updateCurrencyHeader();
+            });
+
+            // Close currency dropdown when clicked outside
+            document.addEventListener('click', (e) => {
+                const container = document.getElementById('currency-dropdown-container');
+                const menu = document.getElementById('currency-menu');
+                if (container && !container.contains(e.target) && menu && !menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                }
+            });
+        }
+
+        // Currency & Country Selector Operations
+        function toggleCurrencyDropdown() {
+            const menu = document.getElementById('currency-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function renderCurrencySelector() {
+            const currencies = window.PremiumStore.getCurrencies();
+            const selected = window.PremiumStore.getSelectedCurrency();
+            const container = document.getElementById('currency-options-list');
+            container.innerHTML = '';
+
+            updateCurrencyHeader();
+
+            Object.values(currencies).forEach(curr => {
+                const isSelected = curr.code === selected.code;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
+                    isSelected ? 'bg-brand-600 text-white font-bold' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }`;
+                btn.innerHTML = `
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="text-base">${curr.flag}</span>
+                        <div class="min-w-0">
+                            <span class="block text-xs font-semibold leading-tight truncate">${curr.country}</span>
+                            <span class="text-[10px] ${isSelected ? 'text-brand-200' : 'text-slate-400'}">${curr.name} (${curr.symbol.trim()})</span>
+                        </div>
+                    </div>
+                    <span class="font-mono text-xs font-bold ${isSelected ? 'text-white' : 'text-slate-400'}">${curr.code}</span>
+                `;
+                btn.onclick = () => selectCurrency(curr.code);
+                container.appendChild(btn);
+            });
+        }
+
+        function updateCurrencyHeader() {
+            const selected = window.PremiumStore.getSelectedCurrency();
+            document.getElementById('header-currency-flag').innerText = selected.flag;
+            document.getElementById('header-currency-code').innerText = selected.code;
+        }
+
+        function selectCurrency(code) {
+            const curr = window.PremiumStore.setSelectedCurrency(code);
+            document.getElementById('currency-menu').classList.add('hidden');
+            renderCurrencySelector();
+            
+            // Re-render UI with converted prices
+            renderHeroSlider();
+            renderAppsGrid();
+            updateCartUI();
+
+            if (activeModalApp) {
+                document.getElementById('modal-price').innerText = window.PremiumStore.formatPrice(activeModalApp.price);
+            }
+
+            // If checkout active, re-calculate
+            const checkoutPage = document.getElementById('page-checkout');
+            if (!checkoutPage.classList.contains('hidden')) {
+                const items = singleDirectItem ? [singleDirectItem] : window.PremiumStore.getCart();
+                renderCheckoutView(items);
+            }
+
+            showToast(`Currency changed to ${curr.country} (${curr.code})`, 'success');
+        }
+
+        function checkMaintenanceStatus() {
+            const settings = window.PremiumStore.getSettings();
+            const maintenanceView = document.getElementById('view-maintenance');
+            const maintenanceMsg = document.getElementById('maintenance-msg');
+
+            if (settings.maintenanceMode) {
+                maintenanceView.classList.remove('hidden');
+                if (settings.maintenanceMessage) {
+                    maintenanceMsg.innerText = settings.maintenanceMessage;
+                }
+            } else {
+                maintenanceView.classList.add('hidden');
+            }
+
+            syncGatewaySettings(settings);
+            if (settings.supportWhatsapp) {
+                document.getElementById('floating-whatsapp-btn').href = `https://wa.me/${settings.supportWhatsapp}?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application.`;
+            }
+        }
+
+        function syncGatewaySettings(settings) {
+            const btnKcb = document.getElementById('btn-gw-kcb');
+            const btnCard = document.getElementById('btn-gw-card');
+            const displayPaybill = document.getElementById('display-paybill');
+            if (displayPaybill && settings.paybillNumber) {
+                displayPaybill.innerText = settings.paybillNumber;
+            }
+
+            if (btnKcb) {
+                if (settings.kcbActive) {
+                    btnKcb.classList.remove('hidden');
+                } else {
+                    btnKcb.classList.add('hidden');
+                    if (selectedGateway === 'kcb') selectGateway('card');
+                }
+            }
+            if (btnCard) {
+                if (settings.cardActive) {
+                    btnCard.classList.remove('hidden');
+                } else {
+                    btnCard.classList.add('hidden');
+                    if (selectedGateway === 'card') selectGateway('kcb');
+                }
+            }
+        }
+
+        // Hero Section Interactive Slider
+        function renderHeroSlider() {
+            const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+            const featuredApps = apps.filter(a => a.featured).length ? apps.filter(a => a.featured) : apps.slice(0, 3);
+            
+            const sliderContainer = document.getElementById('hero-slider');
+            const dotsContainer = document.getElementById('hero-dots');
+            sliderContainer.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            featuredApps.forEach((app, idx) => {
+                const slide = document.createElement('div');
+                slide.className = `hero-slide absolute inset-0 w-full h-full ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`;
+                slide.id = `hero-slide-${idx}`;
+                slide.innerHTML = `
+                    <img src="${app.coverImage}" alt="${app.title}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#070b14] via-[#070b14]/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#070b14] via-[#070b14]/40 to-transparent"></div>
+                `;
+                sliderContainer.appendChild(slide);
+
+                const dot = document.createElement('button');
+                dot.className = `h-2 rounded-full transition-all ${idx === 0 ? 'w-8 bg-brand-500' : 'w-2 bg-slate-600 hover:bg-slate-400'}`;
+                dot.id = `hero-dot-${idx}`;
+                dot.onclick = () => goToSlide(idx);
+                dotsContainer.appendChild(dot);
+            });
+
+            if (featuredApps.length > 0) {
+                updateHeroContent(featuredApps[0]);
+            }
+
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 6000);
+        }
+
+        function updateHeroContent(app) {
+            document.getElementById('hero-category').innerHTML = `<i data-lucide="sparkles" class="w-3 h-3"></i> ${app.category}`;
+            document.getElementById('hero-rating').innerHTML = `<i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> ${app.rating}`;
+            document.getElementById('hero-title').innerText = app.title;
+            document.getElementById('hero-description').innerText = app.tagline || app.description;
+            document.getElementById('hero-price').innerText = window.PremiumStore.formatPrice(app.price);
+            
+            document.getElementById('hero-buy-btn').onclick = () => initiateDirectBuy(app.id);
+            document.getElementById('hero-details-btn').onclick = () => openModal(app.id);
+            lucide.createIcons();
+        }
+
+        function goToSlide(index) {
+            const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+            const featuredApps = apps.filter(a => a.featured).length ? apps.filter(a => a.featured) : apps.slice(0, 3);
+            if (!featuredApps.length) return;
+
+            document.querySelectorAll('.hero-slide').forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.remove('opacity-0', 'z-0');
+                    slide.classList.add('opacity-100', 'z-10');
+                } else {
+                    slide.classList.remove('opacity-100', 'z-10');
+                    slide.classList.add('opacity-0', 'z-0');
+                }
+            });
+
+            document.querySelectorAll('#hero-dots button').forEach((dot, i) => {
+                if (i === index) {
+                    dot.className = 'h-2 rounded-full transition-all w-8 bg-brand-500';
+                } else {
+                    dot.className = 'h-2 rounded-full transition-all w-2 bg-slate-600 hover:bg-slate-400';
+                }
+            });
+
+            currentSlideIndex = index;
+            updateHeroContent(featuredApps[index]);
+        }
+
+        function nextSlide() {
+            const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+            const featured = apps.filter(a => a.featured).length ? apps.filter(a => a.featured) : apps.slice(0, 3);
+            const nextIdx = (currentSlideIndex + 1) % featured.length;
+            goToSlide(nextIdx);
+        }
+
+        function prevSlide() {
+            const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+            const featured = apps.filter(a => a.featured).length ? apps.filter(a => a.featured) : apps.slice(0, 3);
+            const prevIdx = (currentSlideIndex - 1 + featured.length) % featured.length;
+            goToSlide(prevIdx);
+        }
+
+        // Category Tag Bar Rendering
+        function renderCategories() {
+            const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+            const categories = ['All', ...new Set(apps.map(a => a.category))];
+            
+            const bar = document.getElementById('category-bar');
+            bar.innerHTML = '';
+
+            categories.forEach(cat => {
+                const count = cat === 'All' ? apps.length : apps.filter(a => a.category === cat).length;
+                const btn = document.createElement('button');
+                const isActive = selectedCategory === cat;
+                btn.className = `px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
+                    isActive 
+                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/30' 
+                    : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                }`;
+                btn.innerHTML = `
+                    <span>${cat === 'All' ? 'All Applications' : cat}</span>
+                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">${count}</span>
+                `;
+                btn.onclick = () => selectCategory(cat);
+                bar.appendChild(btn);
+            });
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = cat;
+            renderCategories();
+            renderAppsGrid();
+            updateFilterFeedback();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (clearBtn) {
+                if (searchQuery.length > 0) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+            }
+            renderAppsGrid();
+            updateFilterFeedback();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('search-input');
+            if (input) input.value = '';
+            handleSearch('');
+        }
+
+        function handleSortChange(sortVal) {
+            currentSort = sortVal;
+            renderAppsGrid();
+        }
+
+        function resetFilters() {
+            selectedCategory = 'All';
+            searchQuery = '';
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.value = '';
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (clearBtn) clearBtn.classList.add('hidden');
+            renderCategories();
+            renderAppsGrid();
+            updateFilterFeedback();
+        }
+
+        function updateFilterFeedback() {
+            const feedbackBox = document.getElementById('filter-feedback');
+            const feedbackText = document.getElementById('filter-feedback-text');
+            if (selectedCategory !== 'All' || searchQuery !== '') {
+                feedbackBox.classList.remove('hidden');
+                const apps = getFilteredAndSortedApps();
+                feedbackText.innerText = `Showing ${apps.length} application(s) for "${selectedCategory !== 'All' ? selectedCategory : ''} ${searchQuery ? `keyword: ${searchQuery}` : ''}"`;
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+        }
+
+        function getFilteredAndSortedApps() {
+            let apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+
+            if (selectedCategory !== 'All') {
+                apps = apps.filter(a => a.category === selectedCategory);
+            }
+
+            if (searchQuery) {
+                apps = apps.filter(a => 
+                    a.title.toLowerCase().includes(searchQuery) ||
+                    a.description.toLowerCase().includes(searchQuery) ||
+                    (a.tagline && a.tagline.toLowerCase().includes(searchQuery)) ||
+                    a.category.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            if (currentSort === 'popularity') {
+                apps.sort((a, b) => (b.downloads || 0) - (a.downloads || 0));
+            } else if (currentSort === 'rating') {
+                apps.sort((a, b) => b.rating - a.rating);
+            } else if (currentSort === 'price-asc') {
+                apps.sort((a, b) => a.price - b.price);
+            } else if (currentSort === 'price-desc') {
+                apps.sort((a, b) => b.price - a.price);
+            } else if (currentSort === 'newest') {
+                apps.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+
+            return apps;
+        }
+
+        // Picture-Dominated Apps Card Grid with Multi-Currency Formatting
+        function renderAppsGrid() {
+            const apps = getFilteredAndSortedApps();
+            const grid = document.getElementById('apps-grid');
+            const emptyState = document.getElementById('empty-state');
+
+            grid.innerHTML = '';
+
+            if (apps.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                grid.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+
+            apps.forEach(app => {
+                const card = document.createElement('article');
+                card.className = "glass-card rounded-3xl overflow-hidden transition-all duration-300 flex flex-col group hover:-translate-y-1";
+                card.innerHTML = `
+                    <div class="relative h-48 sm:h-52 overflow-hidden bg-slate-950 cursor-pointer" onclick="openModal('${app.id}')">
+                        <img src="${app.coverImage}" alt="${app.title}" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                        
+                        <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                            <span class="bg-slate-950/80 backdrop-blur-md border border-slate-800 text-brand-300 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                                ${app.category}
+                            </span>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <span class="bg-slate-950/80 backdrop-blur-md border border-slate-700/50 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i> ${app.rating}
+                            </span>
+                        </div>
+
+                        <div class="absolute bottom-3 right-3">
+                            <span class="text-[10px] font-mono text-slate-300 bg-slate-900/90 border border-slate-800 px-2 py-0.5 rounded-md backdrop-blur-sm">
+                                v${app.version}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-5 sm:p-6 flex-grow flex flex-col justify-between space-y-4">
+                        <div class="space-y-1.5">
+                            <h3 class="font-display font-bold text-lg text-white group-hover:text-brand-400 transition-colors cursor-pointer line-clamp-1" onclick="openModal('${app.id}')">
+                                ${app.title}
+                            </h3>
+                            <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed font-normal">
+                                ${app.tagline || app.description}
+                            </p>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-3 border-t border-slate-800/80">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block uppercase font-medium">Price</span>
+                                <span class="font-display text-lg sm:text-xl font-extrabold text-white">${window.PremiumStore.formatPrice(app.price)}</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="addToCart('${app.id}')" title="Add to Cart"
+                                    class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all hover:scale-105 active:scale-95">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="initiateDirectBuy('${app.id}')"
+                                    class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-md shadow-brand-600/20 hover:scale-105 active:scale-95">
+                                    Direct Buy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // App Details Modal
+        function openModal(appId) {
+            const app = window.PremiumStore.getAppById(appId);
+            if (!app) return;
+            activeModalApp = app;
+
+            document.getElementById('modal-category').innerText = app.category;
+            document.getElementById('modal-version-badge').innerText = `v${app.version}`;
+            document.getElementById('modal-title').innerText = app.title;
+            document.getElementById('modal-tagline').innerText = app.tagline || '';
+            document.getElementById('modal-main-image').src = app.coverImage;
+            document.getElementById('modal-rating-score').innerHTML = `<i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${app.rating} (${app.ratingCount || 1} reviews)`;
+            document.getElementById('modal-size').innerText = app.size || '25.0 MB';
+            document.getElementById('modal-platform').innerText = app.platform || 'Cross-Platform';
+            document.getElementById('modal-description').innerText = app.description;
+            document.getElementById('modal-release-notes').innerText = app.releaseNotes || 'No changelog available.';
+            document.getElementById('modal-price').innerText = window.PremiumStore.formatPrice(app.price);
+
+            const featList = document.getElementById('modal-features-list');
+            featList.innerHTML = '';
+            (app.features || ['Instant automated delivery', 'Cross-platform native binaries']).forEach(f => {
+                const li = document.createElement('li');
+                li.innerText = f;
+                featList.appendChild(li);
+            });
+
+            const thumbContainer = document.getElementById('modal-gallery-thumbs');
+            thumbContainer.innerHTML = '';
+            const images = app.gallery && app.gallery.length ? app.gallery : [app.coverImage];
+            images.forEach((imgSrc, idx) => {
+                const thumb = document.createElement('img');
+                thumb.src = imgSrc;
+                thumb.className = `w-16 h-12 object-cover rounded-lg border cursor-pointer transition-all ${idx === 0 ? 'border-brand-500 scale-105' : 'border-slate-800 opacity-70 hover:opacity-100'}`;
+                thumb.onclick = () => {
+                    document.getElementById('modal-main-image').src = imgSrc;
+                    thumbContainer.querySelectorAll('img').forEach(t => t.className = 'w-16 h-12 object-cover rounded-lg border border-slate-800 opacity-70 hover:opacity-100');
+                    thumb.className = 'w-16 h-12 object-cover rounded-lg border border-brand-500 scale-105 opacity-100';
+                };
+                thumbContainer.appendChild(thumb);
+            });
+
+            updateRatingStarsUI(app.id);
+            updateWhatsAppTarget(app);
+
+            document.getElementById('modal-app-details').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-app-details').classList.add('hidden');
+            activeModalApp = null;
+        }
+
+        function updateWhatsAppTarget(app) {
+            const settings = window.PremiumStore.getSettings();
+            const phone = settings.supportWhatsapp || '254700000000';
+            const msg = encodeURIComponent(`Hello PremiumStore Support, I need assistance regarding application: "${app.title}" (ID: ${app.id}, Price: ${window.PremiumStore.formatPrice(app.price)}).`);
+            document.getElementById('floating-whatsapp-btn').href = `https://wa.me/${phone}?text=${msg}`;
+        }
+
+        function updateRatingStarsUI(appId) {
+            const hasRated = window.PremiumStore.hasUserRated(appId);
+            const userScore = window.PremiumStore.getUserAppRating(appId);
+            const feedback = document.getElementById('rating-feedback-msg');
+            const starButtons = document.querySelectorAll('#star-rating-buttons button');
+
+            if (hasRated && userScore) {
+                feedback.innerText = `You rated this ${userScore} ★ (Saved)`;
+                feedback.className = "text-xs text-amber-400 font-semibold";
+                starButtons.forEach((btn, i) => {
+                    const icon = btn.querySelector('svg');
+                    if (i < userScore) {
+                        btn.className = "p-1 text-amber-400";
+                        if (icon) icon.classList.add('fill-amber-400');
+                    } else {
+                        btn.className = "p-1 text-slate-600";
+                        if (icon) icon.classList.remove('fill-amber-400');
+                    }
+                });
+            } else {
+                feedback.innerText = "Tap a star to submit your review";
+                feedback.className = "text-xs text-slate-500";
+                starButtons.forEach(btn => {
+                    btn.className = "p-1 hover:scale-125 transition-transform text-slate-600";
+                    const icon = btn.querySelector('svg');
+                    if (icon) icon.classList.remove('fill-amber-400');
+                });
+            }
+        }
+
+        function submitAppRating(score) {
+            if (!activeModalApp) return;
+            const res = window.PremiumStore.rateApp(activeModalApp.id, score);
+            if (res.success) {
+                showToast(`Thanks! Your ${score}-star rating was recorded.`, 'success');
+                updateRatingStarsUI(activeModalApp.id);
+                document.getElementById('modal-rating-score').innerHTML = `<i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${res.newRating} (${res.ratingCount} reviews)`;
+                lucide.createIcons();
+                renderAppsGrid();
+            } else {
+                showToast(res.message, 'warning');
+            }
+        }
+
+        function addCurrentModalToCart() {
+            if (!activeModalApp) return;
+            addToCart(activeModalApp.id);
+        }
+
+        function directBuyModalApp() {
+            if (!activeModalApp) return;
+            const id = activeModalApp.id;
+            closeModal();
+            initiateDirectBuy(id);
+        }
+
+        // Cart Drawer Operations
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            const isClosed = drawer.classList.contains('translate-x-full');
+
+            if (isClosed) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                updateCartUI();
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function addToCart(appId) {
+            const added = window.PremiumStore.addToCart(appId);
+            if (added) {
+                const app = window.PremiumStore.getAppById(appId);
+                showToast(`"${app.title}" added to cart.`, 'success');
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(appId) {
+            window.PremiumStore.removeFromCart(appId);
+            updateCartUI();
+        }
+
+        function clearAllCart() {
+            window.PremiumStore.clearCart();
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cart = window.PremiumStore.getCart();
+            const badge = document.getElementById('cart-badge');
+            const drawerCount = document.getElementById('cart-drawer-count');
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const checkoutBtn = document.getElementById('cart-checkout-btn');
+
+            if (cart.length > 0) {
+                badge.innerText = cart.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            drawerCount.innerText = cart.length;
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center space-y-3">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-800/80 flex items-center justify-center mx-auto text-slate-500">
+                            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-300">Your cart is currently empty</p>
+                        <p class="text-xs text-slate-500">Add apps from PremiumStore to get started.</p>
+                    </div>
+                `;
+                subtotalEl.innerText = window.PremiumStore.formatPrice(0);
+                checkoutBtn.disabled = true;
+                checkoutBtn.className = "w-full py-3.5 bg-slate-800 text-slate-500 font-bold rounded-2xl cursor-not-allowed text-center";
+            } else {
+                container.innerHTML = '';
+                let totalUsd = 0;
+                cart.forEach(item => {
+                    totalUsd += item.price;
+                    const el = document.createElement('div');
+                    el.className = "flex items-center justify-between p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800/80";
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <img src="${item.coverImage}" class="w-11 h-11 rounded-xl object-cover border border-slate-800 shrink-0" alt="app">
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-xs text-white truncate">${item.title}</h4>
+                                <span class="text-[11px] font-semibold text-brand-400 font-display">${window.PremiumStore.formatPrice(item.price)}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart('${item.id}')" class="p-2 text-slate-500 hover:text-red-400 transition-colors" title="Remove">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    `;
+                    container.appendChild(el);
+                });
+                subtotalEl.innerText = window.PremiumStore.formatPrice(totalUsd);
+                checkoutBtn.disabled = false;
+                checkoutBtn.className = "w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all text-center flex items-center justify-center gap-2";
+            }
+            lucide.createIcons();
+        }
+
+        // Checkout Portal Workflow
+        function initiateDirectBuy(appId) {
+            const app = window.PremiumStore.getAppById(appId);
+            if (!app) return;
+            singleDirectItem = app;
+            renderCheckoutView([app]);
+            showPage('checkout');
+        }
+
+        function proceedCartToCheckout() {
+            const cart = window.PremiumStore.getCart();
+            if (cart.length === 0) return;
+            singleDirectItem = null;
+            toggleCart();
+            renderCheckoutView(cart);
+            showPage('checkout');
+        }
+
+        function renderCheckoutView(items) {
+            const container = document.getElementById('checkout-items-list');
+            container.innerHTML = '';
+            let subtotalUsd = 0;
+
+            items.forEach(item => {
+                subtotalUsd += item.price;
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between p-3 bg-slate-950/70 rounded-xl border border-slate-800/60";
+                row.innerHTML = `
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <img src="${item.coverImage}" class="w-9 h-9 rounded-lg object-cover border border-slate-800 shrink-0" alt="item">
+                        <div class="min-w-0">
+                            <h4 class="font-bold text-xs text-white truncate">${item.title}</h4>
+                            <span class="text-[10px] text-slate-500 uppercase">${item.category}</span>
+                        </div>
+                    </div>
+                    <span class="font-bold text-xs text-white">${window.PremiumStore.formatPrice(item.price)}</span>
+                `;
+                container.appendChild(row);
+            });
+
+            document.getElementById('checkout-item-count').innerText = `${items.length} Item${items.length > 1 ? 's' : ''}`;
+            updateCheckoutTotals(subtotalUsd);
+        }
+
+        function updateCheckoutTotals(subtotalUsd) {
+            const discountUsd = subtotalUsd * (1 - discountMultiplier);
+            const totalUsd = subtotalUsd * discountMultiplier;
+
+            document.getElementById('checkout-subtotal').innerText = window.PremiumStore.formatPrice(subtotalUsd);
+            if (discountUsd > 0) {
+                document.getElementById('checkout-discount-row').classList.remove('hidden');
+                document.getElementById('checkout-discount').innerText = `-${window.PremiumStore.formatPrice(discountUsd)}`;
+            } else {
+                document.getElementById('checkout-discount-row').classList.add('hidden');
+            }
+            document.getElementById('checkout-total').innerText = window.PremiumStore.formatPrice(totalUsd);
+
+            const kcbPayable = document.getElementById('kcb-payable-amount');
+            if (kcbPayable) {
+                kcbPayable.innerText = window.PremiumStore.formatPrice(totalUsd);
+            }
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promo-code-input').value.trim().toUpperCase();
+            const msg = document.getElementById('promo-message');
+            if (code === 'SAVE20' || code === 'VAULT20' || code === 'PREMIUM20') {
+                discountMultiplier = 0.8;
+                msg.classList.remove('hidden');
+                msg.innerText = "✓ 20% Promo Discount Applied!";
+                showToast("Promo voucher applied: 20% off!", "success");
+            } else if (code === 'FREE' || code === 'DEV100') {
+                discountMultiplier = 0.0;
+                msg.classList.remove('hidden');
+                msg.innerText = "✓ 100% Free Developer Trial Applied!";
+                showToast("100% voucher applied!", "success");
+            } else {
+                discountMultiplier = 1.0;
+                msg.classList.remove('hidden');
+                msg.className = "text-[11px] text-red-400";
+                msg.innerText = "✗ Invalid discount code.";
+                showToast("Invalid discount code", "error");
+            }
+
+            const items = singleDirectItem ? [singleDirectItem] : window.PremiumStore.getCart();
+            const subtotalUsd = items.reduce((acc, i) => acc + i.price, 0);
+            updateCheckoutTotals(subtotalUsd);
+        }
+
+        function selectGateway(gw) {
+            selectedGateway = gw;
+            const btnKcb = document.getElementById('btn-gw-kcb');
+            const btnCard = document.getElementById('btn-gw-card');
+            const fieldKcb = document.getElementById('fields-kcb');
+            const fieldCard = document.getElementById('fields-card');
+
+            if (gw === 'kcb') {
+                btnKcb.className = "p-4 border-2 border-brand-500 bg-brand-500/10 rounded-2xl flex items-center gap-3 transition-all text-left";
+                btnCard.className = "p-4 border border-slate-800 bg-slate-950/60 rounded-2xl flex items-center gap-3 transition-all text-left hover:border-slate-700";
+                fieldKcb.classList.remove('hidden');
+                fieldCard.classList.add('hidden');
+            } else {
+                btnCard.className = "p-4 border-2 border-brand-500 bg-brand-500/10 rounded-2xl flex items-center gap-3 transition-all text-left";
+                btnKcb.className = "p-4 border border-slate-800 bg-slate-950/60 rounded-2xl flex items-center gap-3 transition-all text-left hover:border-slate-700";
+                fieldCard.classList.remove('hidden');
+                fieldKcb.classList.add('hidden');
+            }
+        }
+
+        function processCheckout(e) {
+            e.preventDefault();
+            const email = document.getElementById('input-customer-email').value.trim();
+            const phone = document.getElementById('input-kcb-phone').value.trim();
+            const manualRef = document.getElementById('input-kcb-manual-ref').value.trim();
+            const submitBtn = document.getElementById('btn-submit-payment');
+
+            const items = singleDirectItem ? [singleDirectItem] : window.PremiumStore.getCart();
+            if (items.length === 0) {
+                showToast('Your checkout order is empty.', 'error');
+                return;
+            }
+
+            const subtotalUsd = items.reduce((acc, i) => acc + i.price, 0);
+            const totalUsd = subtotalUsd * discountMultiplier;
+            const curr = window.PremiumStore.getSelectedCurrency();
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Verifying Gateway & Generating Secure Token...</span>
+            `;
+
+            setTimeout(() => {
+                const order = window.PremiumStore.createOrder({
+                    customerEmail: email,
+                    customerPhone: phone,
+                    items: items,
+                    totalAmount: totalUsd,
+                    currencyCode: curr.code,
+                    formattedTotal: window.PremiumStore.formatPrice(totalUsd),
+                    paymentMethod: selectedGateway,
+                    paymentStatus: 'cleared',
+                    kcbRef: manualRef || (selectedGateway === 'kcb' ? 'KCB-' + Math.floor(100000000 + Math.random() * 900000000) : 'CARD-' + Math.floor(100000000 + Math.random() * 900000000)),
+                    downloadUrl: items[0].downloadUrl
+                });
+
+                if (!singleDirectItem) {
+                    window.PremiumStore.clearCart();
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    <span>Complete Purchase & Get Download Link</span>
+                `;
+
+                renderSuccessFulfillment(order);
+                showPage('success');
+                showToast('Payment cleared! Digital delivery generated.', 'success');
+            }, 1800);
+        }
+
+        let countdownInterval = null;
+        function renderSuccessFulfillment(order) {
+            document.getElementById('success-ref').innerText = order.kcbRef || order.id;
+            document.getElementById('success-app-title').innerText = order.items.map(i => i.title).join(', ');
+            document.getElementById('success-customer-email').innerText = order.customerEmail;
+            
+            const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
+            document.getElementById('success-license-key').innerText = `PSTR-${randHex}-491A-882C-PRO`;
+
+            const tokenUrl = `https://vault-storage.app/dl/signed-${order.downloadToken}?expires=86400`;
+            document.getElementById('success-token-url').innerText = tokenUrl;
+            document.getElementById('success-download-btn').dataset.dlUrl = order.downloadUrl;
+
+            let remainingSeconds = 86399;
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                remainingSeconds--;
+                if (remainingSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('download-timer').innerText = "Expired";
+                    return;
+                }
+                const hrs = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
+                const mins = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+                const secs = (remainingSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('download-timer').innerText = `${hrs}:${mins}:${secs}`;
+            }, 1000);
+
+            lucide.createIcons();
+        }
+
+        function triggerDigitalDownload(e) {
+            e.preventDefault();
+            const btn = document.getElementById('success-download-btn');
+            const originalHTML = btn.innerHTML;
+
+            btn.innerHTML = `
+                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Streaming Secure Package...</span>
+            `;
+
+            setTimeout(() => {
+                const blob = new Blob([
+                    `PremiumStore Digital Distribution Delivery\n\n` +
+                    `Transaction Ref: ${document.getElementById('success-ref').innerText}\n` +
+                    `Software: ${document.getElementById('success-app-title').innerText}\n` +
+                    `License Key: ${document.getElementById('success-license-key').innerText}\n` +
+                    `Download Token: ${document.getElementById('success-token-url').innerText}\n\n` +
+                    `Instructions:\n1. Unzip the package.\n2. Run the installer application.\n3. Input your license key when prompted.`
+                ], { type: 'text/plain' });
+
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = `PremiumStore_Release_Bundle_${Date.now()}.txt`;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+
+                btn.innerHTML = originalHTML;
+                showToast('Direct download initiated successfully!', 'success');
+            }, 1200);
+        }
+
+        function copyToClipboard(elemId, label) {
+            const text = document.getElementById(elemId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`${label} copied to clipboard!`, 'success');
+            }).catch(() => {
+                showToast(`Failed to copy to clipboard`, 'error');
+            });
+        }
+
+        function openSupportWithRef() {
+            const ref = document.getElementById('success-ref').innerText;
+            const settings = window.PremiumStore.getSettings();
+            const phone = settings.supportWhatsapp || '254700000000';
+            const url = `https://wa.me/${phone}?text=Hello%20Support,%20I%20have%20a%20query%20about%20Order%20Ref:%20${ref}`;
+            window.open(url, '_blank');
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(view => view.classList.add('hidden'));
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-950/90 border-emerald-500/40 text-emerald-200'
+                          : type === 'warning' ? 'bg-amber-950/90 border-amber-500/40 text-amber-200'
+                          : type === 'error' ? 'bg-red-950/90 border-red-500/40 text-red-200'
+                          : 'bg-slate-900/90 border-slate-700 text-slate-200';
+
+            const iconName = type === 'success' ? 'check-circle' : type === 'warning' ? 'alert-circle' : type === 'error' ? 'alert-triangle' : 'info';
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border backdrop-blur-xl shadow-2xl text-xs font-semibold animate-slide-up transition-all ${bgClass}`;
+            toast.innerHTML = `
+                <i data-lucide="${iconName}" class="w-4 h-4 shrink-0"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+    </script>
+</body>
+
+</html>
