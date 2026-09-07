@@ -8,13 +8,14 @@
     'use strict';
 
     const STORAGE_KEYS = {
-        APPS: 'premiumstore_apps_v2',
+        APPS: 'premiumstore_apps_v3',
         ORDERS: 'premiumstore_orders_v2',
         SETTINGS: 'premiumstore_settings_v2',
         CART: 'premiumstore_cart_v2',
         USER_RATINGS: 'premiumstore_user_ratings_v2',
         DEVICE_ID: 'premiumstore_device_id_v2',
-        CURRENCY: 'premiumstore_selected_currency_v2'
+        CURRENCY: 'premiumstore_selected_currency_v2',
+        AUTH_USER: 'premiumstore_auth_user_v2'
     };
 
     // Supported Countries & Currencies with Live Conversion Matrix
@@ -44,13 +45,200 @@
     }
 
     // Initial Premium Applications Catalog with high-resolution imagery
+    // Note: All product prices are capped so none exceeds Ksh. 600 (approx $4.60 max at 130 KES/USD)
     const DEFAULT_APPS = [
+        {
+            id: 'app_capcut_pro',
+            title: 'CapCut Pro Video & AI Studio',
+            tagline: 'VIP 4K 60FPS video editor, AI body effects & dynamic chroma key suite',
+            category: 'Design & Media',
+            price: 4.50,
+            rating: 4.9,
+            ratingCount: 412,
+            downloads: 14850,
+            version: '12.6.0',
+            size: '185.0 MB',
+            platform: 'Android / Windows / macOS / iOS',
+            coverImage: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'CapCut Pro unlocks the full creative potential for video creators, TikTokers, and filmmakers. Enjoy unlimited access to VIP transition animations, AI background auto-removal, 4K 60FPS crystal-clear export, velocity curve speed ramps, multi-track audio mastering, and zero-watermark rendering.',
+            features: [
+                'Unlimited VIP effects, dynamic filters, and velocity curves',
+                'AI smart auto-captioning and speech-to-text generator',
+                '4K 60FPS Ultra HD zero-watermark lossless export',
+                'Advanced optical flow slow-motion and chroma key compositing'
+            ],
+            releaseNotes: 'v12.6.0: Enhanced AI smart cutouts, added 120+ 3D transition presets, and optimized multi-layer render pipeline.',
+            downloadUrl: 'https://vault-storage.app/packages/capcut-pro-v12.6.0.zip',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-07T08:00:00Z'
+        },
+        {
+            id: 'app_tiktok_pro',
+            title: 'TikTok Pro Creator Suite',
+            tagline: 'Ad-free video engine, watermark-free downloader & live analytics',
+            category: 'Social Apps',
+            price: 3.99,
+            rating: 4.9,
+            ratingCount: 580,
+            downloads: 22400,
+            version: '35.8.4',
+            size: '110.0 MB',
+            platform: 'Android / Windows / macOS',
+            coverImage: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'TikTok Pro delivers the ultimate social media creator toolkit. Bypass regional content restrictions, download HD videos without watermarks in a single tap, access live stream analytics studio, schedule automated posting, and experience completely ad-free browsing.',
+            features: [
+                '1-Tap lossless HD watermark-free video & audio downloader',
+                'Zero sponsored ad feeds & distraction-free creator interface',
+                'Region unlock bypass for global trending content exploration',
+                'Built-in Live Studio multi-stream broadcaster & follower analytics'
+            ],
+            releaseNotes: 'v35.8.4: Upgraded region selector, added direct lossless video downloader, and integrated batch sound extraction.',
+            downloadUrl: 'https://vault-storage.app/packages/tiktok-pro-v35.8.4.apk',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-07T08:10:00Z'
+        },
+        {
+            id: 'app_nordvpn_pro',
+            title: 'NordVPN Pro CyberShield',
+            tagline: 'Ultra-fast WireGuard NordLynx VPN with Threat Protection & Double VPN',
+            category: 'VPN & Security',
+            price: 4.50,
+            rating: 5.0,
+            ratingCount: 620,
+            downloads: 19800,
+            version: '7.12.1',
+            size: '42.5 MB',
+            platform: 'Android / Windows / macOS / iOS / Linux',
+            coverImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'NordVPN Pro provides uncompromised digital anonymity and top-tier cyber defense. Featuring high-speed 10Gbps RAM-only servers across 111 countries, proprietary NordLynx protocol, built-in Threat Protection malware blocker, and automated kill switch.',
+            features: [
+                '6,400+ ultra-fast 10Gbps RAM-only servers in 111 countries',
+                'NordLynx (WireGuard) protocol with zero logging policy',
+                'Threat Protection Pro against malware, web trackers & phishing',
+                'Dedicated IP, Onion Over VPN, and Double Encryption routing'
+            ],
+            releaseNotes: 'v7.12.1: Integrated Quantum-resistant encryption layer, reduced handshake latency by 40%, and upgraded meshnet speeds.',
+            downloadUrl: 'https://vault-storage.app/packages/nordvpn-pro-v7.12.1.zip',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-07T08:20:00Z'
+        },
+        {
+            id: 'app_expressvpn_pro',
+            title: 'ExpressVPN Pro Ultra Stealth',
+            tagline: 'Lightning-fast Lightway protocol with global streaming unblocker',
+            category: 'VPN & Security',
+            price: 4.20,
+            rating: 4.9,
+            ratingCount: 490,
+            downloads: 16700,
+            version: '12.5.0',
+            size: '38.0 MB',
+            platform: 'Android / Windows / macOS / iOS / Routers',
+            coverImage: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'ExpressVPN Pro delivers unmatched connection speeds and global media accessibility. Engineered with custom Lightway protocol, TrustedServer RAM infrastructure, split tunneling, and DNS leak prevention for smooth 4K buffer-free streaming anywhere.',
+            features: [
+                'High-performance proprietary Lightway protocol',
+                'TrustedServer technology — servers run purely on RAM',
+                'Automatic Network Lock kill switch & zero activity logs',
+                'Optimized servers in 105 countries for gaming and 4K streaming'
+            ],
+            releaseNotes: 'v12.5.0: Added auto-reconnect failover, enhanced streaming geo-bypass algorithms, and upgraded battery efficiency.',
+            downloadUrl: 'https://vault-storage.app/packages/expressvpn-pro-v12.5.0.zip',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-07T08:30:00Z'
+        },
+        {
+            id: 'app_surfshark_pro',
+            title: 'Surfshark VPN Pro Unlimited',
+            tagline: 'Unlimited multi-device protection, CleanWeb ad-blocker & MultiHop',
+            category: 'VPN & Security',
+            price: 3.80,
+            rating: 4.8,
+            ratingCount: 310,
+            downloads: 11200,
+            version: '6.8.2',
+            size: '31.5 MB',
+            platform: 'Android / Windows / macOS / iOS / FireTV',
+            coverImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'Surfshark VPN Pro offers unlimited device connections under one license. Block annoying ads and malicious websites with CleanWeb, disguise your VPN traffic with Camouflage mode, and route your connection through multiple countries simultaneously.',
+            features: [
+                'Unlimited simultaneous device connections per license',
+                'CleanWeb 2.0 ad, tracker, and malware blocker',
+                'Dynamic MultiHop double VPN chain routing',
+                'Camouflage Mode & NoBorders mode for restrictive networks'
+            ],
+            releaseNotes: 'v6.8.2: Added WireGuard IPv6 support, improved speed tests, and renewed CleanWeb filter rules.',
+            downloadUrl: 'https://vault-storage.app/packages/surfshark-vpn-v6.8.2.zip',
+            featured: false,
+            status: 'published',
+            createdAt: '2026-09-07T08:40:00Z'
+        },
+        {
+            id: 'app_turbovpn_pro',
+            title: 'TurboVPN Pro Gaming Accelerator',
+            tagline: 'Low-ping gaming tunnels, unlimited bandwidth & instant proxy connect',
+            category: 'VPN & Security',
+            price: 3.50,
+            rating: 4.7,
+            ratingCount: 440,
+            downloads: 18300,
+            version: '4.1.0',
+            size: '24.0 MB',
+            platform: 'Android / Windows / iOS',
+            coverImage: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'TurboVPN Pro is tailored for gamers and streaming enthusiasts needing lowest latency and maximum throughput. Features dedicated game ping accelerator routes (PUBG, COD, Roblox), unlimited high-speed bandwidth, and 1-tap instant connection.',
+            features: [
+                'Dedicated low-ping gaming server routes',
+                '1-Tap smart turbo connection with zero configuration',
+                'Unlimited bandwidth and continuous high-speed streaming',
+                'AES-128 encryption with DNS leak shield'
+            ],
+            releaseNotes: 'v4.1.0: Added dedicated low-latency gaming server clusters and updated UI theme.',
+            downloadUrl: 'https://vault-storage.app/packages/turbovpn-pro-v4.1.0.apk',
+            featured: false,
+            status: 'published',
+            createdAt: '2026-09-07T08:50:00Z'
+        },
         {
             id: 'app_101',
             title: 'TaskFlow Pro Workspace',
             tagline: 'Enterprise-grade automation & offline project synchronization',
             category: 'Productivity',
-            price: 19.99,
+            price: 3.99,
             rating: 4.9,
             ratingCount: 128,
             downloads: 2450,
@@ -72,7 +260,7 @@
             ],
             releaseNotes: 'v2.4.0: Added sub-task dependency tracking, optimized memory footprint by 35%, and introduced dark neo-glass interface themes.',
             downloadUrl: 'https://vault-storage.app/packages/taskflow-pro-v2.4.0.zip',
-            featured: true,
+            featured: false,
             status: 'published',
             createdAt: '2026-08-15T10:00:00Z'
         },
@@ -81,7 +269,7 @@
             title: 'NeuroStudio AI Studio',
             tagline: 'On-device neural image rendering and generative design engine',
             category: 'AI Solutions',
-            price: 34.99,
+            price: 4.50,
             rating: 4.8,
             ratingCount: 94,
             downloads: 1890,
@@ -103,7 +291,7 @@
             ],
             releaseNotes: 'v1.8.2: GPU acceleration upgrade for Vulkan & Metal backends, prompt history persistence, and lossless WebP export.',
             downloadUrl: 'https://vault-storage.app/packages/neurostudio-ai-v1.8.2.apk',
-            featured: true,
+            featured: false,
             status: 'published',
             createdAt: '2026-08-20T14:30:00Z'
         },
@@ -112,7 +300,7 @@
             title: 'PulseConnect Social Hub',
             tagline: 'Decentralized P2P encrypted messaging & community channels',
             category: 'Social Apps',
-            price: 12.50,
+            price: 2.50,
             rating: 4.7,
             ratingCount: 210,
             downloads: 5120,
@@ -143,7 +331,7 @@
             title: 'HexaShield Security Vault',
             tagline: 'Military-grade password manager, 2FA authenticator & file encryptor',
             category: 'Tools & Utilities',
-            price: 15.00,
+            price: 3.50,
             rating: 5.0,
             ratingCount: 340,
             downloads: 7300,
@@ -165,7 +353,7 @@
             ],
             releaseNotes: 'v4.0.5: Added support for YubiKey NFC hardware tokens, instant autofill API, and encrypted cloud backup to private WebDAV.',
             downloadUrl: 'https://vault-storage.app/packages/hexashield-vault-v4.0.5.zip',
-            featured: true,
+            featured: false,
             status: 'published',
             createdAt: '2026-08-25T16:00:00Z'
         },
@@ -174,7 +362,7 @@
             title: 'CodeForge IDE Master',
             tagline: 'Lightweight reactive code editor with embedded compiler & Git suite',
             category: 'Developer Tools',
-            price: 24.99,
+            price: 3.99,
             rating: 4.9,
             ratingCount: 88,
             downloads: 3200,
@@ -205,7 +393,7 @@
             title: 'VividMotion FX Studio',
             tagline: 'Professional 60FPS video compositor & motion graphic creator',
             category: 'Design & Media',
-            price: 29.50,
+            price: 4.50,
             rating: 4.8,
             ratingCount: 165,
             downloads: 4100,
@@ -236,14 +424,16 @@
     // Orders State (Stores real customer purchases and transactions)
     const DEFAULT_ORDERS = [];
 
-    // System Settings with Verified Payment Gateway Credentials
+    // System Settings with Verified M-Pesa Paybill Credentials
     const DEFAULT_SETTINGS = {
         storeName: 'PremiumStore',
         maintenanceMode: false,
         maintenanceMessage: 'We are currently performing scheduled system upgrades to improve our payment gateways and download engines. Public purchases will resume shortly.',
+        mpesaActive: true,
         kcbActive: true,
         cardActive: true,
-        paybillNumber: '8106675',
+        paybillNumber: '522533',
+        accountNumber: '8106675',
         accountName: 'JASPER MARKETS',
         supportWhatsapp: '447455909204',
         supportPhone: '+447455909204',
@@ -294,15 +484,42 @@
         getApps() {
             try {
                 const data = localStorage.getItem(STORAGE_KEYS.APPS);
-                return data ? JSON.parse(data) : DEFAULT_APPS;
+                let apps = data ? JSON.parse(data) : [];
+                
+                if (!apps || apps.length === 0) {
+                    apps = DEFAULT_APPS;
+                    localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(apps));
+                } else {
+                    // Check for missing default apps and merge them at the start
+                    const existingIds = new Set(apps.map(a => a.id));
+                    const missingDefaults = DEFAULT_APPS.filter(d => !existingIds.has(d.id));
+                    if (missingDefaults.length > 0) {
+                        apps = [...missingDefaults, ...apps];
+                        localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(apps));
+                    }
+                }
+
+                // Enforce price cap rule: No product price exceeds Ksh. 600 ($4.60)
+                apps = apps.map(app => {
+                    if (app.price > 4.60) {
+                        return { ...app, price: Math.min(app.price, 4.50) };
+                    }
+                    return app;
+                });
+                return apps;
             } catch (e) {
                 return DEFAULT_APPS;
             }
         },
 
         saveApps(apps) {
-            localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(apps));
-            this.dispatchUpdate('apps', apps);
+            // Guarantee price cap on save
+            const capped = apps.map(a => ({
+                ...a,
+                price: a.price > 4.60 ? 4.50 : (parseFloat(a.price) || 0)
+            }));
+            localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(capped));
+            this.dispatchUpdate('apps', capped);
         },
 
         getAppById(id) {
@@ -312,12 +529,15 @@
 
         addApp(appData) {
             const apps = this.getApps();
+            const rawPrice = parseFloat(appData.price) || 0;
+            const cappedPrice = rawPrice > 4.60 ? 4.50 : rawPrice;
+
             const newApp = {
                 id: 'app_' + Math.random().toString(36).substring(2, 7),
                 title: appData.title || 'Untitled App',
                 tagline: appData.tagline || '',
                 category: appData.category || 'Productivity',
-                price: parseFloat(appData.price) || 0,
+                price: cappedPrice,
                 rating: 5.0,
                 ratingCount: 1,
                 downloads: 0,
@@ -343,6 +563,10 @@
             const apps = this.getApps();
             const idx = apps.findIndex(a => a.id === id);
             if (idx !== -1) {
+                if (updates.price !== undefined) {
+                    const rawPrice = parseFloat(updates.price) || 0;
+                    updates.price = rawPrice > 4.60 ? 4.50 : rawPrice;
+                }
                 apps[idx] = { ...apps[idx], ...updates };
                 this.saveApps(apps);
                 return apps[idx];
@@ -438,9 +662,10 @@
             const token = 'tok_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
             
             // Format reference code: user-provided M-Pesa receipt code or clean generated transaction ID
-            let refNumber = orderData.kcbRef;
+            let refNumber = orderData.mpesaRef || orderData.kcbRef;
+            const method = orderData.paymentMethod || 'mpesa';
             if (!refNumber || refNumber.trim() === '') {
-                if (orderData.paymentMethod === 'kcb') {
+                if (method === 'mpesa' || method === 'kcb') {
                     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
                     let code = '';
                     for (let i = 0; i < 8; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -451,20 +676,31 @@
             }
 
             const curr = this.getSelectedCurrency();
+            const settings = this.getSettings();
+            const authUser = this.getAuthenticatedUser();
+            const cleanEmail = (orderData.customerEmail || (authUser ? authUser.email : '')).trim().toLowerCase();
 
+            // Auto-associate and authenticate customer session
+            if (cleanEmail && this.isValidEmail(cleanEmail) && !authUser) {
+                this.setAuthenticatedUser(cleanEmail, { customerPhone: orderData.customerPhone || '' });
+            }
+
+            // Universal review requirement: All payments must undergo admin review (paymentStatus: 'pending')
             const newOrder = {
                 id: orderId,
-                customerEmail: orderData.customerEmail,
+                customerEmail: cleanEmail,
                 customerPhone: orderData.customerPhone || '',
                 items: orderData.items || [],
                 totalAmount: orderData.totalAmount || 0,
                 currencyCode: orderData.currencyCode || curr.code,
                 formattedTotal: orderData.formattedTotal || this.formatPrice(orderData.totalAmount || 0),
-                paymentMethod: orderData.paymentMethod || 'kcb',
-                paymentStatus: orderData.paymentStatus || 'cleared',
-                kcbRef: refNumber,
-                paybillNumber: '8106675',
-                accountName: 'JASPER MARKETS',
+                paymentMethod: method,
+                paymentStatus: 'pending', // Strictly pending for all payments
+                mpesaRef: refNumber,
+                kcbRef: refNumber, // backward compatibility
+                paybillNumber: settings.paybillNumber || '522533',
+                accountNumber: settings.accountNumber || '8106675',
+                accountName: settings.accountName || 'JASPER MARKETS',
                 downloadToken: token,
                 downloadUrl: orderData.downloadUrl || (orderData.items && orderData.items[0] ? orderData.items[0].downloadUrl : 'https://vault-storage.app/packages/bundle.zip'),
                 expiresAt: new Date(Date.now() + 86400000 * 2).toISOString(),
@@ -487,22 +723,149 @@
             return null;
         },
 
+        // Customer Email Identification & Authentication Engine
+        isValidEmail(email) {
+            if (!email || typeof email !== 'string') return false;
+            const trimmed = email.trim();
+            // RFC 5322 standard format email validator
+            const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+            return re.test(trimmed) && trimmed.length <= 254;
+        },
+
+        getAuthenticatedUser() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.AUTH_USER) || sessionStorage.getItem(STORAGE_KEYS.AUTH_USER);
+                return data ? JSON.parse(data) : null;
+            } catch (e) {
+                return null;
+            }
+        },
+
+        setAuthenticatedUser(email, extraData = {}) {
+            const cleanEmail = (email || '').trim().toLowerCase();
+            if (!this.isValidEmail(cleanEmail)) {
+                return { success: false, message: 'Please provide a valid email address (e.g. name@domain.com).' };
+            }
+            const userProfile = {
+                email: cleanEmail,
+                authenticatedAt: new Date().toISOString(),
+                deviceId: getDeviceId(),
+                ...extraData
+            };
+            try {
+                localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(userProfile));
+                sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(userProfile));
+            } catch(e) {}
+            this.dispatchUpdate('auth_user', userProfile);
+            return { success: true, user: userProfile };
+        },
+
+        logoutUser() {
+            try {
+                localStorage.removeItem(STORAGE_KEYS.AUTH_USER);
+                sessionStorage.removeItem(STORAGE_KEYS.AUTH_USER);
+            } catch(e) {}
+            this.dispatchUpdate('auth_user', null);
+        },
+
+        getCustomerOrders(email) {
+            const clean = (email || '').trim().toLowerCase();
+            if (!clean) return [];
+            const orders = this.getOrders();
+            return orders.filter(o => o.customerEmail && o.customerEmail.trim().toLowerCase() === clean);
+        },
+
+        getCustomerLibrary(email) {
+            const clean = (email || '').trim().toLowerCase();
+            if (!clean) return [];
+            const orders = this.getCustomerOrders(clean);
+            const cleared = orders.filter(o => o.paymentStatus === 'cleared');
+            const apps = this.getApps();
+            
+            const library = [];
+            const seenAppIds = new Set();
+
+            cleared.forEach(order => {
+                (order.items || []).forEach(item => {
+                    if (!seenAppIds.has(item.id)) {
+                        seenAppIds.add(item.id);
+                        const catalogApp = apps.find(a => a.id === item.id) || item;
+                        const randHex = (order.id || '').slice(-4).toUpperCase() || 'PRO1';
+                        library.push({
+                            appId: item.id,
+                            title: catalogApp.title,
+                            tagline: catalogApp.tagline,
+                            category: catalogApp.category,
+                            coverImage: catalogApp.coverImage,
+                            version: catalogApp.version,
+                            size: catalogApp.size,
+                            platform: catalogApp.platform,
+                            downloadUrl: catalogApp.downloadUrl || item.downloadUrl,
+                            downloadToken: order.downloadToken,
+                            signedDownloadUrl: `https://vault-storage.app/dl/signed-${order.downloadToken}?expires=86400`,
+                            licenseKey: `PSTR-${randHex}-491A-882C-PRO`,
+                            purchasedAt: order.createdAt,
+                            orderId: order.id,
+                            orderRef: order.mpesaRef || order.kcbRef || order.id
+                        });
+                    }
+                });
+            });
+            return library;
+        },
+
+        getAllCustomers() {
+            const orders = this.getOrders();
+            const map = {};
+            orders.forEach(o => {
+                const email = (o.customerEmail || 'anonymous@store.app').trim().toLowerCase();
+                if (!map[email]) {
+                    map[email] = {
+                        email: email,
+                        phone: o.customerPhone || '',
+                        totalOrders: 0,
+                        clearedOrders: 0,
+                        pendingOrders: 0,
+                        totalSpend: 0,
+                        firstSeen: o.createdAt,
+                        lastActive: o.createdAt,
+                        orders: []
+                    };
+                }
+                const c = map[email];
+                c.totalOrders += 1;
+                if (o.paymentStatus === 'cleared') {
+                    c.clearedOrders += 1;
+                    c.totalSpend += (o.totalAmount || 0);
+                } else if (o.paymentStatus === 'pending') {
+                    c.pendingOrders += 1;
+                }
+                if (new Date(o.createdAt) > new Date(c.lastActive)) {
+                    c.lastActive = o.createdAt;
+                }
+                if (o.customerPhone && !c.phone) c.phone = o.customerPhone;
+                c.orders.push(o);
+            });
+            return Object.values(map).sort((a, b) => new Date(b.lastActive) - new Date(a.lastActive));
+        },
+
         // Settings Management
         getSettings() {
             try {
                 const data = localStorage.getItem(STORAGE_KEYS.SETTINGS);
                 if (data) {
                     const parsed = JSON.parse(data);
-                    if (parsed.paybillNumber === '522533') {
-                        parsed.paybillNumber = '8106675';
-                    }
-                    if (!parsed.accountName) {
-                        parsed.accountName = 'JASPER MARKETS';
-                    }
-                    if (!parsed.supportWhatsapp || parsed.supportWhatsapp === '254700000000') {
+                    // Enforce verified M-Pesa credentials
+                    parsed.paybillNumber = '522533';
+                    parsed.accountNumber = '8106675';
+                    parsed.accountName = 'JASPER MARKETS';
+                    parsed.mpesaActive = parsed.mpesaActive !== undefined ? parsed.mpesaActive : true;
+                    parsed.kcbActive = parsed.mpesaActive; // backward sync
+
+                    if (!parsed.supportWhatsapp || parsed.supportWhatsapp === '254700000000' || parsed.supportWhatsapp.startsWith('254')) {
                         parsed.supportWhatsapp = '447455909204';
                     }
-                    if (!parsed.supportPhone) {
+                    if (!parsed.supportPhone || parsed.supportPhone.startsWith('+254')) {
                         parsed.supportPhone = '+447455909204';
                     }
                     return { ...DEFAULT_SETTINGS, ...parsed };
@@ -515,6 +878,13 @@
 
         saveSettings(settings) {
             const merged = { ...DEFAULT_SETTINGS, ...settings };
+            // Ensure paybill details adhere to requirements
+            merged.paybillNumber = settings.paybillNumber || '522533';
+            merged.accountNumber = settings.accountNumber || '8106675';
+            merged.accountName = settings.accountName || 'JASPER MARKETS';
+            if (merged.mpesaActive !== undefined) merged.kcbActive = merged.mpesaActive;
+            if (merged.kcbActive !== undefined) merged.mpesaActive = merged.kcbActive;
+
             localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(merged));
             this.dispatchUpdate('settings', merged);
         },
@@ -588,16 +958,20 @@
 
         init() {
             if (!localStorage.getItem(STORAGE_KEYS.APPS)) {
-                const oldApps = localStorage.getItem('appvault_apps_v2');
-                localStorage.setItem(STORAGE_KEYS.APPS, oldApps || JSON.stringify(DEFAULT_APPS));
+                localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(DEFAULT_APPS));
+            } else {
+                // Ensure existing cached catalog adheres to max price <= Ksh 600
+                const apps = this.getApps();
+                this.saveApps(apps);
             }
             if (!localStorage.getItem(STORAGE_KEYS.ORDERS)) {
-                const oldOrders = localStorage.getItem('appvault_orders_v2');
-                localStorage.setItem(STORAGE_KEYS.ORDERS, oldOrders || JSON.stringify(DEFAULT_ORDERS));
+                localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_ORDERS));
             }
             if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
-                const oldSettings = localStorage.getItem('appvault_settings_v2');
-                localStorage.setItem(STORAGE_KEYS.SETTINGS, oldSettings || JSON.stringify(DEFAULT_SETTINGS));
+                localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
+            } else {
+                const s = this.getSettings();
+                this.saveSettings(s);
             }
             if (!localStorage.getItem(STORAGE_KEYS.CURRENCY)) {
                 localStorage.setItem(STORAGE_KEYS.CURRENCY, 'USD');

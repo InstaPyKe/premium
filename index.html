@@ -40,6 +40,11 @@
                             900: '#312e81',
                             950: '#1e1b4b',
                         },
+                        mpesa: {
+                            500: '#00843D',
+                            600: '#006C32',
+                            700: '#005527'
+                        },
                         kcb: {
                             500: '#00843D',
                             600: '#006C32',
@@ -50,6 +55,10 @@
                         'fade-in': 'fadeIn 0.3s ease-out',
                         'slide-up': 'slideUp 0.4s ease-out',
                         'pulse-glow': 'pulseGlow 2s infinite',
+                        'blob-1': 'floatOrb1 15s ease-in-out infinite alternate',
+                        'blob-2': 'floatOrb2 20s ease-in-out infinite alternate',
+                        'blob-3': 'floatOrb3 18s ease-in-out infinite alternate',
+                        'shimmer': 'shimmer 3.5s linear infinite',
                     },
                     keyframes: {
                         fadeIn: {
@@ -63,6 +72,25 @@
                         pulseGlow: {
                             '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
                             '50%': { opacity: '1', transform: 'scale(1.03)' },
+                        },
+                        floatOrb1: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '50%': { transform: 'translate(45px, -35px) scale(1.12)' },
+                            '100%': { transform: 'translate(-20px, 20px) scale(0.96)' },
+                        },
+                        floatOrb2: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '50%': { transform: 'translate(-50px, 40px) scale(1.15)' },
+                            '100%': { transform: 'translate(30px, -20px) scale(0.92)' },
+                        },
+                        floatOrb3: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '50%': { transform: 'translate(35px, 45px) scale(1.08)' },
+                            '100%': { transform: 'translate(-30px, -25px) scale(0.98)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
                         }
                     }
                 }
@@ -74,7 +102,26 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Custom Glassmorphism & Micro-Styling */
+        /* Frontend Security & Anti-Inspection Protections */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea, select, [contenteditable="true"], .selectable-text {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: auto;
+        }
+
+        /* Custom Glassmorphism & Lively Micro-Styling */
         .glass-panel {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
@@ -82,20 +129,35 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .glass-card {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(17, 24, 39, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
         }
         .glass-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.25), 0 0 15px rgba(99, 102, 241, 0.15);
         }
         .glow-indigo {
             box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4);
         }
         .hero-slide {
-            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* Shimmer gradient animation */
+        .shimmer-badge {
+            background: linear-gradient(90deg, rgba(99,102,241,0.15) 0%, rgba(168,85,247,0.3) 50%, rgba(99,102,241,0.15) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 4s infinite linear;
+        }
+
+        .shimmer-button {
+            background: linear-gradient(90deg, #4f46e5 0%, #6366f1 35%, #a855f7 50%, #6366f1 65%, #4f46e5 100%);
+            background-size: 200% 100%;
+            animation: shimmer 5s infinite linear;
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -115,6 +177,14 @@
 </head>
 
 <body class="bg-[#070b14] text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Atmospheric Ambient Floating Glow Orbs (Lively Visuals) -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+        <div class="absolute -top-32 -left-20 w-[28rem] h-[28rem] bg-brand-600/15 rounded-full blur-[100px] animate-blob-1"></div>
+        <div class="absolute top-1/3 -right-32 w-[32rem] h-[32rem] bg-purple-600/12 rounded-full blur-[120px] animate-blob-2"></div>
+        <div class="absolute top-2/3 left-1/4 w-[24rem] h-[24rem] bg-emerald-600/10 rounded-full blur-[100px] animate-blob-3"></div>
+        <div class="absolute bottom-10 right-1/4 w-[28rem] h-[28rem] bg-indigo-600/12 rounded-full blur-[110px] animate-blob-1"></div>
+    </div>
 
     <!-- Global System Maintenance Screen Overlay -->
     <div id="view-maintenance" class="hidden fixed inset-0 bg-[#070b14]/95 z-[999] flex flex-col items-center justify-center text-center p-6 backdrop-blur-2xl animate-fade-in">
@@ -168,9 +238,16 @@
                 </div>
             </div>
 
-            <!-- Header Actions: Currency Selector, Admin Link & Cart -->
+            <!-- Header Actions: Currency Selector, WhatsApp, Admin Link, Cart & Mobile Menu -->
             <div class="flex items-center space-x-1 sm:space-x-2.5 shrink-0">
                 
+                <!-- Direct WhatsApp Support & Order Link (Desktop / Tablet) -->
+                <a href="https://wa.me/447455909204?text=Hello%20PremiumStore,%20I%20would%20like%20to%20inquire%20about%20your%20applications%20and%20orders." target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp (+447455909204)"
+                    class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs font-semibold rounded-xl sm:rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 hover:text-emerald-300 transition-all shrink-0">
+                    <i data-lucide="message-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                    <span class="hidden md:inline">WhatsApp</span>
+                </a>
+
                 <!-- Country & Currency Selector Dropdown -->
                 <div class="relative" id="currency-dropdown-container">
                     <button id="currency-selector-btn" onclick="toggleCurrencyDropdown()" title="Switch Currency / Country"
@@ -191,16 +268,33 @@
                     </div>
                 </div>
 
-                <!-- Admin Portal Link (Visible on all screens: compact icon button on mobile, with text on desktop) -->
-                <a href="admin/admin.html" target="_blank" title="Admin Portal" class="flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-2 text-xs font-semibold rounded-xl sm:rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition-all shrink-0 group">
-                    <i data-lucide="shield" class="w-4 h-4 text-brand-400 group-hover:text-brand-300"></i>
-                    <span class="hidden md:inline">Admin Portal</span>
+                <!-- Customer Account & Digital Library Button (Desktop / Tablet) -->
+                <div class="relative hidden sm:block" id="customer-auth-container">
+                    <button id="btn-customer-auth" onclick="handleCustomerAuthClick()" title="Customer Account & Digital Library"
+                        class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs font-semibold rounded-xl sm:rounded-2xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 text-slate-200 hover:text-white transition-all shrink-0">
+                        <span id="header-auth-avatar" class="w-4 h-4 rounded-full bg-brand-500/20 text-brand-400 flex items-center justify-center text-[10px] font-bold">
+                            <i data-lucide="user" class="w-3 h-3"></i>
+                        </span>
+                        <span id="header-auth-label" class="hidden sm:inline font-medium">My Library</span>
+                        <span id="header-auth-badge" class="hidden w-2 h-2 rounded-full bg-emerald-400"></span>
+                    </button>
+                </div>
+
+                <!-- Discreet Portal Link (Desktop / Tablet) -->
+                <a href="admin/admin.html" target="_blank" title="Security" class="hidden md:flex items-center justify-center p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-white transition-all shrink-0 group">
+                    <i data-lucide="shield" class="w-4 h-4 text-slate-400 group-hover:text-brand-300 transition-colors"></i>
                 </a>
 
                 <!-- Cart Toggle Button -->
                 <button id="cart-toggle-btn" onclick="toggleCart()" title="Shopping Cart" class="relative p-2 sm:p-2.5 text-slate-300 hover:text-white rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center justify-center shrink-0">
                     <i data-lucide="shopping-bag" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                     <span id="cart-badge" class="hidden absolute -top-1.5 -right-1.5 bg-gradient-to-r from-brand-500 to-indigo-600 text-white text-[10px] font-extrabold rounded-full h-4 min-w-[16px] sm:h-5 sm:min-w-[20px] px-1 flex items-center justify-center shadow-lg shadow-brand-500/30">0</span>
+                </button>
+
+                <!-- Mobile Hamburger Menu Button (Flexible Small Screens) -->
+                <button id="mobile-menu-btn" onclick="toggleMobileNav()" title="Open Navigation Menu"
+                    class="md:hidden p-2 sm:p-2.5 text-slate-200 hover:text-white rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-brand-500/50 transition-all flex items-center justify-center shrink-0 group shadow-sm active:scale-95">
+                    <i data-lucide="menu" class="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 group-hover:text-brand-400 transition-colors"></i>
                 </button>
             </div>
         </div>
@@ -244,11 +338,11 @@
             <!-- Hero Active Slide Content Overlay -->
             <div class="relative z-10 p-6 sm:p-10 max-w-2xl space-y-4">
                 <div class="flex items-center gap-2">
-                    <span id="hero-category" class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 backdrop-blur-md">
-                        <i data-lucide="sparkles" class="w-3 h-3"></i> Featured Selection
+                    <span id="hero-category" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-brand-200 border border-brand-500/40 backdrop-blur-md shadow-lg shimmer-badge">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-300 animate-spin" style="animation-duration: 8s;"></i> Featured Selection
                     </span>
-                    <span id="hero-rating" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md">
-                        <i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> 4.9
+                    <span id="hero-rating" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md shadow-lg">
+                        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> 4.9
                     </span>
                 </div>
                 <h1 id="hero-title" class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
@@ -258,10 +352,14 @@
                     Engineered with offline synchronization, high-speed execution, and secure data enclaves.
                 </p>
                 <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <button id="hero-buy-btn" class="bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-lg shadow-brand-600/30 text-sm flex items-center gap-2">
-                        <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy — <span id="hero-price">$19.99</span>
+                    <button id="hero-buy-btn" class="shimmer-button text-white font-bold px-6 py-3.5 rounded-2xl transition-all shadow-xl shadow-brand-600/30 text-sm flex items-center gap-2 hover:scale-105 active:scale-95">
+                        <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy — <span id="hero-price">$3.99</span>
                     </button>
-                    <button id="hero-details-btn" class="bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-semibold px-5 py-3 rounded-xl transition-all text-sm backdrop-blur-md flex items-center gap-2">
+                    <a id="hero-whatsapp-btn" href="https://wa.me/447455909204" target="_blank" rel="noopener noreferrer"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3.5 rounded-2xl transition-all shadow-lg shadow-emerald-600/25 text-sm flex items-center gap-2 hover:scale-105 active:scale-95">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i> Order on WhatsApp
+                    </a>
+                    <button id="hero-details-btn" class="bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-bold px-5 py-3.5 rounded-2xl transition-all text-sm backdrop-blur-md flex items-center gap-2 hover:scale-105 active:scale-95">
                         <i data-lucide="info" class="w-4 h-4"></i> View Details
                     </button>
                 </div>
@@ -363,7 +461,7 @@
                     <div class="border-t border-slate-800 pt-4 space-y-2 text-sm">
                         <div class="flex justify-between text-slate-400">
                             <span>Subtotal</span>
-                            <span id="checkout-subtotal" class="font-semibold text-white">$19.99</span>
+                            <span id="checkout-subtotal" class="font-semibold text-white">$3.99</span>
                         </div>
                         <div id="checkout-discount-row" class="flex justify-between text-emerald-400 hidden">
                             <span>Discount</span>
@@ -375,7 +473,7 @@
                         </div>
                         <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-lg font-bold">
                             <span class="text-white">Total Amount</span>
-                            <span id="checkout-total" class="text-brand-400 font-display text-2xl font-extrabold">$19.99</span>
+                            <span id="checkout-total" class="text-brand-400 font-display text-2xl font-extrabold">$3.99</span>
                         </div>
                     </div>
                 </div>
@@ -384,8 +482,8 @@
                 <div class="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-800/30 flex items-start gap-3 text-xs text-emerald-300">
                     <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
                     <div>
-                        <p class="font-semibold text-emerald-200">Instant Automated Delivery</p>
-                        <p class="text-emerald-400/80 mt-0.5">Download credentials and license tokens are generated automatically upon payment confirmation.</p>
+                        <p class="font-semibold text-emerald-200">Verified Direct Delivery</p>
+                        <p class="text-emerald-400/80 mt-0.5">Download credentials and license tokens are dispatched automatically following gateway verification.</p>
                     </div>
                 </div>
             </div>
@@ -393,19 +491,36 @@
             <!-- Right Column: Gateway Selector & Payment Form -->
             <div class="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
                 
+                <!-- Direct WhatsApp Order & Support Banner -->
+                <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white">Prefer Direct WhatsApp Communication?</h4>
+                            <p class="text-[11px] text-slate-400">Message our official WhatsApp directly for private order fulfillment and manual setup help.</p>
+                        </div>
+                    </div>
+                    <a id="checkout-whatsapp-link" href="https://wa.me/447455909204?text=Hello%20PremiumStore,%20I%20am%20at%20checkout%20and%20would%20like%20to%20complete%20my%20order%20directly%20on%20WhatsApp." target="_blank" rel="noopener noreferrer"
+                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center gap-1.5 shadow-md shadow-emerald-600/20">
+                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Order via WhatsApp
+                    </a>
+                </div>
+
                 <div class="space-y-3">
                     <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Select Payment Gateway</label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="gateways-container">
                         
-                        <!-- KCB / M-Pesa Gateway Tab -->
+                        <!-- M-Pesa Gateway Tab -->
                         <button type="button" id="btn-gw-kcb" onclick="selectGateway('kcb')"
                             class="p-4 border-2 border-brand-500 bg-brand-500/10 rounded-2xl flex items-center gap-3 transition-all text-left">
-                            <div class="w-10 h-10 rounded-xl bg-kcb-500/20 border border-kcb-500/30 flex items-center justify-center shrink-0">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
                                 <i data-lucide="smartphone" class="w-5 h-5 text-emerald-400"></i>
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold text-white leading-tight">M-Pesa / KCB Paybill</h4>
-                                <p class="text-[11px] text-slate-400 mt-0.5 font-medium">Paybill <span class="text-white font-mono font-bold">8106675</span> • <span class="text-emerald-400 font-bold">JASPER MARKETS</span></p>
+                                <h4 class="text-sm font-bold text-white leading-tight">M-Pesa Paybill</h4>
+                                <p class="text-[11px] text-slate-400 mt-0.5 font-medium">Paybill <span class="text-white font-mono font-bold" id="display-tab-paybill">522533</span> • Acc <span class="text-white font-mono font-bold" id="display-tab-acc">8106675</span> • <span class="text-emerald-400 font-bold" id="display-tab-name">JASPER MARKETS</span></p>
                             </div>
                         </button>
 
@@ -438,20 +553,21 @@
                         </div>
                     </div>
 
-                    <!-- KCB Paybill / M-Pesa Fields -->
+                    <!-- M-Pesa Paybill Fields -->
                     <div id="fields-kcb" class="space-y-4 rounded-2xl bg-slate-950/70 border border-slate-800/90 p-5">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-800/80 gap-2">
                             <div class="space-y-1">
                                 <div class="text-xs font-semibold text-slate-300 flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                    <span>Paybill Business No: <strong class="text-white font-mono text-sm tracking-wider" id="display-paybill">8106675</strong></span>
+                                    <span>Paybill Business No: <strong class="text-white font-mono text-sm tracking-wider" id="display-paybill">522533</strong></span>
                                 </div>
-                                <div class="text-xs text-slate-400">
-                                    Account No / Name: <strong class="text-emerald-400 font-bold tracking-wide" id="display-account-name">JASPER MARKETS</strong>
+                                <div class="text-xs text-slate-300 flex items-center gap-3">
+                                    <span>Account No: <strong class="text-white font-mono text-sm tracking-wider" id="display-account-no">8106675</strong></span>
+                                    <span>Account Name: <strong class="text-emerald-400 font-bold tracking-wide" id="display-account-name">JASPER MARKETS</strong></span>
                                 </div>
                             </div>
                             <span class="inline-flex self-start sm:self-center text-[10px] font-bold text-brand-400 bg-brand-950/90 px-2.5 py-1 rounded-md border border-brand-800/50">
-                                REAL-TIME VERIFICATION
+                                MPESA VERIFIED
                             </span>
                         </div>
 
@@ -470,12 +586,12 @@
                         <div class="text-xs text-slate-300 space-y-1.5 bg-[#0b101d] p-4 rounded-xl border border-slate-800/80 shadow-inner">
                             <div class="font-bold text-white flex items-center gap-1.5 pb-1 border-b border-slate-800/60">
                                 <i data-lucide="help-circle" class="w-4 h-4 text-emerald-400"></i>
-                                <span>Paybill Payment Instructions:</span>
+                                <span>M-Pesa Paybill Payment Instructions:</span>
                             </div>
                             <p class="pt-1">1. Go to <strong>Lipa na M-Pesa</strong> &rarr; <strong>Pay Bill</strong></p>
-                            <p>2. Enter Business No: <strong class="text-emerald-400 font-mono text-xs" id="instruction-paybill-num">8106675</strong></p>
-                            <p>3. Enter Account No: <strong class="text-emerald-400 font-bold" id="instruction-account-name">JASPER MARKETS</strong></p>
-                            <p>4. Enter Amount: <span id="kcb-payable-amount" class="font-bold text-white">$19.99</span></p>
+                            <p>2. Enter Business No: <strong class="text-emerald-400 font-mono text-xs" id="instruction-paybill-num">522533</strong></p>
+                            <p>3. Enter Account No: <strong class="text-emerald-400 font-mono text-xs" id="instruction-account-no">8106675</strong> (Account Name: <strong class="text-emerald-400 font-bold" id="instruction-account-name">JASPER MARKETS</strong>)</p>
+                            <p>4. Enter Amount: <span id="kcb-payable-amount" class="font-bold text-white">$3.99</span></p>
                             <p>5. Enter PIN to complete. Then enter your confirmation code below (or press button below for STK Push).</p>
                         </div>
 
@@ -519,7 +635,7 @@
                         <button type="submit" id="btn-submit-payment"
                             class="w-full py-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-brand-600/30 flex items-center justify-center gap-2 text-base">
                             <i data-lucide="shield-check" class="w-5 h-5"></i>
-                            <span id="btn-submit-text">Authorize Payment & Get Download Link</span>
+                            <span id="btn-submit-text">Authorize Payment</span>
                         </button>
                     </div>
                 </form>
@@ -531,87 +647,191 @@
     <!-- Page: Digital Fulfillment & Success Portal -->
     <main id="page-success" class="page-view hidden flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center text-center space-y-8 animate-fade-in">
         
-        <div class="relative">
-            <div class="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"></div>
-            <div class="relative p-5 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 text-emerald-400 rounded-full border border-emerald-500/30 shadow-2xl">
-                <i data-lucide="check-circle-2" class="w-16 h-16 animate-pulse"></i>
-            </div>
-        </div>
-
-        <div class="space-y-2">
-            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">Payment Verified & Cleared</span>
-            <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Your Digital Package Is Ready!</h1>
-            <p class="text-slate-400 text-sm max-w-md mx-auto">
-                Transaction ID: <span id="success-ref" class="font-mono text-slate-200 font-bold">KCB-883920192</span>
-            </p>
-        </div>
-
-        <!-- Fulfillment Details Card -->
-        <div class="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-left space-y-6 shadow-2xl">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-800/80 text-sm">
-                <div>
-                    <span class="text-xs text-slate-500 block uppercase font-semibold">Purchased Software</span>
-                    <span id="success-app-title" class="text-base font-bold text-white mt-0.5 block">TaskFlow Pro Workspace</span>
-                </div>
-                <div>
-                    <span class="text-xs text-slate-500 block uppercase font-semibold">Delivery Email</span>
-                    <span id="success-customer-email" class="text-slate-300 font-medium mt-0.5 block">user@example.com</span>
+        <!-- STATE 1: PENDING ADMIN APPROVAL -->
+        <div id="fulfillment-pending-card" class="w-full space-y-8 flex flex-col items-center">
+            <div class="relative">
+                <div class="absolute inset-0 bg-amber-500/20 rounded-full blur-2xl animate-pulse"></div>
+                <div class="relative p-5 bg-gradient-to-br from-amber-500/20 to-orange-500/10 text-amber-400 rounded-full border border-amber-500/30 shadow-2xl">
+                    <i data-lucide="clock" class="w-16 h-16 animate-pulse"></i>
                 </div>
             </div>
 
-            <!-- License Key Token Box -->
-            <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="key" class="w-3.5 h-3.5 text-brand-400"></i> Unique Digital License Key
-                    </span>
-                    <span class="text-emerald-400 font-mono">1 Device Permanent License</span>
-                </div>
-                <div class="flex items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-2.5">
-                    <span id="success-license-key" class="font-mono text-sm sm:text-base font-extrabold text-brand-300 tracking-wider">PSTR-89F2-491A-882C-PRO</span>
-                    <button onclick="copyToClipboard('success-license-key', 'License Key')" class="text-xs font-semibold text-slate-300 hover:text-white px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors">Copy</button>
-                </div>
-            </div>
-
-            <!-- Expiring Download Token Box -->
             <div class="space-y-3">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
-                    <span class="font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i> Secure Signed Download URL
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <span class="px-3.5 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 uppercase tracking-wider inline-flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Verification in Progress
                     </span>
-                    <span class="text-amber-400 font-semibold flex items-center gap-1">
-                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> Expires in <span id="download-timer">23:59:59</span>
+                    <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-900 border border-slate-800 text-slate-300 inline-flex items-center gap-1.5 shadow-inner">
+                        <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i>
+                        <span>Review Elapsed: <strong id="pending-elapsed-timer" class="text-amber-300">00:00</strong></span>
                     </span>
                 </div>
+                <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Payment Submitted — Under Verification</h1>
+                <p class="text-slate-400 text-sm max-w-md mx-auto">
+                    Order ID: <span id="pending-order-id" class="font-mono text-slate-200 font-bold">ORD-0000</span> • Ref: <span id="pending-ref" class="font-mono text-amber-300 font-bold">MP-0000</span>
+                </p>
+            </div>
 
-                <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
-                    <span id="success-token-url" class="text-xs text-slate-400 font-mono truncate">https://vault-storage.app/dl/signed-tok-38f9a2b8e9104c2</span>
-                    <button onclick="copyToClipboard('success-token-url', 'Download Link')" class="text-brand-400 hover:text-brand-300 text-xs font-bold px-3 py-1.5 bg-brand-950/60 rounded-lg border border-brand-800/40 hover:bg-brand-900/60 shrink-0 transition-colors">
-                        Copy Link
+            <!-- Visual Progress Stepper -->
+            <div class="w-full max-w-xl bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl">
+                <div class="grid grid-cols-3 gap-2 text-center text-xs relative">
+                    <div class="space-y-1.5">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto font-bold">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-bold text-white block">1. Payment Authorized</span>
+                        <span class="text-[10px] text-emerald-400 font-semibold">Submitted</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/50 flex items-center justify-center mx-auto font-bold animate-pulse">
+                            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-bold text-amber-300 block">2. Security Verification</span>
+                        <span class="text-[10px] text-amber-400 font-semibold animate-pulse">In Review</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="w-8 h-8 rounded-full bg-slate-800 text-slate-500 border border-slate-700 flex items-center justify-center mx-auto font-bold">
+                            <i data-lucide="lock" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-bold text-slate-400 block">3. Download Unlocked</span>
+                        <span class="text-[10px] text-slate-500 font-semibold">Pending Approval</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Details Card -->
+            <div class="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-left space-y-5 shadow-2xl">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-800/80 text-sm">
+                    <div>
+                        <span class="text-xs text-slate-500 block uppercase font-semibold">Authorized Application</span>
+                        <span id="pending-app-title" class="text-base font-bold text-white mt-0.5 block truncate">TaskFlow Pro Workspace</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 block uppercase font-semibold">Verified Customer Email</span>
+                        <span id="pending-customer-email" class="text-slate-300 font-mono font-medium mt-0.5 block truncate">user@example.com</span>
+                    </div>
+                </div>
+
+                <!-- Taking Longer Alert Prompt -->
+                <div id="pending-escalation-banner" class="p-4 rounded-2xl bg-amber-950/25 border border-amber-800/40 text-amber-200 text-xs sm:text-sm space-y-2 leading-relaxed">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-amber-300 flex items-center gap-1.5">
+                            <i data-lucide="info" class="w-4 h-4 text-amber-400"></i> Verification in Progress
+                        </span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300">Target: 1–2 mins</span>
+                    </div>
+                    <p class="text-slate-300 text-xs">All payments undergo security verification before digital release. This page will <strong>automatically unlock</strong> the instant approval is granted.</p>
+                    <p id="pending-longer-msg" class="text-[11px] text-amber-200 font-medium pt-1 border-t border-amber-800/30">
+                        ⏳ <strong>Taking longer than expected?</strong> Chat directly with our 24/7 Support Agent on WhatsApp to expedite your payment review.
+                    </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="checkCurrentOrderStatus()" class="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2 shadow-md">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Check Review Status</span>
+                    </button>
+                    <button id="pending-support-chat-btn" onclick="openWhatsAppApproval()"
+                        class="flex-1 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 hover:scale-[1.02]">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>Chat Support Agent (Fast Review)</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Direct Download CTA Button -->
-            <div class="space-y-2 pt-2">
-                <a id="success-download-btn" href="#" onclick="triggerDigitalDownload(event)"
-                    class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-emerald-600/20 text-base">
-                    <i data-lucide="download-cloud" class="w-5 h-5"></i>
-                    <span>Download Direct Package (APK / ZIP)</span>
-                </a>
-                <p class="text-center text-[11px] text-slate-500">Digital receipt and installation instructions were dispatched to your email.</p>
+            <div class="flex items-center gap-4">
+                <button onclick="showPage('home')" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-sm font-medium transition-colors">
+                    Back to PremiumStore
+                </button>
             </div>
-
         </div>
 
-        <div class="flex items-center gap-4">
-            <button onclick="showPage('home')" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-sm font-medium transition-colors">
-                Back to PremiumStore
-            </button>
-            <button onclick="openSupportWithRef()" class="px-6 py-2.5 text-slate-400 hover:text-emerald-400 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
-                <i data-lucide="message-circle" class="w-4 h-4"></i> Need Help with this Order?
-            </button>
+        <!-- STATE 2: CLEARED / APPROVED FULFILLMENT -->
+        <div id="fulfillment-cleared-card" class="hidden w-full space-y-8 flex flex-col items-center">
+            <div class="relative">
+                <div class="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl animate-pulse"></div>
+                <div class="relative p-5 bg-gradient-to-br from-emerald-500/20 to-teal-500/10 text-emerald-400 rounded-full border border-emerald-500/30 shadow-2xl">
+                    <i data-lucide="check-circle-2" class="w-16 h-16 animate-pulse"></i>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <span class="px-3.5 py-1 rounded-full text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider inline-flex items-center gap-1.5">
+                    <i data-lucide="badge-check" class="w-4 h-4"></i> Payment Approved & Verified Secure
+                </span>
+                <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Your Digital Package Is Ready!</h1>
+                <p class="text-slate-400 text-sm max-w-md mx-auto">
+                    Transaction ID: <span id="success-ref" class="font-mono text-slate-200 font-bold">MP-883920192</span>
+                </p>
+            </div>
+
+            <!-- Fulfillment Details Card -->
+            <div class="w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-left space-y-6 shadow-2xl">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-800/80 text-sm">
+                    <div>
+                        <span class="text-xs text-slate-500 block uppercase font-semibold">Purchased Software</span>
+                        <span id="success-app-title" class="text-base font-bold text-white mt-0.5 block">TaskFlow Pro Workspace</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-500 block uppercase font-semibold">Delivery Email</span>
+                        <span id="success-customer-email" class="text-slate-300 font-medium mt-0.5 block">user@example.com</span>
+                    </div>
+                </div>
+
+                <!-- License Key Token Box -->
+                <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="key" class="w-3.5 h-3.5 text-brand-400"></i> Unique Digital License Key
+                        </span>
+                        <span class="text-emerald-400 font-mono">1 Device Permanent License</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-2.5">
+                        <span id="success-license-key" class="font-mono text-sm sm:text-base font-extrabold text-brand-300 tracking-wider selectable-text">PSTR-89F2-491A-882C-PRO</span>
+                        <button onclick="copyToClipboard('success-license-key', 'License Key')" class="text-xs font-semibold text-slate-300 hover:text-white px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors">Copy</button>
+                    </div>
+                </div>
+
+                <!-- Expiring Download Token Box -->
+                <div class="space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                        <span class="font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i> Secure Signed Download URL
+                        </span>
+                        <span class="text-amber-400 font-semibold flex items-center gap-1">
+                            <i data-lucide="clock" class="w-3.5 h-3.5"></i> Expires in <span id="download-timer">23:59:59</span>
+                        </span>
+                    </div>
+
+                    <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
+                        <span id="success-token-url" class="text-xs text-slate-400 font-mono truncate selectable-text">https://vault-storage.app/dl/signed-tok-38f9a2b8e9104c2</span>
+                        <button onclick="copyToClipboard('success-token-url', 'Download Link')" class="text-brand-400 hover:text-brand-300 text-xs font-bold px-3 py-1.5 bg-brand-950/60 rounded-lg border border-brand-800/40 hover:bg-brand-900/60 shrink-0 transition-colors">
+                            Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Direct Download CTA Button -->
+                <div class="space-y-2 pt-2">
+                    <a id="success-download-btn" href="#" onclick="triggerDigitalDownload(event)"
+                        class="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-2xl transition-all shadow-xl shadow-emerald-600/20 text-base">
+                        <i data-lucide="download-cloud" class="w-5 h-5"></i>
+                        <span>Download Direct Package (APK / ZIP)</span>
+                    </a>
+                    <p class="text-center text-[11px] text-slate-500">Digital receipt and installation instructions were dispatched to your email.</p>
+                </div>
+
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="showPage('home')" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-sm font-medium transition-colors">
+                    Back to PremiumStore
+                </button>
+                <button onclick="openSupportWithRef()" class="px-6 py-2.5 text-slate-400 hover:text-emerald-400 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i> Need Help with this Order?
+                </button>
+            </div>
         </div>
 
     </main>
@@ -705,16 +925,21 @@
             </div>
 
             <!-- Modal Footer Purchase Bar -->
-            <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-4 border-t border-slate-800 gap-3">
                 <div>
                     <span class="text-xs text-slate-500 block uppercase font-medium">One-Time License</span>
-                    <span id="modal-price" class="font-display text-2xl font-extrabold text-white">$19.99</span>
+                    <span id="modal-price" class="font-display text-2xl font-extrabold text-white">$3.99</span>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button id="modal-add-cart-btn" onclick="addCurrentModalToCart()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-colors">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                    <a id="modal-whatsapp-btn" href="#" target="_blank" rel="noopener noreferrer"
+                        class="px-3.5 sm:px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition-all">
+                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        <span>Order on WhatsApp</span>
+                    </a>
+                    <button id="modal-add-cart-btn" onclick="addCurrentModalToCart()" class="px-3 sm:px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 flex items-center gap-1.5 transition-colors">
                         <i data-lucide="shopping-bag" class="w-4 h-4"></i> Add to Cart
                     </button>
-                    <button id="modal-direct-buy-btn" onclick="directBuyModalApp()" class="px-6 py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-brand-600/30 transition-all flex items-center gap-1.5">
+                    <button id="modal-buy-now-btn" onclick="directBuyModalApp()" class="px-4 sm:px-5 py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-brand-600/30 flex items-center gap-1.5 transition-all">
                         <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy
                     </button>
                 </div>
@@ -723,14 +948,237 @@
         </div>
     </div>
 
-    <!-- Slide-Over Cart Drawer -->
-    <div id="cart-overlay" onclick="toggleCart()" class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 transition-opacity"></div>
-    <aside id="cart-drawer" class="fixed inset-y-0 right-0 w-full max-w-md bg-slate-900 border-l border-slate-800 z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+    <!-- Customer Authentication / Email Identification Modal -->
+    <div id="modal-customer-auth" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in overflow-y-auto">
+        <div class="bg-[#0b101d] border border-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 space-y-6 relative my-auto">
+            <button onclick="closeCustomerAuthModal()" class="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-700 transition-colors z-10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="text-center space-y-3">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-600 p-0.5 mx-auto shadow-xl shadow-brand-500/20 flex items-center justify-center">
+                    <div class="w-full h-full bg-[#070b14] rounded-[14px] flex items-center justify-center text-brand-400">
+                        <i data-lucide="user-check" class="w-7 h-7"></i>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-xl text-white">Customer Account & Vault</h3>
+                    <p class="text-xs text-slate-400 mt-1">Enter your valid email to access your purchased licenses & downloads</p>
+                </div>
+            </div>
+
+            <form id="customer-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Verified Email Address <span class="text-brand-400">*</span></label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="email" id="auth-email-input" required placeholder="name@yourdomain.com"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-mono">
+                    </div>
+                </div>
+
+                <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
+                    <span class="font-semibold text-slate-300 flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Persistent Digital Vault
+                    </span>
+                    <p>All your active application license keys and signed download tokens are permanently tethered to this email address.</p>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 text-xs">
+                    <i data-lucide="key" class="w-4 h-4"></i>
+                    <span>Authenticate & Access My Library</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Digital Library & Licenses Modal -->
+    <div id="modal-customer-library" class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in overflow-y-auto">
+        <div class="bg-[#0b101d] border border-slate-800 w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 space-y-6 max-h-[92vh] overflow-y-auto relative my-auto">
+            <button onclick="closeCustomerLibraryModal()" class="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-700 transition-colors z-10">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- User Header Profile -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800/80 pr-10">
+                <div class="flex items-center space-x-3.5">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-500/10 border border-brand-500/30 text-brand-400 flex items-center justify-center font-extrabold text-base shrink-0">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span id="library-user-email" class="font-bold text-white text-base truncate">user@example.com</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shrink-0">Verified</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-0.5">Your personal software vault and license keys</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="handleCustomerSignOut()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-red-500/10 text-slate-400 hover:text-red-400 border border-slate-800 transition-colors text-xs font-semibold flex items-center gap-1.5">
+                        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sign Out / Switch Email
+                    </button>
+                </div>
+            </div>
+
+            <!-- Library Content Container -->
+            <div id="library-items-container" class="space-y-4">
+                <!-- Injected dynamically by renderCustomerLibrary() -->
+            </div>
+
+            <!-- Pending Review Orders Container (if any) -->
+            <div id="library-pending-container" class="hidden space-y-3 pt-4 border-t border-slate-800">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Orders Awaiting Verification
+                    </h4>
+                    <span id="library-pending-count" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-bold">1 Order</span>
+                </div>
+                <div id="library-pending-list" class="space-y-2">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Hamburger Navigation Backdrop -->
+    <div id="mobile-nav-backdrop" onclick="toggleMobileNav()" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300"></div>
+
+    <!-- Mobile Navigation Sidebar Drawer (Flexible Small Screens) -->
+    <aside id="mobile-nav-drawer" aria-label="Mobile Navigation Sidebar" class="fixed top-0 left-0 z-50 h-full w-[85vw] max-w-sm bg-[#0b101d] border-r border-slate-800 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-out flex flex-col">
         
+        <!-- Sidebar Header -->
+        <div class="p-5 border-b border-slate-800/80 bg-gradient-to-r from-brand-600/10 via-indigo-600/5 to-transparent flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-500 via-indigo-500 to-fuchsia-500 p-[2px] shadow-lg shadow-brand-500/30">
+                    <div class="w-full h-full bg-[#0b101d] rounded-[14px] flex items-center justify-center">
+                        <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-400"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-display font-black text-lg text-white tracking-tight">PremiumStore</span>
+                    <span class="text-[9px] font-extrabold tracking-widest text-brand-400 uppercase bg-brand-950/90 border border-brand-700/60 px-2 py-0.5 rounded block w-max">OFFICIAL</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <!-- Portal Link (SVG Icon Only) -->
+                <a href="admin/admin.html" target="_blank" title="Security" class="p-2 text-slate-400 hover:text-brand-400 rounded-xl bg-slate-900 border border-slate-800 hover:border-brand-500/40 hover:bg-slate-800 transition-all shadow-sm flex items-center justify-center group">
+                    <i data-lucide="shield" class="w-4 h-4 group-hover:scale-110 transition-transform text-slate-400 group-hover:text-brand-400"></i>
+                </a>
+                <button onclick="toggleMobileNav()" class="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 transition-colors shadow-sm" title="Close Menu">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar Body (Scrollable) -->
+        <div class="p-5 flex-grow overflow-y-auto space-y-6">
+            
+            <!-- Customer Account Status Card -->
+            <div class="p-4 bg-slate-950/80 rounded-2xl border border-slate-800/80 flex items-center justify-between gap-3 shadow-inner hover:border-slate-700 transition-all">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div id="mobile-drawer-avatar" class="w-10 h-10 rounded-xl bg-brand-600/20 text-brand-400 border border-brand-500/30 flex items-center justify-center text-xs font-bold shrink-0">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold text-white truncate" id="mobile-drawer-auth-email">Guest Visitor</p>
+                        <p class="text-[10px] text-slate-400" id="mobile-drawer-auth-status">Access license vault</p>
+                    </div>
+                </div>
+                <button onclick="handleCustomerAuthClick(); toggleMobileNav();" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-[11px] font-bold shrink-0 shadow-md shadow-brand-600/20 active:scale-95 transition-all">
+                    My Vault
+                </button>
+            </div>
+
+            <!-- Primary Navigation Links -->
+            <div class="space-y-1.5">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-2 block">Menu</span>
+                
+                <button onclick="showPage('home'); toggleMobileNav();" class="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-200 hover:text-white bg-slate-900/50 hover:bg-slate-900 border border-slate-800/60 hover:border-slate-700 transition-all text-left group">
+                    <span class="flex items-center gap-3">
+                        <span class="p-1.5 rounded-lg bg-brand-500/10 text-brand-400 group-hover:scale-110 transition-transform">
+                            <i data-lucide="store" class="w-4 h-4"></i>
+                        </span>
+                        <span>Storefront Catalog</span>
+                    </span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-colors"></i>
+                </button>
+
+                <button onclick="handleCustomerAuthClick(); toggleMobileNav();" class="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-200 hover:text-white bg-slate-900/50 hover:bg-slate-900 border border-slate-800/60 hover:border-slate-700 transition-all text-left group">
+                    <span class="flex items-center gap-3">
+                        <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:scale-110 transition-transform">
+                            <i data-lucide="key" class="w-4 h-4"></i>
+                        </span>
+                        <span>Customer License Vault</span>
+                    </span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-colors"></i>
+                </button>
+
+                <button onclick="toggleCart(); toggleMobileNav();" class="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-slate-200 hover:text-white bg-slate-900/50 hover:bg-slate-900 border border-slate-800/60 hover:border-slate-700 transition-all text-left group">
+                    <span class="flex items-center gap-3">
+                        <span class="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:scale-110 transition-transform">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        </span>
+                        <span>Shopping Cart</span>
+                    </span>
+                    <span id="mobile-drawer-cart-badge" class="text-[10px] bg-brand-600 text-white font-bold px-2.5 py-0.5 rounded-full shadow-sm">0</span>
+                </button>
+
+                <button onclick="openWhatsAppSupport(); toggleMobileNav();"
+                    class="w-full flex items-center justify-between p-3 rounded-2xl text-xs font-semibold text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 transition-all text-left group">
+                    <span class="flex items-center gap-3">
+                        <span class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 group-hover:scale-110 transition-transform">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                        </span>
+                        <span>WhatsApp Live Agent</span>
+                    </span>
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 text-emerald-400/70"></i>
+                </button>
+            </div>
+
+            <!-- Quick App Categories -->
+            <div class="space-y-2.5 pt-3 border-t border-slate-800/80">
+                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider px-2 block">Quick Categories</span>
+                <div class="grid grid-cols-2 gap-2" id="mobile-category-shortcuts">
+                    <!-- Dynamic categories injected by JS -->
+                </div>
+            </div>
+
+            <!-- Verified Digital Security Banner -->
+            <div class="p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800/80 space-y-1 text-center">
+                <div class="flex items-center justify-center gap-1.5 text-brand-400 text-xs font-bold">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Verified Encrypted Fulfillment</span>
+                </div>
+                <p class="text-[10px] text-slate-400 leading-relaxed">Instant digital package delivery with permanent licensed key assignment.</p>
+            </div>
+
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-slate-800/80 bg-slate-950/70 flex items-center justify-between text-[11px] text-slate-400">
+            <div>
+                <p class="font-semibold text-slate-300">PremiumStore &copy; 2026</p>
+                <p class="text-[10px] text-slate-500">Secure Digital Commerce</p>
+            </div>
+            <!-- Security Portal Link (SVG Icon Only) -->
+            <a href="admin/admin.html" target="_blank" title="Security" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:border-brand-500/50 hover:bg-slate-800 text-slate-400 hover:text-brand-400 flex items-center justify-center transition-all shadow-sm group">
+                <i data-lucide="shield" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Slide-Over Shopping Cart Drawer -->
+    <div id="cart-backdrop" onclick="toggleCart()" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm transition-opacity"></div>
+    
+    <aside id="cart-drawer" aria-label="Shopping Cart Drawer" class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-[#0b101d] border-l border-slate-800 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
         <div class="p-5 border-b border-slate-800 flex items-center justify-between">
-            <h2 class="font-display text-lg font-bold text-white flex items-center gap-2">
-                <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-500"></i> Your Cart (<span id="cart-drawer-count">0</span>)
-            </h2>
+            <div class="flex items-center space-x-2">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-brand-400"></i>
+                <h3 class="font-display font-bold text-base text-white">Your Cart</h3>
+                <span id="cart-drawer-count" class="text-xs bg-brand-600 text-white font-bold px-2 py-0.5 rounded-full">0</span>
+            </div>
             <button onclick="toggleCart()" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
@@ -740,7 +1188,7 @@
             <!-- Dynamic Cart Items injected by JS -->
         </div>
 
-        <div class="p-5 border-t border-slate-800 bg-slate-950/60 space-y-4">
+        <div class="p-5 border-t border-slate-800 bg-slate-950/60 space-y-3">
             <div class="space-y-1.5 text-sm">
                 <div class="flex justify-between text-slate-400">
                     <span>Subtotal:</span>
@@ -753,81 +1201,116 @@
             </div>
 
             <button id="cart-checkout-btn" onclick="proceedCartToCheckout()"
-                class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all text-center flex items-center justify-center gap-2">
+                class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all text-center flex items-center justify-center gap-2 text-sm">
                 <i data-lucide="arrow-right" class="w-4 h-4"></i> Proceed to Checkout
             </button>
-            <button onclick="clearAllCart()" class="w-full text-center text-xs text-slate-500 hover:text-red-400 transition-colors">
+            <a id="cart-whatsapp-order-btn" href="#" onclick="orderCartOnWhatsApp(event)"
+                class="w-full py-3 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-bold rounded-2xl transition-all text-center flex items-center justify-center gap-2 text-xs">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Order All via WhatsApp
+            </a>
+            <button onclick="clearAllCart()" class="w-full text-center text-xs text-slate-500 hover:text-red-400 transition-colors pt-1">
                 Clear Cart
             </button>
         </div>
     </aside>
 
-    <!-- Footer with Direct Admin & Storefront Links -->
-    <footer class="mt-auto border-t border-slate-800/80 bg-[#0b101d] py-8 pb-24 md:pb-8 text-xs text-slate-400">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-            <div class="space-y-1">
-                <p class="font-bold text-white flex items-center justify-center sm:justify-start gap-2">
-                    <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-400"></i> PremiumStore Digital Marketplace
-                </p>
-                <p class="text-[11px] text-slate-500">Secure automated application distribution & instant license delivery.</p>
-                <div class="pt-2 flex items-center justify-center sm:justify-start gap-2.5">
-                    <a href="https://wa.me/447455909204?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application." target="_blank" rel="noopener noreferrer" title="WhatsApp Support"
-                        class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 transition-all text-xs font-semibold">
-                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                        <span>WhatsApp Support</span>
-                    </a>
-                    <a href="tel:+447455909204" title="Direct Phone Support"
-                        class="px-3 py-1.5 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center gap-1.5 transition-all text-xs font-semibold">
-                        <i data-lucide="phone-call" class="w-4 h-4"></i>
-                        <span>Direct Call</span>
+    <!-- Professional Standard Marketplace Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 bg-[#070b14] py-12 text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-800/60">
+                <!-- Brand Column -->
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-500 via-indigo-500 to-fuchsia-500 p-[1.5px] shadow-md shadow-brand-500/20">
+                            <div class="w-full h-full bg-[#0b101d] rounded-[9px] flex items-center justify-center">
+                                <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-400"></i>
+                            </div>
+                        </div>
+                        <span class="font-display font-bold text-lg text-white tracking-tight">PremiumStore</span>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Verified digital marketplace for professional & utility applications.
+                    </p>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="space-y-3">
+                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-300">Marketplace</h5>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#" onclick="showPage('home'); return false;" class="hover:text-white transition-colors">Browse Apps</a></li>
+                        <li><a href="#" onclick="handleCustomerAuthClick(); return false;" class="hover:text-white transition-colors">Customer Vault</a></li>
+                        <li><a href="#" onclick="toggleCart(); return false;" class="hover:text-white transition-colors">Shopping Cart</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="space-y-3">
+                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-300">Support</h5>
+                    <ul class="space-y-2 text-xs">
+                        <li>
+                            <button onclick="openWhatsAppSupport()" class="hover:text-emerald-400 transition-colors flex items-center gap-1.5">
+                                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i> WhatsApp Support
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showToast('For assistance, chat directly with our WhatsApp support agent.', 'info')" class="hover:text-white transition-colors flex items-center gap-1.5">
+                                <i data-lucide="help-circle" class="w-3.5 h-3.5 text-brand-400"></i> Help Center
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Security & Trust -->
+                <div class="space-y-3">
+                    <h5 class="text-xs font-bold uppercase tracking-wider text-slate-300">Security</h5>
+                    <div class="space-y-2 text-xs text-slate-500">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                            <span>256-Bit SSL Encrypted</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-brand-400 shrink-0"></i>
+                            <span>Instant Digital Delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright & Discreet Portal SVG Link -->
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <p>&copy; 2026 PremiumStore. All rights reserved.</p>
+                <div class="flex items-center space-x-4">
+                    <span class="text-[11px] text-slate-600">Privacy & Terms Protected</span>
+                    <!-- Portal Link (SVG Icon Only) -->
+                    <a href="admin/admin.html" target="_blank" title="Security" class="text-slate-700 hover:text-slate-400 transition-colors p-1 rounded-lg hover:bg-slate-900">
+                        <i data-lucide="shield" class="w-3.5 h-3.5"></i>
                     </a>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold">
-                <a href="#" onclick="showPage('home'); return false;" class="text-slate-300 hover:text-white transition-colors">Storefront</a>
-                <a href="admin/admin.html" target="_blank" class="text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-1">
-                    <i data-lucide="shield" class="w-3.5 h-3.5"></i> Admin Console
-                </a>
-                <button onclick="toggleCart()" class="text-slate-300 hover:text-white transition-colors">Cart</button>
-            </div>
+
         </div>
     </footer>
 
-    <!-- Mobile Bottom Quick Dock Navigation (For small screens < 640px and compact widths 280px) -->
-    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-[#0b101d]/95 backdrop-blur-xl border-t border-slate-800/80 z-40 px-2 py-2 flex items-center justify-around shadow-2xl">
-        <button onclick="showPage('home')" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white p-1 text-[10px] font-semibold">
-            <i data-lucide="home" class="w-4 h-4 text-slate-300"></i>
-            <span>Home</span>
-        </button>
-        <button onclick="toggleCurrencyDropdown()" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white p-1 text-[10px] font-semibold">
-            <i data-lucide="globe" class="w-4 h-4 text-emerald-400"></i>
-            <span>Currency</span>
-        </button>
-        <button onclick="toggleCart()" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white p-1 text-[10px] font-semibold relative">
-            <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-400"></i>
-            <span>Cart</span>
-        </button>
-        <a href="admin/admin.html" target="_blank" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-white p-1 text-[10px] font-semibold">
-            <i data-lucide="shield" class="w-4 h-4 text-indigo-400"></i>
-            <span class="text-brand-300">Admin</span>
-        </a>
-    </nav>
-
     <!-- Floating Interactive WhatsApp & Call Support Widget -->
-    <aside aria-label="Support Widget" class="fixed bottom-16 md:bottom-6 right-4 md:right-6 z-40 flex items-center gap-2">
+    <aside aria-label="Support Widget" class="fixed bottom-6 right-4 md:right-6 z-40 flex items-center gap-2">
         <a id="floating-call-btn" href="tel:+447455909204" title="Direct Phone Call Support"
             class="hidden sm:flex bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl border border-slate-700/80 transition-all hover:scale-105 items-center justify-center group">
             <i data-lucide="phone-call" class="w-5 h-5 text-indigo-400 group-hover:text-white transition-colors"></i>
         </a>
-        <a id="floating-whatsapp-btn" href="https://wa.me/447455909204?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application%20purchase." target="_blank" rel="noopener noreferrer" title="WhatsApp Support Chat"
+        <a id="floating-whatsapp-btn" href="https://wa.me/447455909204?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application%20purchase." target="_blank" rel="noopener noreferrer" title="WhatsApp Support Chat (+447455909204)"
             class="bg-emerald-600 hover:bg-emerald-500 text-white p-3 sm:p-3.5 rounded-2xl shadow-2xl shadow-emerald-600/30 transition-all hover:scale-105 flex items-center gap-2 border border-emerald-400/30 group">
+            <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-200"></span>
+            </span>
             <i data-lucide="message-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-            <span class="hidden group-hover:inline-block text-xs font-bold pr-1 transition-all">Support Chat</span>
+            <span class="text-xs font-bold pr-1">WhatsApp Chat</span>
         </a>
     </aside>
 
     <!-- Global Toast Notification Container -->
-    <div id="toast-container" class="fixed bottom-20 md:bottom-6 left-4 md:left-6 z-50 space-y-2 pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-6 left-4 md:left-6 z-50 space-y-2 pointer-events-none"></div>
 
     <!-- Scripts -->
     <script src="store.js"></script>
@@ -839,15 +1322,88 @@
         let searchQuery = '';
         let currentSort = 'popularity';
         let activeModalApp = null;
-        let selectedGateway = 'kcb';
+        let selectedGateway = 'kcb'; // 'kcb' identifier maps to M-Pesa
         let discountMultiplier = 1.0;
         let singleDirectItem = null;
+        let currentActiveOrder = null;
 
         document.addEventListener('DOMContentLoaded', () => {
+            initSecurityGuards();
             initMarketplace();
             setupEventListeners();
             checkMaintenanceStatus();
+            restoreActiveOrderState();
         });
+
+        // Anti-Inspection & Right Click Security Core
+        function initSecurityGuards() {
+            // 1. Prevent Right Click context menu
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                showToast('Security Alert: Right clicking is disabled.', 'warning');
+                return false;
+            });
+
+            // 2. Prevent Common Inspection Keyboard Shortcuts
+            document.addEventListener('keydown', (e) => {
+                // F12
+                if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast('Developer tools access is restricted.', 'warning');
+                    return false;
+                }
+                // Ctrl+Shift+I / Cmd+Opt+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Element Picker)
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast('Code inspection is disabled on this platform.', 'warning');
+                    return false;
+                }
+                // Ctrl+U (View Page Source)
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast('Viewing page source is disabled.', 'warning');
+                    return false;
+                }
+                // Ctrl+S (Save Page)
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'S' || e.key === 's')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showToast('Saving page content is disabled.', 'warning');
+                    return false;
+                }
+            });
+
+            // 3. Prevent dragging images
+            document.addEventListener('dragstart', (e) => {
+                if (e.target && e.target.nodeName === 'IMG') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // 4. Console Security Warnings
+            try {
+                console.clear();
+                console.log('%c🔒 SECURITY ALERT: Anti-Tamper & Code Protection Active.', 'color: #6366f1; font-size: 16px; font-weight: 800;');
+                console.log('%cThis web application is secured against inspection and unauthorized package extraction.', 'color: #94a3b8; font-size: 12px;');
+            } catch(err) {}
+        }
+
+        function restoreActiveOrderState() {
+            try {
+                const activeId = localStorage.getItem('premiumstore_active_order_id');
+                if (activeId) {
+                    const orders = window.PremiumStore.getOrders();
+                    const order = orders.find(o => o.id === activeId);
+                    if (order) {
+                        currentActiveOrder = order;
+                    }
+                }
+            } catch(e) {}
+        }
 
         function initMarketplace() {
             renderCurrencySelector();
@@ -855,26 +1411,27 @@
             renderCategories();
             renderAppsGrid();
             updateCartUI();
+            updateCustomerAuthUI();
             lucide.createIcons();
         }
 
         function setupEventListeners() {
-            window.addEventListener('premiumstore:statechange', () => {
+            const handleStateUpdate = () => {
                 checkMaintenanceStatus();
                 renderAppsGrid();
                 updateCartUI();
                 renderCategories();
                 renderHeroSlider();
                 updateCurrencyHeader();
-            });
-            window.addEventListener('appvault:statechange', () => {
-                checkMaintenanceStatus();
-                renderAppsGrid();
-                updateCartUI();
-                renderCategories();
-                renderHeroSlider();
-                updateCurrencyHeader();
-            });
+                updateCustomerAuthUI();
+
+                // Check live order approval status if currently tracking an order
+                checkLiveOrderApproval();
+            };
+
+            window.addEventListener('premiumstore:statechange', handleStateUpdate);
+            window.addEventListener('appvault:statechange', handleStateUpdate);
+            window.addEventListener('storage', handleStateUpdate);
 
             // Close currency dropdown when clicked outside
             document.addEventListener('click', (e) => {
@@ -886,109 +1443,148 @@
             });
         }
 
-        // Currency & Country Selector Operations
+        // Live Order Approval Detection & Seamless Transition
+        function checkLiveOrderApproval() {
+            if (!currentActiveOrder) return;
+            const orders = window.PremiumStore.getOrders();
+            const updated = orders.find(o => o.id === currentActiveOrder.id);
+            if (updated) {
+                const wasPending = currentActiveOrder.paymentStatus === 'pending';
+                currentActiveOrder = updated;
+                if (wasPending && updated.paymentStatus === 'cleared') {
+                    renderSuccessFulfillment(updated);
+                    showToast('🎉 Order verified and completed! Download package and license key unlocked.', 'success');
+                }
+            }
+        }
+
+        // ==========================================
+        // Multi-Country Currency Selector Core
+        // ==========================================
         function toggleCurrencyDropdown() {
             const menu = document.getElementById('currency-menu');
-            menu.classList.toggle('hidden');
+            if (menu) menu.classList.toggle('hidden');
         }
 
         function renderCurrencySelector() {
             const currencies = window.PremiumStore.getCurrencies();
             const selected = window.PremiumStore.getSelectedCurrency();
-            const container = document.getElementById('currency-options-list');
-            container.innerHTML = '';
+            const list = document.getElementById('currency-options-list');
+            if (!list) return;
 
-            updateCurrencyHeader();
-
+            list.innerHTML = '';
             Object.values(currencies).forEach(curr => {
-                const isSelected = curr.code === selected.code;
+                const isCurrent = curr.code === selected.code;
                 const btn = document.createElement('button');
-                btn.className = `w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-colors ${
-                    isSelected ? 'bg-brand-600 text-white font-bold' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                btn.type = 'button';
+                btn.className = `w-full px-3 py-2.5 rounded-xl text-left flex items-center justify-between transition-all ${
+                    isCurrent 
+                    ? 'bg-brand-600/20 border border-brand-500/50 text-white font-bold shadow-sm' 
+                    : 'hover:bg-slate-800/80 border border-transparent text-slate-300 hover:text-white'
                 }`;
+                btn.onclick = () => selectCurrency(curr.code);
                 btn.innerHTML = `
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <span class="text-base">${curr.flag}</span>
+                    <div class="flex items-center space-x-2.5 min-w-0">
+                        <span class="text-base sm:text-lg leading-none shrink-0">${curr.flag}</span>
                         <div class="min-w-0">
-                            <span class="block text-xs font-semibold leading-tight truncate">${curr.country}</span>
-                            <span class="text-[10px] ${isSelected ? 'text-brand-200' : 'text-slate-400'}">${curr.name} (${curr.symbol.trim()})</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="font-mono text-xs font-bold ${isCurrent ? 'text-brand-300' : 'text-white'}">${curr.code}</span>
+                                <span class="text-[11px] text-slate-400 truncate font-medium">(${curr.country})</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400 block truncate">${curr.name}</span>
                         </div>
                     </div>
-                    <span class="font-mono text-xs font-bold ${isSelected ? 'text-white' : 'text-slate-400'}">${curr.code}</span>
+                    <div class="text-right shrink-0 flex items-center gap-1">
+                        <span class="font-mono text-xs font-semibold ${isCurrent ? 'text-brand-300' : 'text-slate-400'}">${curr.symbol}</span>
+                        ${isCurrent ? '<i data-lucide="check" class="w-3.5 h-3.5 text-brand-400 inline-block"></i>' : ''}
+                    </div>
                 `;
-                btn.onclick = () => selectCurrency(curr.code);
-                container.appendChild(btn);
+                list.appendChild(btn);
             });
+
+            updateCurrencyHeader();
+            lucide.createIcons();
         }
 
         function updateCurrencyHeader() {
             const selected = window.PremiumStore.getSelectedCurrency();
-            document.getElementById('header-currency-flag').innerText = selected.flag;
-            document.getElementById('header-currency-code').innerText = selected.code;
+            const flagEl = document.getElementById('header-currency-flag');
+            const codeEl = document.getElementById('header-currency-code');
+            if (flagEl) flagEl.innerText = selected.flag;
+            if (codeEl) codeEl.innerText = selected.code;
         }
 
-        function selectCurrency(code) {
-            const curr = window.PremiumStore.setSelectedCurrency(code);
-            document.getElementById('currency-menu').classList.add('hidden');
-            renderCurrencySelector();
+        function selectCurrency(currencyCode) {
+            const curr = window.PremiumStore.setSelectedCurrency(currencyCode);
+            const menu = document.getElementById('currency-menu');
+            if (menu) menu.classList.add('hidden');
             
-            // Re-render UI with converted prices
+            updateCurrencyHeader();
+            renderCurrencySelector();
             renderHeroSlider();
             renderAppsGrid();
             updateCartUI();
-
+            
+            // If details modal is currently open, update its price & WhatsApp link
             if (activeModalApp) {
-                document.getElementById('modal-price').innerText = window.PremiumStore.formatPrice(activeModalApp.price);
+                const modalPrice = document.getElementById('modal-price');
+                if (modalPrice) modalPrice.innerText = window.PremiumStore.formatPrice(activeModalApp.price);
+                const modalWaBtn = document.getElementById('modal-whatsapp-btn');
+                if (modalWaBtn) {
+                    const settings = window.PremiumStore.getSettings();
+                    const phone = settings.supportWhatsapp || '447455909204';
+                    const msg = encodeURIComponent(`Hello PremiumStore Support, I want to purchase/inquire about "${activeModalApp.title}" (v${activeModalApp.version}, ${window.PremiumStore.formatPrice(activeModalApp.price)}) on WhatsApp.`);
+                    modalWaBtn.href = `https://wa.me/${phone}?text=${msg}`;
+                }
             }
 
-            // If checkout active, re-calculate
-            const checkoutPage = document.getElementById('page-checkout');
-            if (!checkoutPage.classList.contains('hidden')) {
+            // If checkout portal view is active, update items list and totals
+            const checkoutView = document.getElementById('page-checkout');
+            if (checkoutView && !checkoutView.classList.contains('hidden')) {
                 const items = singleDirectItem ? [singleDirectItem] : window.PremiumStore.getCart();
                 renderCheckoutView(items);
             }
 
-            showToast(`Currency changed to ${curr.country} (${curr.code})`, 'success');
-        }
-
-        function checkMaintenanceStatus() {
-            const settings = window.PremiumStore.getSettings();
-            const maintenanceView = document.getElementById('view-maintenance');
-            const maintenanceMsg = document.getElementById('maintenance-msg');
-
-            if (settings.maintenanceMode) {
-                maintenanceView.classList.remove('hidden');
-                if (settings.maintenanceMessage) {
-                    maintenanceMsg.innerText = settings.maintenanceMessage;
-                }
-            } else {
-                maintenanceView.classList.add('hidden');
+            // If customer library vault modal is open, refresh prices
+            const libraryModal = document.getElementById('modal-customer-library');
+            if (libraryModal && !libraryModal.classList.contains('hidden')) {
+                renderCustomerLibrary();
             }
 
-            syncGatewaySettings(settings);
-            if (settings.supportWhatsapp) {
-                document.getElementById('floating-whatsapp-btn').href = `https://wa.me/${settings.supportWhatsapp}?text=Hello%20PremiumStore%20Support,%20I%20have%20an%20inquiry%20regarding%20an%20application.`;
-            }
+            showToast(`Switched currency to ${curr.name} (${curr.code} ${curr.flag})`, 'info');
         }
 
         function syncGatewaySettings(settings) {
             const btnKcb = document.getElementById('btn-gw-kcb');
             const btnCard = document.getElementById('btn-gw-card');
             const displayPaybill = document.getElementById('display-paybill');
-            const displayAccount = document.getElementById('display-account-name');
+            const displayAccountNo = document.getElementById('display-account-no');
+            const displayAccountName = document.getElementById('display-account-name');
             const instrPaybill = document.getElementById('instruction-paybill-num');
-            const instrAccount = document.getElementById('instruction-account-name');
+            const instrAccountNo = document.getElementById('instruction-account-no');
+            const instrAccountName = document.getElementById('instruction-account-name');
 
-            const paybillNum = settings.paybillNumber || '8106675';
+            const tabPaybill = document.getElementById('display-tab-paybill');
+            const tabAcc = document.getElementById('display-tab-acc');
+            const tabName = document.getElementById('display-tab-name');
+
+            const paybillNum = settings.paybillNumber || '522533';
+            const accNo = settings.accountNumber || '8106675';
             const accName = settings.accountName || 'JASPER MARKETS';
 
             if (displayPaybill) displayPaybill.innerText = paybillNum;
-            if (displayAccount) displayAccount.innerText = accName;
+            if (displayAccountNo) displayAccountNo.innerText = accNo;
+            if (displayAccountName) displayAccountName.innerText = accName;
             if (instrPaybill) instrPaybill.innerText = paybillNum;
-            if (instrAccount) instrAccount.innerText = accName;
+            if (instrAccountNo) instrAccountNo.innerText = accNo;
+            if (instrAccountName) instrAccountName.innerText = accName;
+
+            if (tabPaybill) tabPaybill.innerText = paybillNum;
+            if (tabAcc) tabAcc.innerText = accNo;
+            if (tabName) tabName.innerText = accName;
 
             if (btnKcb) {
-                if (settings.kcbActive) {
+                if (settings.mpesaActive !== false && settings.kcbActive !== false) {
                     btnKcb.classList.remove('hidden');
                 } else {
                     btnKcb.classList.add('hidden');
@@ -1020,7 +1616,7 @@
                 slide.className = `hero-slide absolute inset-0 w-full h-full ${idx === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`;
                 slide.id = `hero-slide-${idx}`;
                 slide.innerHTML = `
-                    <img src="${app.coverImage}" alt="${app.title}" class="w-full h-full object-cover">
+                    <img src="${app.coverImage}" alt="${app.title}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#070b14] via-[#070b14]/70 to-transparent"></div>
                     <div class="absolute inset-0 bg-gradient-to-r from-[#070b14] via-[#070b14]/40 to-transparent"></div>
                 `;
@@ -1042,14 +1638,24 @@
         }
 
         function updateHeroContent(app) {
-            document.getElementById('hero-category').innerHTML = `<i data-lucide="sparkles" class="w-3 h-3"></i> ${app.category}`;
-            document.getElementById('hero-rating').innerHTML = `<i data-lucide="star" class="w-3 h-3 fill-amber-400 text-amber-400"></i> ${app.rating}`;
+            document.getElementById('hero-category').innerHTML = `<i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-300 animate-spin" style="animation-duration: 8s;"></i> ${app.category}`;
+            document.getElementById('hero-rating').innerHTML = `<i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${app.rating}`;
             document.getElementById('hero-title').innerText = app.title;
             document.getElementById('hero-description').innerText = app.tagline || app.description;
-            document.getElementById('hero-price').innerText = window.PremiumStore.formatPrice(app.price);
+            const formattedPrice = window.PremiumStore.formatPrice(app.price);
+            document.getElementById('hero-price').innerText = formattedPrice;
             
             document.getElementById('hero-buy-btn').onclick = () => initiateDirectBuy(app.id);
             document.getElementById('hero-details-btn').onclick = () => openModal(app.id);
+
+            const waHero = document.getElementById('hero-whatsapp-btn');
+            if (waHero) {
+                const settings = window.PremiumStore.getSettings();
+                const phone = settings.supportWhatsapp || '447455909204';
+                const msg = encodeURIComponent(`Hello PremiumStore, I would like to order "${app.title}" (${formattedPrice}) via WhatsApp.`);
+                waHero.href = `https://wa.me/${phone}?text=${msg}`;
+            }
+
             lucide.createIcons();
         }
 
@@ -1094,30 +1700,33 @@
             goToSlide(prevIdx);
         }
 
-        // Category Tag Bar Rendering
+        // Category Tag Bar Rendering (Shows 'All' by Default)
         function renderCategories() {
             const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
             const categories = ['All', ...new Set(apps.map(a => a.category))];
             
             const bar = document.getElementById('category-bar');
-            bar.innerHTML = '';
+            if (bar) {
+                bar.innerHTML = '';
+                categories.forEach(cat => {
+                    const count = cat === 'All' ? apps.length : apps.filter(a => a.category === cat).length;
+                    const btn = document.createElement('button');
+                    const isActive = selectedCategory === cat;
+                    btn.className = `px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
+                        isActive 
+                        ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/30 ring-2 ring-brand-500/40' 
+                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                    }`;
+                    btn.innerHTML = `
+                        <span>${cat === 'All' ? 'All Applications' : cat}</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white font-bold' : 'bg-slate-800 text-slate-400'}">${count}</span>
+                    `;
+                    btn.onclick = () => selectCategory(cat);
+                    bar.appendChild(btn);
+                });
+            }
 
-            categories.forEach(cat => {
-                const count = cat === 'All' ? apps.length : apps.filter(a => a.category === cat).length;
-                const btn = document.createElement('button');
-                const isActive = selectedCategory === cat;
-                btn.className = `px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
-                    isActive 
-                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/30' 
-                    : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                }`;
-                btn.innerHTML = `
-                    <span>${cat === 'All' ? 'All Applications' : cat}</span>
-                    <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}">${count}</span>
-                `;
-                btn.onclick = () => selectCategory(cat);
-                bar.appendChild(btn);
-            });
+            renderMobileCategoryShortcuts();
         }
 
         function selectCategory(cat) {
@@ -1164,6 +1773,7 @@
         function updateFilterFeedback() {
             const feedbackBox = document.getElementById('filter-feedback');
             const feedbackText = document.getElementById('filter-feedback-text');
+            if (!feedbackBox || !feedbackText) return;
             if (selectedCategory !== 'All' || searchQuery !== '') {
                 feedbackBox.classList.remove('hidden');
                 const apps = getFilteredAndSortedApps();
@@ -1173,6 +1783,7 @@
             }
         }
 
+        // Return all published apps by default, only filtering when user selects a category or searches
         function getFilteredAndSortedApps() {
             let apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
 
@@ -1204,44 +1815,46 @@
             return apps;
         }
 
-        // Picture-Dominated Apps Card Grid with Multi-Currency Formatting
+        // Picture-Dominated Apps Card Grid with Lively Animations & Currency Conversion
         function renderAppsGrid() {
             const apps = getFilteredAndSortedApps();
             const grid = document.getElementById('apps-grid');
             const emptyState = document.getElementById('empty-state');
+            if (!grid) return;
 
             grid.innerHTML = '';
 
             if (apps.length === 0) {
                 grid.classList.add('hidden');
-                emptyState.classList.remove('hidden');
+                if (emptyState) emptyState.classList.remove('hidden');
                 return;
             } else {
                 grid.classList.remove('hidden');
-                emptyState.classList.add('hidden');
+                if (emptyState) emptyState.classList.add('hidden');
             }
 
             apps.forEach(app => {
+                const formattedPrice = window.PremiumStore.formatPrice(app.price);
                 const card = document.createElement('article');
-                card.className = "glass-card rounded-3xl overflow-hidden transition-all duration-300 flex flex-col group hover:-translate-y-1";
+                card.className = "glass-card rounded-3xl overflow-hidden transition-all duration-300 flex flex-col group hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-500/20 border border-slate-800/80 hover:border-brand-500/40 relative";
                 card.innerHTML = `
                     <div class="relative h-48 sm:h-52 overflow-hidden bg-slate-950 cursor-pointer" onclick="openModal('${app.id}')">
-                        <img src="${app.coverImage}" alt="${app.title}" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                        <img src="${app.coverImage}" alt="${app.title}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-transparent"></div>
                         
                         <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                            <span class="bg-slate-950/80 backdrop-blur-md border border-slate-800 text-brand-300 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                            <span class="bg-slate-950/85 backdrop-blur-md border border-slate-800/90 text-brand-300 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
                                 ${app.category}
                             </span>
                         </div>
                         <div class="absolute top-3 right-3">
-                            <span class="bg-slate-950/80 backdrop-blur-md border border-slate-700/50 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                            <span class="bg-slate-950/85 backdrop-blur-md border border-amber-500/30 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
                                 <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i> ${app.rating}
                             </span>
                         </div>
 
                         <div class="absolute bottom-3 right-3">
-                            <span class="text-[10px] font-mono text-slate-300 bg-slate-900/90 border border-slate-800 px-2 py-0.5 rounded-md backdrop-blur-sm">
+                            <span class="text-[10px] font-mono text-slate-300 bg-slate-900/90 border border-slate-800 px-2 py-0.5 rounded-md backdrop-blur-sm shadow-sm">
                                 v${app.version}
                             </span>
                         </div>
@@ -1260,15 +1873,19 @@
                         <div class="flex items-center justify-between pt-3 border-t border-slate-800/80">
                             <div>
                                 <span class="text-[10px] text-slate-500 block uppercase font-medium">Price</span>
-                                <span class="font-display text-lg sm:text-xl font-extrabold text-white">${window.PremiumStore.formatPrice(app.price)}</span>
+                                <span class="font-display text-lg sm:text-xl font-extrabold text-white">${formattedPrice}</span>
                             </div>
-                            <div class="flex items-center space-x-2">
+                            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                                <a href="https://wa.me/447455909204?text=${encodeURIComponent(`Hello PremiumStore, I want to purchase "${app.title}" (${formattedPrice}) via WhatsApp.`)}" target="_blank" rel="noopener noreferrer" title="Order on WhatsApp (+447455909204)"
+                                    class="p-2 sm:p-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 transition-all hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm">
+                                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                </a>
                                 <button onclick="addToCart('${app.id}')" title="Add to Cart"
-                                    class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all hover:scale-105 active:scale-95">
+                                    class="p-2 sm:p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all hover:scale-110 active:scale-95 shadow-sm">
                                     <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                                 </button>
                                 <button onclick="initiateDirectBuy('${app.id}')"
-                                    class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-md shadow-brand-600/20 hover:scale-105 active:scale-95">
+                                    class="px-3 sm:px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-md shadow-brand-600/20 hover:scale-105 active:scale-95">
                                     Direct Buy
                                 </button>
                             </div>
@@ -1280,7 +1897,7 @@
             lucide.createIcons();
         }
 
-        // App Details Modal
+        // App Details Modal with Reliable Images
         function openModal(appId) {
             const app = window.PremiumStore.getAppById(appId);
             if (!app) return;
@@ -1290,13 +1907,31 @@
             document.getElementById('modal-version-badge').innerText = `v${app.version}`;
             document.getElementById('modal-title').innerText = app.title;
             document.getElementById('modal-tagline').innerText = app.tagline || '';
-            document.getElementById('modal-main-image').src = app.coverImage;
+            
+            const mainImg = document.getElementById('modal-main-image');
+            if (mainImg) {
+                mainImg.src = app.coverImage;
+                mainImg.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';
+                };
+            }
+
             document.getElementById('modal-rating-score').innerHTML = `<i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${app.rating} (${app.ratingCount || 1} reviews)`;
             document.getElementById('modal-size').innerText = app.size || '25.0 MB';
             document.getElementById('modal-platform').innerText = app.platform || 'Cross-Platform';
             document.getElementById('modal-description').innerText = app.description;
             document.getElementById('modal-release-notes').innerText = app.releaseNotes || 'No changelog available.';
-            document.getElementById('modal-price').innerText = window.PremiumStore.formatPrice(app.price);
+            const formattedPrice = window.PremiumStore.formatPrice(app.price);
+            document.getElementById('modal-price').innerText = formattedPrice;
+
+            const modalWaBtn = document.getElementById('modal-whatsapp-btn');
+            if (modalWaBtn) {
+                const settings = window.PremiumStore.getSettings();
+                const phone = settings.supportWhatsapp || '447455909204';
+                const msg = encodeURIComponent(`Hello PremiumStore Support, I want to purchase/inquire about "${app.title}" (v${app.version}, ${formattedPrice}) on WhatsApp.`);
+                modalWaBtn.href = `https://wa.me/${phone}?text=${msg}`;
+            }
 
             const featList = document.getElementById('modal-features-list');
             featList.innerHTML = '';
@@ -1312,9 +1947,13 @@
             images.forEach((imgSrc, idx) => {
                 const thumb = document.createElement('img');
                 thumb.src = imgSrc;
+                thumb.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';
+                };
                 thumb.className = `w-16 h-12 object-cover rounded-lg border cursor-pointer transition-all ${idx === 0 ? 'border-brand-500 scale-105' : 'border-slate-800 opacity-70 hover:opacity-100'}`;
                 thumb.onclick = () => {
-                    document.getElementById('modal-main-image').src = imgSrc;
+                    if (mainImg) mainImg.src = imgSrc;
                     thumbContainer.querySelectorAll('img').forEach(t => t.className = 'w-16 h-12 object-cover rounded-lg border border-slate-800 opacity-70 hover:opacity-100');
                     thumb.className = 'w-16 h-12 object-cover rounded-lg border border-brand-500 scale-105 opacity-100';
                 };
@@ -1337,7 +1976,8 @@
             const settings = window.PremiumStore.getSettings();
             const phone = settings.supportWhatsapp || '447455909204';
             const msg = encodeURIComponent(`Hello PremiumStore Support, I need assistance regarding application: "${app.title}" (ID: ${app.id}, Price: ${window.PremiumStore.formatPrice(app.price)}).`);
-            document.getElementById('floating-whatsapp-btn').href = `https://wa.me/${phone}?text=${msg}`;
+            const floatingWa = document.getElementById('floating-whatsapp-btn');
+            if (floatingWa) floatingWa.href = `https://wa.me/${phone}?text=${msg}`;
         }
 
         function updateRatingStarsUI(appId) {
@@ -1396,19 +2036,105 @@
             initiateDirectBuy(id);
         }
 
+        // Mobile Navigation Sidebar Drawer Operations (Flexible Small Screens)
+        function toggleMobileNav() {
+            const drawer = document.getElementById('mobile-nav-drawer');
+            const backdrop = document.getElementById('mobile-nav-backdrop');
+            if (!drawer || !backdrop) return;
+
+            const isClosed = drawer.classList.contains('-translate-x-full');
+            if (isClosed) {
+                drawer.classList.remove('-translate-x-full');
+                drawer.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+                updateMobileDrawerContent();
+            } else {
+                drawer.classList.add('-translate-x-full');
+                drawer.classList.remove('translate-x-0');
+                backdrop.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        function updateMobileDrawerContent() {
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            const emailEl = document.getElementById('mobile-drawer-auth-email');
+            const statusEl = document.getElementById('mobile-drawer-auth-status');
+            const avatarEl = document.getElementById('mobile-drawer-avatar');
+            const cartBadge = document.getElementById('mobile-drawer-cart-badge');
+            const cart = window.PremiumStore.getCart();
+
+            if (emailEl && statusEl) {
+                if (authUser && authUser.email) {
+                    const initial = authUser.email.charAt(0).toUpperCase();
+                    emailEl.innerText = authUser.email;
+                    statusEl.innerText = 'Vault Verified & Active';
+                    statusEl.className = 'text-[10px] text-emerald-400 font-medium';
+                    if (avatarEl) {
+                        avatarEl.innerHTML = `<span class="font-bold text-xs text-white">${initial}</span>`;
+                        avatarEl.className = 'w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm';
+                    }
+                } else {
+                    emailEl.innerText = 'Guest Visitor';
+                    statusEl.innerText = 'Sign in to view licenses';
+                    statusEl.className = 'text-[10px] text-slate-400';
+                    if (avatarEl) {
+                        avatarEl.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i>`;
+                        avatarEl.className = 'w-9 h-9 rounded-xl bg-brand-600/20 text-brand-400 border border-brand-500/30 flex items-center justify-center text-xs font-bold shrink-0';
+                    }
+                }
+            }
+
+            if (cartBadge) {
+                cartBadge.innerText = cart.length;
+            }
+
+            renderMobileCategoryShortcuts();
+            lucide.createIcons();
+        }
+
+        function renderMobileCategoryShortcuts() {
+            const container = document.getElementById('mobile-category-shortcuts');
+            if (!container) return;
+            const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
+            const categories = ['All', ...new Set(apps.map(a => a.category))];
+
+            container.innerHTML = '';
+            categories.forEach(cat => {
+                const isActive = selectedCategory === cat;
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-xl text-[11px] font-semibold flex items-center justify-between transition-all ${
+                    isActive 
+                    ? 'bg-brand-600 text-white font-bold shadow-md shadow-brand-600/30 ring-1 ring-brand-500/50' 
+                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800'
+                }`;
+                btn.innerHTML = `
+                    <span class="truncate">${cat === 'All' ? 'All Apps' : cat}</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}"></i>
+                `;
+                btn.onclick = () => {
+                    selectCategory(cat);
+                    toggleMobileNav();
+                };
+                container.appendChild(btn);
+            });
+            lucide.createIcons();
+        }
+
         // Cart Drawer Operations
         function toggleCart() {
             const drawer = document.getElementById('cart-drawer');
-            const overlay = document.getElementById('cart-overlay');
+            const backdrop = document.getElementById('cart-backdrop') || document.getElementById('cart-overlay');
+            if (!drawer) return;
             const isClosed = drawer.classList.contains('translate-x-full');
 
             if (isClosed) {
                 drawer.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
+                if (backdrop) backdrop.classList.remove('hidden');
                 updateCartUI();
             } else {
                 drawer.classList.add('translate-x-full');
-                overlay.classList.add('hidden');
+                if (backdrop) backdrop.classList.add('hidden');
             }
         }
 
@@ -1434,19 +2160,25 @@
         function updateCartUI() {
             const cart = window.PremiumStore.getCart();
             const badge = document.getElementById('cart-badge');
+            const mobileCartBadge = document.getElementById('mobile-drawer-cart-badge');
             const drawerCount = document.getElementById('cart-drawer-count');
             const container = document.getElementById('cart-items-container');
             const subtotalEl = document.getElementById('cart-subtotal');
             const checkoutBtn = document.getElementById('cart-checkout-btn');
 
+            if (!container) return;
+
             if (cart.length > 0) {
-                badge.innerText = cart.length;
-                badge.classList.remove('hidden');
+                if (badge) {
+                    badge.innerText = cart.length;
+                    badge.classList.remove('hidden');
+                }
             } else {
-                badge.classList.add('hidden');
+                if (badge) badge.classList.add('hidden');
             }
 
-            drawerCount.innerText = cart.length;
+            if (mobileCartBadge) mobileCartBadge.innerText = cart.length;
+            if (drawerCount) drawerCount.innerText = cart.length;
 
             if (cart.length === 0) {
                 container.innerHTML = `
@@ -1458,9 +2190,11 @@
                         <p class="text-xs text-slate-500">Add apps from PremiumStore to get started.</p>
                     </div>
                 `;
-                subtotalEl.innerText = window.PremiumStore.formatPrice(0);
-                checkoutBtn.disabled = true;
-                checkoutBtn.className = "w-full py-3.5 bg-slate-800 text-slate-500 font-bold rounded-2xl cursor-not-allowed text-center";
+                if (subtotalEl) subtotalEl.innerText = window.PremiumStore.formatPrice(0);
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.className = "w-full py-3.5 bg-slate-800 text-slate-500 font-bold rounded-2xl cursor-not-allowed text-center";
+                }
             } else {
                 container.innerHTML = '';
                 let totalUsd = 0;
@@ -1470,7 +2204,7 @@
                     el.className = "flex items-center justify-between p-3.5 bg-slate-950/60 rounded-2xl border border-slate-800/80";
                     el.innerHTML = `
                         <div class="flex items-center space-x-3 min-w-0">
-                            <img src="${item.coverImage}" class="w-11 h-11 rounded-xl object-cover border border-slate-800 shrink-0" alt="app">
+                            <img src="${item.coverImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-11 h-11 rounded-xl object-cover border border-slate-800 shrink-0" alt="app">
                             <div class="min-w-0">
                                 <h4 class="font-bold text-xs text-white truncate">${item.title}</h4>
                                 <span class="text-[11px] font-semibold text-brand-400 font-display">${window.PremiumStore.formatPrice(item.price)}</span>
@@ -1482,9 +2216,11 @@
                     `;
                     container.appendChild(el);
                 });
-                subtotalEl.innerText = window.PremiumStore.formatPrice(totalUsd);
-                checkoutBtn.disabled = false;
-                checkoutBtn.className = "w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all text-center flex items-center justify-center gap-2";
+                if (subtotalEl) subtotalEl.innerText = window.PremiumStore.formatPrice(totalUsd);
+                if (checkoutBtn) {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.className = "w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all text-center flex items-center justify-center gap-2";
+                }
             }
             lucide.createIcons();
         }
@@ -1509,6 +2245,7 @@
 
         function renderCheckoutView(items) {
             const container = document.getElementById('checkout-items-list');
+            if (!container) return;
             container.innerHTML = '';
             let subtotalUsd = 0;
 
@@ -1518,7 +2255,7 @@
                 row.className = "flex items-center justify-between p-3 bg-slate-950/70 rounded-xl border border-slate-800/60";
                 row.innerHTML = `
                     <div class="flex items-center space-x-3 min-w-0">
-                        <img src="${item.coverImage}" class="w-9 h-9 rounded-lg object-cover border border-slate-800 shrink-0" alt="item">
+                        <img src="${item.coverImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-9 h-9 rounded-lg object-cover border border-slate-800 shrink-0" alt="item">
                         <div class="min-w-0">
                             <h4 class="font-bold text-xs text-white truncate">${item.title}</h4>
                             <span class="text-[10px] text-slate-500 uppercase">${item.category}</span>
@@ -1529,8 +2266,41 @@
                 container.appendChild(row);
             });
 
-            document.getElementById('checkout-item-count').innerText = `${items.length} Item${items.length > 1 ? 's' : ''}`;
+            const countEl = document.getElementById('checkout-item-count');
+            if (countEl) countEl.innerText = `${items.length} Item${items.length > 1 ? 's' : ''}`;
             updateCheckoutTotals(subtotalUsd);
+
+            // Auto pre-fill verified customer email if user is authenticated
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            const emailInput = document.getElementById('input-customer-email');
+            if (authUser && authUser.email && emailInput && !emailInput.value) {
+                emailInput.value = authUser.email;
+            }
+
+            const waCheckout = document.getElementById('checkout-whatsapp-link');
+            if (waCheckout) {
+                const settings = window.PremiumStore.getSettings();
+                const phone = settings.supportWhatsapp || '447455909204';
+                const itemNames = items.map(i => `${i.title} (${window.PremiumStore.formatPrice(i.price)})`).join(', ');
+                const total = window.PremiumStore.formatPrice(subtotalUsd);
+                const msg = encodeURIComponent(`Hello PremiumStore, I am at checkout and would like to order directly on WhatsApp:\nItems: ${itemNames}\nTotal: ${total}`);
+                waCheckout.href = `https://wa.me/${phone}?text=${msg}`;
+            }
+        }
+
+        function orderCartOnWhatsApp(e) {
+            if (e) e.preventDefault();
+            const cart = window.PremiumStore.getCart();
+            if (!cart || cart.length === 0) {
+                showToast('Your cart is empty. Add an application first.', 'info');
+                return;
+            }
+            const settings = window.PremiumStore.getSettings();
+            const phone = settings.supportWhatsapp || '447455909204';
+            const itemLines = cart.map(i => `• ${i.title} (${window.PremiumStore.formatPrice(i.price)})`).join('\n');
+            const total = window.PremiumStore.formatPrice(cart.reduce((s, i) => s + i.price, 0));
+            const msg = encodeURIComponent(`Hello PremiumStore Support,\n\nI want to place an order via WhatsApp for the following items:\n${itemLines}\n\nTotal: ${total}\n\nPlease guide me with payment and instant license delivery.`);
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
         }
 
         function updateCheckoutTotals(subtotalUsd) {
@@ -1633,9 +2403,8 @@
             const manualRef = manualRefInput ? manualRefInput.value.trim().toUpperCase() : '';
             const submitBtn = document.getElementById('btn-submit-payment');
 
-            // 1. Email validation (Real user email required)
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!email || !emailRegex.test(email)) {
+            // 1. Email validation (RFC 5322 regex validation)
+            if (!email || !window.PremiumStore.isValidEmail(email)) {
                 showToast('Please enter a valid delivery email address (e.g. name@domain.com).', 'error');
                 emailInput?.focus();
                 return;
@@ -1704,14 +2473,14 @@
             }
 
             submitBtn.disabled = true;
-            const paybillNum = settings.paybillNumber || '8106675';
+            const paybillNum = settings.paybillNumber || '522533';
             const accountName = settings.accountName || 'JASPER MARKETS';
 
             if (selectedGateway === 'kcb') {
                 if (manualRef) {
                     submitBtn.innerHTML = `
                         <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        <span>Verifying M-Pesa Code [${manualRef}] with ${accountName}...</span>
+                        <span>Submitting M-Pesa Code [${manualRef}] for Verification...</span>
                     `;
                 } else {
                     submitBtn.innerHTML = `
@@ -1735,7 +2504,8 @@
                     currencyCode: curr.code,
                     formattedTotal: window.PremiumStore.formatPrice(totalUsd),
                     paymentMethod: selectedGateway,
-                    paymentStatus: 'cleared',
+                    paymentStatus: 'pending',
+                    mpesaRef: finalRef,
                     kcbRef: finalRef,
                     downloadUrl: items[0].downloadUrl
                 });
@@ -1744,47 +2514,185 @@
                     window.PremiumStore.clearCart();
                 }
 
+                currentActiveOrder = order;
+                try {
+                    localStorage.setItem('premiumstore_active_order_id', order.id);
+                } catch(e) {}
+
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = `
                     <i data-lucide="shield-check" class="w-5 h-5"></i>
                     <span>Authorize Payment & Get Download Link</span>
                 `;
 
+                updateCustomerAuthUI();
                 renderSuccessFulfillment(order);
                 showPage('success');
-                showToast(`Payment verified! Download credentials dispatched to ${email}.`, 'success');
+                showToast(`Payment authorized! Order #${order.id} is queued for verification.`, 'info');
             }, 1800);
         }
 
         let countdownInterval = null;
+        let reviewTimerInterval = null;
+
+        function updatePendingReviewTimer(createdAt) {
+            const timerElem = document.getElementById('pending-elapsed-timer');
+            if (!timerElem) return;
+            const startTime = new Date(createdAt).getTime();
+            const elapsedSec = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
+            const mins = Math.floor(elapsedSec / 60).toString().padStart(2, '0');
+            const secs = (elapsedSec % 60).toString().padStart(2, '0');
+            timerElem.innerText = `${mins}:${secs}`;
+
+            // Highlight escalation prompt if review takes longer than 90 seconds
+            const longerMsg = document.getElementById('pending-longer-msg');
+            const chatBtn = document.getElementById('pending-support-chat-btn');
+            if (elapsedSec >= 90) {
+                if (longerMsg) longerMsg.classList.add('text-amber-300', 'font-bold');
+                if (chatBtn) chatBtn.classList.add('animate-bounce');
+            }
+        }
+
         function renderSuccessFulfillment(order) {
-            document.getElementById('success-ref').innerText = order.kcbRef || order.id;
-            document.getElementById('success-app-title').innerText = order.items.map(i => i.title).join(', ');
-            document.getElementById('success-customer-email').innerText = order.customerEmail;
-            
-            const randHex = Math.random().toString(36).substring(2, 6).toUpperCase();
-            document.getElementById('success-license-key').innerText = `PSTR-${randHex}-491A-882C-PRO`;
+            if (!order) return;
+            const isApproved = order.paymentStatus === 'cleared';
+            const pendingCard = document.getElementById('fulfillment-pending-card');
+            const clearedCard = document.getElementById('fulfillment-cleared-card');
 
-            const tokenUrl = `https://vault-storage.app/dl/signed-${order.downloadToken}?expires=86400`;
-            document.getElementById('success-token-url').innerText = tokenUrl;
-            document.getElementById('success-download-btn').dataset.dlUrl = order.downloadUrl;
-
-            let remainingSeconds = 86399;
-            if (countdownInterval) clearInterval(countdownInterval);
-            countdownInterval = setInterval(() => {
-                remainingSeconds--;
-                if (remainingSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                    document.getElementById('download-timer').innerText = "Expired";
-                    return;
+            if (isApproved) {
+                if (reviewTimerInterval) {
+                    clearInterval(reviewTimerInterval);
+                    reviewTimerInterval = null;
                 }
-                const hrs = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
-                const mins = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
-                const secs = (remainingSeconds % 60).toString().padStart(2, '0');
-                document.getElementById('download-timer').innerText = `${hrs}:${mins}:${secs}`;
-            }, 1000);
+
+                if (pendingCard) pendingCard.classList.add('hidden');
+                if (clearedCard) clearedCard.classList.remove('hidden');
+
+                const refElem = document.getElementById('success-ref');
+                if (refElem) refElem.innerText = order.mpesaRef || order.kcbRef || order.id;
+
+                const titleElem = document.getElementById('success-app-title');
+                if (titleElem) titleElem.innerText = order.items.map(i => i.title).join(', ');
+
+                const emailElem = document.getElementById('success-customer-email');
+                if (emailElem) emailElem.innerText = order.customerEmail;
+                
+                const randHex = (order.id || Math.random().toString(36).substring(2, 6)).slice(-4).toUpperCase();
+                const keyElem = document.getElementById('success-license-key');
+                if (keyElem) keyElem.innerText = `PSTR-${randHex}-491A-882C-PRO`;
+
+                const tokenUrl = `https://vault-storage.app/dl/signed-${order.downloadToken || 'sec_tk' + order.id}?expires=86400`;
+                const tokenElem = document.getElementById('success-token-url');
+                if (tokenElem) tokenElem.innerText = tokenUrl;
+
+                const dlBtn = document.getElementById('success-download-btn');
+                if (dlBtn) dlBtn.dataset.dlUrl = order.downloadUrl || (order.items[0] && order.items[0].downloadUrl);
+
+                let remainingSeconds = 86399;
+                if (countdownInterval) clearInterval(countdownInterval);
+                countdownInterval = setInterval(() => {
+                    remainingSeconds--;
+                    const timerElem = document.getElementById('download-timer');
+                    if (!timerElem) return;
+                    if (remainingSeconds <= 0) {
+                        clearInterval(countdownInterval);
+                        timerElem.innerText = "Expired";
+                        return;
+                    }
+                    const hrs = Math.floor(remainingSeconds / 3600).toString().padStart(2, '0');
+                    const mins = Math.floor((remainingSeconds % 3600) / 60).toString().padStart(2, '0');
+                    const secs = (remainingSeconds % 60).toString().padStart(2, '0');
+                    timerElem.innerText = `${hrs}:${mins}:${secs}`;
+                }, 1000);
+            } else {
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
+
+                if (pendingCard) pendingCard.classList.remove('hidden');
+                if (clearedCard) clearedCard.classList.add('hidden');
+
+                const pRef = document.getElementById('pending-ref');
+                if (pRef) pRef.innerText = order.mpesaRef || order.kcbRef || order.id;
+
+                const pId = document.getElementById('pending-order-id');
+                if (pId) pId.innerText = order.id;
+
+                const pTitle = document.getElementById('pending-app-title');
+                if (pTitle) pTitle.innerText = order.items.map(i => i.title).join(', ');
+
+                const pEmail = document.getElementById('pending-customer-email');
+                if (pEmail) pEmail.innerText = order.customerEmail;
+
+                // Start elapsed timer for live review tracking
+                if (reviewTimerInterval) clearInterval(reviewTimerInterval);
+                updatePendingReviewTimer(order.createdAt);
+                reviewTimerInterval = setInterval(() => {
+                    updatePendingReviewTimer(order.createdAt);
+                }, 1000);
+            }
 
             lucide.createIcons();
+        }
+
+        function checkCurrentOrderStatus() {
+            const activeId = localStorage.getItem('premiumstore_active_order_id');
+            const orders = window.PremiumStore.getOrders();
+            const order = (activeId ? orders.find(o => o.id === activeId) : null) || orders[0];
+            if (!order) {
+                showToast('No active transaction found to check.', 'info');
+                return;
+            }
+            if (order.paymentStatus === 'cleared') {
+                currentActiveOrder = order;
+                renderSuccessFulfillment(order);
+                showToast('🎉 Order Approved! Download link & license key unlocked.', 'success');
+            } else {
+                showToast('Payment verification in progress. Awaiting security approval.', 'warning');
+            }
+        }
+
+        function openWhatsAppSupport(customMessage) {
+            const settings = window.PremiumStore.getSettings();
+            const phone = settings.supportWhatsapp || '447455909204';
+            const msg = encodeURIComponent(customMessage || 'Hello PremiumStore, I would like to inquire about your applications and orders.');
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+        }
+
+        function openWhatsAppApproval() {
+            const activeId = localStorage.getItem('premiumstore_active_order_id');
+            const orders = window.PremiumStore.getOrders();
+            const order = (activeId ? orders.find(o => o.id === activeId) : null) || orders[0];
+            const settings = window.PremiumStore.getSettings();
+            const phone = settings.supportWhatsapp || '447455909204';
+            
+            const email = order ? order.customerEmail : (window.PremiumStore.getAuthenticatedUser()?.email || 'N/A');
+            const orderId = order ? order.id : 'N/A';
+            const ref = order ? (order.mpesaRef || order.kcbRef || 'N/A') : 'N/A';
+            const method = order ? (order.paymentMethod === 'kcb' ? 'M-Pesa (Paybill 522533 / JASPER MARKETS)' : 'Credit/Debit Card') : 'M-Pesa';
+            const amount = order ? (order.formattedTotal || `$${order.totalAmount}`) : 'N/A';
+            
+            let elapsedStr = 'Just now';
+            if (order && order.createdAt) {
+                const elapsedSec = Math.max(0, Math.floor((Date.now() - new Date(order.createdAt).getTime()) / 1000));
+                const mins = Math.floor(elapsedSec / 60);
+                const secs = elapsedSec % 60;
+                elapsedStr = `${mins}m ${secs}s`;
+            }
+
+            const msg = encodeURIComponent(
+                `Hello Jasper Markets Support Agent,\n\n` +
+                `I have authorized payment for my order and would like to expedite verification for digital release.\n\n` +
+                `• Customer Email: ${email}\n` +
+                `• Order ID: ${orderId}\n` +
+                `• Payment Method: ${method}\n` +
+                `• Transaction Ref: ${ref}\n` +
+                `• Total Paid: ${amount}\n` +
+                `• Time in Review: ${elapsedStr}\n\n` +
+                `Please review and verify this order so my download link & license key unlock. Thank you!`
+            );
+            window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
         }
 
         function triggerDigitalDownload(e) {
@@ -1820,7 +2728,9 @@
         }
 
         function copyToClipboard(elemId, label) {
-            const text = document.getElementById(elemId).innerText;
+            const elem = document.getElementById(elemId);
+            if (!elem) return;
+            const text = elem.innerText;
             navigator.clipboard.writeText(text).then(() => {
                 showToast(`${label} copied to clipboard!`, 'success');
             }).catch(() => {
@@ -1829,11 +2739,267 @@
         }
 
         function openSupportWithRef() {
-            const ref = document.getElementById('success-ref').innerText;
+            const refElem = document.getElementById('success-ref') || document.getElementById('pending-ref');
+            const ref = refElem ? refElem.innerText : 'GENERAL';
             const settings = window.PremiumStore.getSettings();
             const phone = settings.supportWhatsapp || '447455909204';
             const url = `https://wa.me/${phone}?text=Hello%20Support,%20I%20have%20a%20query%20about%20Order%20Ref:%20${ref}`;
             window.open(url, '_blank');
+        }
+
+        // ==========================================
+        // Customer Identification & Library Vault
+        // ==========================================
+        function updateCustomerAuthUI() {
+            const container = document.getElementById('customer-auth-container');
+            if (!container) return;
+
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            if (authUser && authUser.email) {
+                const username = authUser.email.split('@')[0];
+                const initial = username.charAt(0).toUpperCase();
+                container.innerHTML = `
+                    <button onclick="openCustomerLibraryModal()" title="View My Purchases & License Keys (${authUser.email})"
+                        class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-white transition-all text-xs font-semibold group shadow-sm">
+                        <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow">
+                            ${initial}
+                        </div>
+                        <span class="hidden sm:inline max-w-[120px] truncate text-slate-200 group-hover:text-white font-medium">${authUser.email}</span>
+                        <span class="px-1.5 py-0.5 rounded-md bg-brand-500/20 text-brand-300 text-[10px] font-bold">Vault</span>
+                    </button>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openCustomerAuthModal()" title="Sign In with Email to Access Purchased Downloads"
+                        class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white transition-all text-xs font-semibold shadow-sm">
+                        <i data-lucide="user-check" class="w-4 h-4 text-brand-400"></i>
+                        <span>My Library</span>
+                    </button>
+                `;
+            }
+            updateMobileDrawerContent();
+            lucide.createIcons();
+        }
+
+        function handleCustomerAuthClick() {
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            if (authUser && authUser.email) {
+                openCustomerLibraryModal();
+            } else {
+                openCustomerAuthModal();
+            }
+        }
+
+        function openCustomerAuthModal() {
+            const modal = document.getElementById('modal-customer-auth');
+            if (modal) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('auth-input-email')?.focus();
+                }, 100);
+            }
+            lucide.createIcons();
+        }
+
+        function closeCustomerAuthModal() {
+            const modal = document.getElementById('modal-customer-auth');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function submitCustomerAuth(e) {
+            if (e) e.preventDefault();
+            const emailInput = document.getElementById('auth-input-email');
+            const email = emailInput ? emailInput.value.trim() : '';
+
+            if (!email || !window.PremiumStore.isValidEmail(email)) {
+                showToast('Please provide a valid email format (e.g. yourname@domain.com)', 'error');
+                emailInput?.focus();
+                return;
+            }
+
+            window.PremiumStore.setAuthenticatedUser(email);
+            updateCustomerAuthUI();
+            closeCustomerAuthModal();
+            showToast(`Authenticated as ${email}. Loading your vault...`, 'success');
+            openCustomerLibraryModal();
+        }
+
+        function openCustomerLibraryModal() {
+            const modal = document.getElementById('modal-customer-library');
+            if (!modal) return;
+            renderCustomerLibrary();
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeCustomerLibraryModal() {
+            const modal = document.getElementById('modal-customer-library');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function renderCustomerLibrary() {
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            const emailDisplay = document.getElementById('library-user-email');
+            const appsContainer = document.getElementById('library-items-container');
+            const pendingContainer = document.getElementById('library-pending-container');
+            const pendingList = document.getElementById('library-pending-list');
+            const pendingCountBadge = document.getElementById('library-pending-count');
+            const totalAppsEl = document.getElementById('library-total-apps');
+            const totalSpendEl = document.getElementById('library-total-spend');
+
+            if (!authUser || !authUser.email) {
+                if (emailDisplay) emailDisplay.innerText = 'Not Signed In';
+                if (appsContainer) {
+                    appsContainer.innerHTML = `
+                        <div class="py-12 text-center space-y-3">
+                            <p class="text-sm text-slate-400">Please sign in with your email to access your licensed library.</p>
+                            <button onclick="closeCustomerLibraryModal(); openCustomerAuthModal();" class="px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">Sign In</button>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            if (emailDisplay) emailDisplay.innerText = authUser.email;
+
+            const library = window.PremiumStore.getCustomerLibrary(authUser.email);
+            const orders = window.PremiumStore.getCustomerOrders(authUser.email);
+            const pendingOrders = orders.filter(o => o.paymentStatus !== 'cleared');
+
+            if (totalAppsEl) totalAppsEl.innerText = library.length;
+            if (totalSpendEl) {
+                const totalSpend = orders.filter(o => o.paymentStatus === 'cleared').reduce((s, o) => s + (o.totalAmount || 0), 0);
+                totalSpendEl.innerText = window.PremiumStore.formatPrice(totalSpend);
+            }
+
+            // 1. Render Cleared Purchased Apps
+            if (appsContainer) {
+                if (library.length === 0) {
+                    appsContainer.innerHTML = `
+                        <div class="py-10 text-center space-y-3 bg-slate-950/40 rounded-2xl border border-slate-800/80 p-6">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-800/80 flex items-center justify-center mx-auto text-slate-500">
+                                <i data-lucide="package-open" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-slate-300">No cleared digital licenses found</p>
+                            <p class="text-xs text-slate-500 max-w-sm mx-auto">When an order is verified and completed, your active application packages and permanent licenses appear here.</p>
+                        </div>
+                    `;
+                } else {
+                    appsContainer.innerHTML = '';
+                    library.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = "p-4 bg-slate-950/70 border border-slate-800 rounded-2xl space-y-3 transition-all hover:border-slate-700 shadow-md";
+                        card.innerHTML = `
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
+                                <div class="flex items-center space-x-3 min-w-0">
+                                    <img src="${item.coverImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-12 h-12 rounded-xl object-cover border border-slate-800 shrink-0" alt="${item.title}">
+                                    <div class="min-w-0">
+                                        <h4 class="font-bold text-sm text-white truncate">${item.title}</h4>
+                                        <div class="flex items-center gap-2 mt-0.5">
+                                            <span class="text-[10px] text-brand-400 bg-brand-950/80 border border-brand-800/40 px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold">${item.category}</span>
+                                            <span class="text-[10px] text-slate-500 font-mono">v${item.version}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center gap-1 shrink-0 self-start sm:self-auto">
+                                    <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Verified Active
+                                </span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                <div class="p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 space-y-1">
+                                    <span class="text-[10px] uppercase font-bold text-slate-500 flex items-center gap-1">
+                                        <i data-lucide="key" class="w-3 h-3 text-brand-400"></i> License Key
+                                    </span>
+                                    <span class="font-mono text-xs font-bold text-brand-300 block select-all">${item.licenseKey}</span>
+                                </div>
+                                <div class="p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 space-y-1">
+                                    <span class="text-[10px] uppercase font-bold text-slate-500 flex items-center gap-1">
+                                        <i data-lucide="link" class="w-3 h-3 text-emerald-400"></i> Signed Token
+                                    </span>
+                                    <span class="font-mono text-xs text-slate-400 block truncate select-all">signed-tok-${item.downloadToken}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-3 pt-1">
+                                <span class="text-[11px] text-slate-500">Order ID: <strong class="text-slate-400 font-mono">${item.orderId}</strong></span>
+                                <button onclick="downloadLibraryItem('${item.appId}', '${item.downloadUrl}', '${item.downloadToken}', '${item.title.replace(/'/g, "\\'")}', '${item.licenseKey}')"
+                                    class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5 hover:scale-105">
+                                    <i data-lucide="download" class="w-3.5 h-3.5"></i> Download Package
+                                </button>
+                            </div>
+                        `;
+                        appsContainer.appendChild(card);
+                    });
+                }
+            }
+
+            // 2. Render Pending Orders Awaiting Review
+            if (pendingContainer && pendingList) {
+                if (pendingOrders.length === 0) {
+                    pendingContainer.classList.add('hidden');
+                } else {
+                    pendingContainer.classList.remove('hidden');
+                    if (pendingCountBadge) pendingCountBadge.innerText = `${pendingOrders.length} Order${pendingOrders.length > 1 ? 's' : ''}`;
+                    pendingList.innerHTML = '';
+                    pendingOrders.forEach(o => {
+                        const itemNames = o.items.map(i => i.title).join(', ');
+                        const elapsedSec = Math.max(0, Math.floor((Date.now() - new Date(o.createdAt).getTime()) / 1000));
+                        const mins = Math.floor(elapsedSec / 60);
+                        const secs = elapsedSec % 60;
+                        const row = document.createElement('div');
+                        row.className = "p-3 bg-slate-900/90 rounded-xl border border-amber-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs";
+                        row.innerHTML = `
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-white">${itemNames}</span>
+                                    <span class="text-[10px] font-mono text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded">Order #${o.id}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 flex items-center gap-2">
+                                    <span>Method: <strong class="text-slate-300">${o.paymentMethod === 'kcb' ? 'M-Pesa Paybill' : 'Card'}</strong></span>
+                                    <span>•</span>
+                                    <span>Ref: <strong class="text-amber-300 font-mono">${o.mpesaRef || o.kcbRef || 'Pending'}</strong></span>
+                                    <span>•</span>
+                                    <span>Wait: <strong class="text-amber-300 font-mono">${mins}m ${secs}s</strong></span>
+                                </div>
+                            </div>
+                            <button onclick="localStorage.setItem('premiumstore_active_order_id', '${o.id}'); closeCustomerLibraryModal(); openWhatsAppApproval();"
+                                class="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 rounded-lg font-bold text-xs flex items-center gap-1.5 transition-all shrink-0">
+                                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Expedite on WhatsApp
+                            </button>
+                        `;
+                        pendingList.appendChild(row);
+                    });
+                }
+            }
+
+            lucide.createIcons();
+        }
+
+        function handleCustomerSignOut() {
+            window.PremiumStore.logoutUser();
+            updateCustomerAuthUI();
+            closeCustomerLibraryModal();
+            showToast('Signed out from customer library.', 'info');
+        }
+
+        function downloadLibraryItem(appId, dlUrl, token, title, licenseKey) {
+            const blob = new Blob([
+                `PremiumStore Digital Distribution Delivery\n\n` +
+                `Software: ${title}\n` +
+                `License Key: ${licenseKey}\n` +
+                `Download Token: ${token}\n` +
+                `Permanent Customer License verified.\n\n` +
+                `Instructions:\n1. Unzip the package.\n2. Run the installer application.\n3. Input your license key when prompted.`
+            ], { type: 'text/plain' });
+
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = `${title.replace(/\s+/g, '_')}_Release_${Date.now()}.txt`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            showToast(`Downloading package for "${title}"!`, 'success');
         }
 
         function showPage(pageId) {
