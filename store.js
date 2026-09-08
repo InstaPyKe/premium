@@ -15,7 +15,9 @@
         USER_RATINGS: 'premiumstore_user_ratings_v2',
         DEVICE_ID: 'premiumstore_device_id_v2',
         CURRENCY: 'premiumstore_selected_currency_v2',
-        AUTH_USER: 'premiumstore_auth_user_v2'
+        AUTH_USER: 'premiumstore_auth_user_v2',
+        REFERRALS: 'premiumstore_referrals_v1',
+        ACTIVE_REFERRER: 'premiumstore_active_referrer_v1'
     };
 
     // Supported Countries & Currencies with Live Conversion Matrix
@@ -440,6 +442,35 @@
         currencySymbol: '$'
     };
 
+    // Default Referrals State
+    const DEFAULT_REFERRALS = {
+        'alex_pro': {
+            username: 'alex_pro',
+            email: 'alex.creator@gmail.com',
+            totalClicks: 48,
+            successfulOrders: 4,
+            totalRevenueUsd: 6.16,
+            totalCommissionUsd: 1.85,
+            balanceUsd: 1.85,
+            paidPayoutsUsd: 0,
+            freeAppsClaimed: [{
+                milestoneId: 'm1_3apps',
+                appId: 'app_capcut_pro',
+                appTitle: 'CapCut Pro Video & AI Studio',
+                claimedAt: '2026-09-07T12:00:00Z'
+            }],
+            referralOrders: [
+                { orderId: 'ORD-5120', customerEmail: 'mark.editor@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-07T10:15:00Z' },
+                { orderId: 'ORD-6210', customerEmail: 'grace.media@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-07T14:30:00Z' },
+                { orderId: 'ORD-7341', customerEmail: 'kevin.dev@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-08T09:12:00Z' },
+                { orderId: 'ORD-8452', customerEmail: 'sharon.pro@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-08T15:20:00Z' }
+            ],
+            payoutRequests: [],
+            createdAt: '2026-09-07T08:00:00Z',
+            lastActive: '2026-09-08T15:20:00Z'
+        }
+    };
+
     // Store State Object
     const Store = {
         // Multi-Currency Engine
@@ -683,21 +714,32 @@
             const settings = this.getSettings();
             const authUser = this.getAuthenticatedUser();
             const cleanEmail = (orderData.customerEmail || (authUser ? authUser.email : '')).trim().toLowerCase();
+            const customUsername = (orderData.username || (authUser ? authUser.username : '')).trim().toLowerCase();
 
-            // Auto-associate and authenticate customer session
+            // Auto-associate and authenticate customer session with username
             if (cleanEmail && this.isValidEmail(cleanEmail) && !authUser) {
-                this.setAuthenticatedUser(cleanEmail, { customerPhone: orderData.customerPhone || '' });
+                this.setAuthenticatedUser(cleanEmail, { 
+                    username: customUsername,
+                    customerPhone: orderData.customerPhone || '' 
+                });
             }
+
+            // Referral attribution: Check order data or active referrer session
+            const activeRef = (orderData.referrerUsername || this.getActiveReferrer() || '').trim().toLowerCase();
+            const validRef = this.isValidUsername(activeRef) ? activeRef : null;
+            const totalAmountUsd = orderData.totalAmount || 0;
+            const commissionUsd = validRef ? Math.round(totalAmountUsd * 0.30 * 100) / 100 : 0;
 
             // Universal review requirement: All payments must undergo admin review (paymentStatus: 'pending')
             const newOrder = {
                 id: orderId,
                 customerEmail: cleanEmail,
+                customerUsername: customUsername || (cleanEmail ? cleanEmail.split('@')[0].slice(0, 20) : 'customer'),
                 customerPhone: orderData.customerPhone || '',
                 items: orderData.items || [],
-                totalAmount: orderData.totalAmount || 0,
+                totalAmount: totalAmountUsd,
                 currencyCode: orderData.currencyCode || curr.code,
-                formattedTotal: orderData.formattedTotal || this.formatPrice(orderData.totalAmount || 0),
+                formattedTotal: orderData.formattedTotal || this.formatPrice(totalAmountUsd),
                 paymentMethod: method,
                 paymentStatus: 'pending', // Strictly pending for all payments
                 mpesaRef: refNumber,
@@ -705,6 +747,8 @@
                 paybillNumber: settings.paybillNumber || '522533',
                 accountNumber: settings.accountNumber || '8106675',
                 accountName: settings.accountName || 'JASPER MARKETS',
+                referrerUsername: validRef,
+                referralCommissionUsd: commissionUsd,
                 downloadToken: token,
                 downloadUrl: orderData.downloadUrl || (orderData.items && orderData.items[0] ? orderData.items[0].downloadUrl : 'https://vault-storage.app/packages/bundle.zip'),
                 expiresAt: new Date(Date.now() + 86400000 * 2).toISOString(),
@@ -720,8 +764,13 @@
             const orders = this.getOrders();
             const order = orders.find(o => o.id === orderId);
             if (order) {
+                const prevStatus = order.paymentStatus;
                 order.paymentStatus = status;
                 this.saveOrders(orders);
+                // Credit 30% commission and trigger referral reward calculations when payment is cleared
+                if (prevStatus !== 'cleared' && status === 'cleared') {
+                    this.processReferralCommission(order);
+                }
                 return order;
             }
             return null;
@@ -734,6 +783,14 @@
             // RFC 5322 standard format email validator
             const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
             return re.test(trimmed) && trimmed.length <= 254;
+        },
+
+        // Unique Username Validator (3-20 chars: alphanumeric, underscores, hyphens)
+        isValidUsername(username) {
+            if (!username || typeof username !== 'string') return false;
+            const trimmed = username.trim().toLowerCase();
+            const re = /^[a-z0-9_-]{3,20}$/;
+            return re.test(trimmed);
         },
 
         getAuthenticatedUser() {
@@ -750,16 +807,34 @@
             if (!this.isValidEmail(cleanEmail)) {
                 return { success: false, message: 'Please provide a valid email address (e.g. name@domain.com).' };
             }
+
+            let username = (extraData.username || '').trim().toLowerCase();
+            if (!username) {
+                // Auto-derive clean unique handle from email prefix
+                const prefix = cleanEmail.split('@')[0].replace(/[^a-z0-9_-]/gi, '').toLowerCase();
+                username = prefix.length >= 3 ? prefix.slice(0, 20) : `user_${Math.random().toString(36).substring(2, 6)}`;
+            }
+
+            if (!this.isValidUsername(username)) {
+                return { success: false, message: 'Username must be 3-20 characters (letters, numbers, underscores, dashes).' };
+            }
+
             const userProfile = {
                 email: cleanEmail,
+                username: username,
                 authenticatedAt: new Date().toISOString(),
                 deviceId: getDeviceId(),
-                ...extraData
+                ...extraData,
+                username: username
             };
             try {
                 localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(userProfile));
                 sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(userProfile));
             } catch(e) {}
+
+            // Automatically initialize or sync referral profile
+            this.registerReferralProfile(username, cleanEmail);
+
             this.dispatchUpdate('auth_user', userProfile);
             return { success: true, user: userProfile };
         },
@@ -770,6 +845,317 @@
                 sessionStorage.removeItem(STORAGE_KEYS.AUTH_USER);
             } catch(e) {}
             this.dispatchUpdate('auth_user', null);
+        },
+
+        // ==========================================
+        // 30% Referral Engine & Free App Rewards
+        // ==========================================
+        getReferrals() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.REFERRALS);
+                return data ? JSON.parse(data) : {};
+            } catch (e) {
+                return {};
+            }
+        },
+
+        saveReferrals(referrals) {
+            localStorage.setItem(STORAGE_KEYS.REFERRALS, JSON.stringify(referrals));
+            this.dispatchUpdate('referrals', referrals);
+        },
+
+        getActiveReferrer() {
+            try {
+                return localStorage.getItem(STORAGE_KEYS.ACTIVE_REFERRER) || null;
+            } catch (e) {
+                return null;
+            }
+        },
+
+        setActiveReferrer(username) {
+            if (!username || typeof username !== 'string') return;
+            const clean = username.trim().toLowerCase();
+            if (this.isValidUsername(clean)) {
+                localStorage.setItem(STORAGE_KEYS.ACTIVE_REFERRER, clean);
+                this.recordReferralClick(clean);
+            }
+        },
+
+        recordReferralClick(referrerUsername) {
+            if (!referrerUsername) return;
+            const clean = referrerUsername.trim().toLowerCase();
+            if (!this.isValidUsername(clean)) return;
+
+            try {
+                localStorage.setItem(STORAGE_KEYS.ACTIVE_REFERRER, clean);
+            } catch (e) {}
+
+            const referrals = this.getReferrals();
+            if (!referrals[clean]) {
+                referrals[clean] = {
+                    username: clean,
+                    email: `${clean}@customer.store`,
+                    totalClicks: 0,
+                    successfulOrders: 0,
+                    totalRevenueUsd: 0,
+                    totalCommissionUsd: 0,
+                    balanceUsd: 0,
+                    paidPayoutsUsd: 0,
+                    freeAppsClaimed: [],
+                    referralOrders: [],
+                    payoutRequests: [],
+                    createdAt: new Date().toISOString(),
+                    lastActive: new Date().toISOString()
+                };
+            }
+            referrals[clean].totalClicks = (referrals[clean].totalClicks || 0) + 1;
+            referrals[clean].lastActive = new Date().toISOString();
+            this.saveReferrals(referrals);
+        },
+
+        registerReferralProfile(username, email) {
+            if (!username || !email) return null;
+            const cleanUser = username.trim().toLowerCase();
+            const cleanEmail = email.trim().toLowerCase();
+            if (!this.isValidUsername(cleanUser)) return null;
+
+            const referrals = this.getReferrals();
+            if (!referrals[cleanUser]) {
+                referrals[cleanUser] = {
+                    username: cleanUser,
+                    email: cleanEmail,
+                    totalClicks: 0,
+                    successfulOrders: 0,
+                    totalRevenueUsd: 0,
+                    totalCommissionUsd: 0,
+                    balanceUsd: 0,
+                    paidPayoutsUsd: 0,
+                    freeAppsClaimed: [],
+                    referralOrders: [],
+                    payoutRequests: [],
+                    createdAt: new Date().toISOString(),
+                    lastActive: new Date().toISOString()
+                };
+            } else {
+                referrals[cleanUser].email = cleanEmail;
+                referrals[cleanUser].lastActive = new Date().toISOString();
+            }
+            this.saveReferrals(referrals);
+            return referrals[cleanUser];
+        },
+
+        processReferralCommission(order) {
+            if (!order || !order.referrerUsername) return;
+            const refUser = order.referrerUsername.trim().toLowerCase();
+            if (!this.isValidUsername(refUser)) return;
+
+            const referrals = this.getReferrals();
+            if (!referrals[refUser]) {
+                this.registerReferralProfile(refUser, `${refUser}@customer.store`);
+            }
+            const profile = referrals[refUser];
+            
+            // Prevent duplicate commission attribution for the exact same order
+            profile.referralOrders = profile.referralOrders || [];
+            if (profile.referralOrders.some(ro => ro.orderId === order.id)) {
+                return;
+            }
+
+            const orderTotalUsd = order.totalAmount || 0;
+            // Strictly 30% referral commission calculation
+            const commissionAmountUsd = Math.round(orderTotalUsd * 0.30 * 100) / 100;
+
+            profile.successfulOrders = (profile.successfulOrders || 0) + 1;
+            profile.totalRevenueUsd = Math.round(((profile.totalRevenueUsd || 0) + orderTotalUsd) * 100) / 100;
+            profile.totalCommissionUsd = Math.round(((profile.totalCommissionUsd || 0) + commissionAmountUsd) * 100) / 100;
+            profile.balanceUsd = Math.round(((profile.balanceUsd || 0) + commissionAmountUsd) * 100) / 100;
+            profile.lastActive = new Date().toISOString();
+
+            profile.referralOrders.unshift({
+                orderId: order.id,
+                customerEmail: order.customerEmail || 'Invited Customer',
+                orderTotalUsd: orderTotalUsd,
+                commissionEarnedUsd: commissionAmountUsd,
+                currencyCode: order.currencyCode || 'USD',
+                clearedAt: new Date().toISOString()
+            });
+
+            this.saveReferrals(referrals);
+        },
+
+        getReferralStats(username) {
+            if (!username) return null;
+            const clean = username.trim().toLowerCase();
+            const referrals = this.getReferrals();
+            const profile = referrals[clean] || {
+                username: clean,
+                email: `${clean}@customer.store`,
+                totalClicks: 0,
+                successfulOrders: 0,
+                totalRevenueUsd: 0,
+                totalCommissionUsd: 0,
+                balanceUsd: 0,
+                paidPayoutsUsd: 0,
+                freeAppsClaimed: [],
+                referralOrders: [],
+                payoutRequests: [],
+                createdAt: new Date().toISOString(),
+                lastActive: new Date().toISOString()
+            };
+
+            // Reward milestones definition
+            const milestones = [
+                { id: 'm1_3apps', requiredInvites: 3, rewardTitle: '1 Free Premium App of Choice', unlocked: profile.successfulOrders >= 3, claimed: (profile.freeAppsClaimed || []).some(c => c.milestoneId === 'm1_3apps') },
+                { id: 'm2_5apps', requiredInvites: 5, rewardTitle: '2 Free Premium Apps + VIP Badge', unlocked: profile.successfulOrders >= 5, claimed: (profile.freeAppsClaimed || []).some(c => c.milestoneId === 'm2_5apps') },
+                { id: 'm3_10apps', requiredInvites: 10, rewardTitle: '5 Free Apps + Unlimited VIP Pass', unlocked: profile.successfulOrders >= 10, claimed: (profile.freeAppsClaimed || []).some(c => c.milestoneId === 'm3_10apps') }
+            ];
+
+            return {
+                ...profile,
+                clicks: profile.totalClicks || 0,
+                totalOrders: profile.successfulOrders || 0,
+                totalEarnedUsd: profile.totalCommissionUsd || 0,
+                payouts: profile.payoutRequests || [],
+                milestones: milestones
+            };
+        },
+
+        requestReferralPayout(username, payoutDetails = {}) {
+            const clean = (username || '').trim().toLowerCase();
+            if (!this.isValidUsername(clean)) {
+                return { success: false, message: 'Invalid referral account username.' };
+            }
+
+            const referrals = this.getReferrals();
+            const profile = referrals[clean];
+            if (!profile || (profile.balanceUsd || 0) <= 0) {
+                return { success: false, message: 'No available commission balance to withdraw.' };
+            }
+
+            const requestedAmountUsd = profile.balanceUsd;
+            const payoutId = 'PAY-' + Math.floor(1000 + Math.random() * 9000);
+            const payoutRecord = {
+                id: payoutId,
+                username: clean,
+                email: profile.email,
+                amountUsd: requestedAmountUsd,
+                paymentMethod: payoutDetails.paymentMethod || 'mpesa',
+                mpesaNumber: payoutDetails.mpesaNumber || payoutDetails.phone || '',
+                accountDetails: payoutDetails.accountDetails || '',
+                status: 'pending',
+                requestedAt: new Date().toISOString(),
+                paidAt: null
+            };
+
+            profile.payoutRequests = profile.payoutRequests || [];
+            profile.payoutRequests.unshift(payoutRecord);
+            profile.balanceUsd = 0; // Move from balance into pending payout
+            this.saveReferrals(referrals);
+
+            return { success: true, payout: payoutRecord, message: `Payout request #${payoutId} submitted successfully!` };
+        },
+
+        claimFreeAppReward(username, milestoneId, appId) {
+            const clean = (username || '').trim().toLowerCase();
+            const referrals = this.getReferrals();
+            const profile = referrals[clean];
+            if (!profile) return { success: false, message: 'Referral profile not found.' };
+
+            const app = this.getAppById(appId);
+            if (!app) return { success: false, message: 'Selected application not found in catalog.' };
+
+            profile.freeAppsClaimed = profile.freeAppsClaimed || [];
+            if (profile.freeAppsClaimed.some(c => c.milestoneId === milestoneId)) {
+                return { success: false, message: 'This milestone reward has already been claimed.' };
+            }
+
+            profile.freeAppsClaimed.push({
+                milestoneId: milestoneId,
+                appId: app.id,
+                appTitle: app.title,
+                claimedAt: new Date().toISOString()
+            });
+            this.saveReferrals(referrals);
+
+            // Automatically grant cleared license in customer orders library
+            const freeOrder = this.createOrder({
+                customerEmail: profile.email,
+                username: clean,
+                customerPhone: '',
+                items: [{
+                    id: app.id,
+                    title: app.title,
+                    price: 0,
+                    coverImage: app.coverImage,
+                    category: app.category,
+                    downloadUrl: app.downloadUrl
+                }],
+                totalAmount: 0,
+                paymentMethod: 'reward_claim',
+                mpesaRef: 'FREE-REWARD-' + milestoneId.toUpperCase(),
+                downloadUrl: app.downloadUrl
+            });
+            this.updateOrderStatus(freeOrder.id, 'cleared');
+
+            return { success: true, message: `🎉 "${app.title}" unlocked for free and added to your Digital Vault!` };
+        },
+
+        getAllAffiliates() {
+            const referrals = this.getReferrals();
+            return Object.values(referrals).sort((a, b) => (b.totalCommissionUsd || 0) - (a.totalCommissionUsd || 0));
+        },
+
+        updatePayoutStatus(arg1, arg2, arg3) {
+            let username = null;
+            let payoutId = null;
+            let newStatus = null;
+
+            if (arg3 !== undefined) {
+                username = arg1;
+                payoutId = arg2;
+                newStatus = arg3;
+            } else {
+                payoutId = arg1;
+                newStatus = arg2;
+            }
+
+            const referrals = this.getReferrals();
+            let targetProfile = null;
+            let targetPayout = null;
+
+            if (username) {
+                const clean = username.trim().toLowerCase();
+                targetProfile = referrals[clean];
+                if (targetProfile && targetProfile.payoutRequests) {
+                    targetPayout = targetProfile.payoutRequests.find(p => p.id === payoutId);
+                }
+            } else {
+                for (const u of Object.keys(referrals)) {
+                    const prof = referrals[u];
+                    if (prof && prof.payoutRequests) {
+                        const found = prof.payoutRequests.find(p => p.id === payoutId);
+                        if (found) {
+                            targetProfile = prof;
+                            targetPayout = found;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (targetProfile && targetPayout) {
+                targetPayout.status = newStatus;
+                if (newStatus === 'paid') {
+                    targetPayout.paidAt = new Date().toISOString();
+                    targetProfile.paidPayoutsUsd = (targetProfile.paidPayoutsUsd || 0) + (targetPayout.amountUsd || 0);
+                } else if (newStatus === 'rejected') {
+                    // Refund back to available balance
+                    targetProfile.balanceUsd = Math.round(((targetProfile.balanceUsd || 0) + (targetPayout.amountUsd || 0)) * 100) / 100;
+                }
+                this.saveReferrals(referrals);
+                return targetPayout;
+            }
+            return null;
         },
 
         getCustomerOrders(email) {
@@ -945,8 +1331,10 @@
             localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(DEFAULT_APPS));
             localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_ORDERS));
             localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
+            localStorage.setItem(STORAGE_KEYS.REFERRALS, JSON.stringify(DEFAULT_REFERRALS));
             localStorage.removeItem(STORAGE_KEYS.CART);
             localStorage.removeItem(STORAGE_KEYS.USER_RATINGS);
+            localStorage.removeItem(STORAGE_KEYS.ACTIVE_REFERRER);
             localStorage.setItem(STORAGE_KEYS.CURRENCY, 'USD');
             this.dispatchUpdate('all_reset', {});
         },
@@ -970,6 +1358,9 @@
             }
             if (!localStorage.getItem(STORAGE_KEYS.ORDERS)) {
                 localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_ORDERS));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.REFERRALS)) {
+                localStorage.setItem(STORAGE_KEYS.REFERRALS, JSON.stringify(DEFAULT_REFERRALS));
             }
             if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
