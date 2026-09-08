@@ -680,8 +680,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Price ($) <span class="text-slate-400 text-[10px] font-normal">[100 – 300 Ksh ($0.77 – $2.30)]</span> <span class="text-brand-400">*</span></label>
-                        <input type="number" id="form-app-price" step="0.01" min="0.77" max="2.30" required placeholder="2.30"
+                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Price ($) <span class="text-slate-400 text-[10px] font-normal">[100 – 200 Ksh ($0.77 – $1.54)]</span> <span class="text-brand-400">*</span></label>
+                        <input type="number" id="form-app-price" step="0.01" min="0.77" max="1.54" required placeholder="1.54"
                             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500">
                     </div>
                     <div>
@@ -1253,8 +1253,8 @@
             const coverVal = document.getElementById('form-app-cover').value.trim();
             const finalGallery = activeGalleryArray.length ? activeGalleryArray : [coverVal];
 
-            const rawPrice = parseFloat(document.getElementById('form-app-price').value) || 2.30;
-            const boundedPrice = rawPrice > 2.30 ? 2.30 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
+            const rawPrice = parseFloat(document.getElementById('form-app-price').value) || 1.54;
+            const boundedPrice = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
 
             const appData = {
                 title: document.getElementById('form-app-title').value.trim(),

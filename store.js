@@ -8,7 +8,7 @@
     'use strict';
 
     const STORAGE_KEYS = {
-        APPS: 'premiumstore_apps_v4',
+        APPS: 'premiumstore_apps_v5',
         ORDERS: 'premiumstore_orders_v2',
         SETTINGS: 'premiumstore_settings_v2',
         CART: 'premiumstore_cart_v2',
@@ -45,14 +45,14 @@
     }
 
     // Initial Premium Applications Catalog with high-resolution imagery
-    // Note: All product prices are strictly bounded between 100 Ksh and 300 Ksh ($0.77 – $2.30 USD at 130 KES/USD)
+    // Note: All product prices are strictly bounded between 100 Ksh and 200 Ksh ($0.77 – $1.54 USD at 130 KES/USD)
     const DEFAULT_APPS = [
         {
             id: 'app_capcut_pro',
             title: 'CapCut Pro Video & AI Studio',
             tagline: 'VIP 4K 60FPS video editor, AI body effects & dynamic chroma key suite',
             category: 'Design & Media',
-            price: 2.30,
+            price: 1.54,
             rating: 4.9,
             ratingCount: 412,
             downloads: 14850,
@@ -83,7 +83,7 @@
             title: 'TikTok Pro Creator Suite',
             tagline: 'Ad-free video engine, watermark-free downloader & live analytics',
             category: 'Social Apps',
-            price: 2.15,
+            price: 1.50,
             rating: 4.9,
             ratingCount: 580,
             downloads: 22400,
@@ -114,7 +114,7 @@
             title: 'NordVPN Pro CyberShield',
             tagline: 'Ultra-fast WireGuard NordLynx VPN with Threat Protection & Double VPN',
             category: 'VPN & Security',
-            price: 2.30,
+            price: 1.54,
             rating: 5.0,
             ratingCount: 620,
             downloads: 19800,
@@ -145,7 +145,7 @@
             title: 'ExpressVPN Pro Ultra Stealth',
             tagline: 'Lightning-fast Lightway protocol with global streaming unblocker',
             category: 'VPN & Security',
-            price: 2.20,
+            price: 1.45,
             rating: 4.9,
             ratingCount: 490,
             downloads: 16700,
@@ -176,7 +176,7 @@
             title: 'Surfshark VPN Pro Unlimited',
             tagline: 'Unlimited multi-device protection, CleanWeb ad-blocker & MultiHop',
             category: 'VPN & Security',
-            price: 1.90,
+            price: 1.35,
             rating: 4.8,
             ratingCount: 310,
             downloads: 11200,
@@ -207,7 +207,7 @@
             title: 'TurboVPN Pro Gaming Accelerator',
             tagline: 'Low-ping gaming tunnels, unlimited bandwidth & instant proxy connect',
             category: 'VPN & Security',
-            price: 1.75,
+            price: 1.20,
             rating: 4.7,
             ratingCount: 440,
             downloads: 18300,
@@ -238,7 +238,7 @@
             title: 'TaskFlow Pro Workspace',
             tagline: 'Enterprise-grade automation & offline project synchronization',
             category: 'Productivity',
-            price: 1.99,
+            price: 1.35,
             rating: 4.9,
             ratingCount: 128,
             downloads: 2450,
@@ -269,7 +269,7 @@
             title: 'NeuroStudio AI Studio',
             tagline: 'On-device neural image rendering and generative design engine',
             category: 'AI Solutions',
-            price: 2.30,
+            price: 1.54,
             rating: 4.8,
             ratingCount: 94,
             downloads: 1890,
@@ -300,7 +300,7 @@
             title: 'PulseConnect Social Hub',
             tagline: 'Decentralized P2P encrypted messaging & community channels',
             category: 'Social Apps',
-            price: 1.15,
+            price: 0.95,
             rating: 4.7,
             ratingCount: 210,
             downloads: 5120,
@@ -331,7 +331,7 @@
             title: 'HexaShield Security Vault',
             tagline: 'Military-grade password manager, 2FA authenticator & file encryptor',
             category: 'Tools & Utilities',
-            price: 1.50,
+            price: 1.15,
             rating: 5.0,
             ratingCount: 340,
             downloads: 7300,
@@ -362,7 +362,7 @@
             title: 'CodeForge IDE Master',
             tagline: 'Lightweight reactive code editor with embedded compiler & Git suite',
             category: 'Developer Tools',
-            price: 1.99,
+            price: 1.40,
             rating: 4.9,
             ratingCount: 88,
             downloads: 3200,
@@ -393,7 +393,7 @@
             title: 'VividMotion FX Studio',
             tagline: 'Professional 60FPS video compositor & motion graphic creator',
             category: 'Design & Media',
-            price: 2.30,
+            price: 1.54,
             rating: 4.8,
             ratingCount: 165,
             downloads: 4100,
@@ -499,11 +499,11 @@
                     }
                 }
 
-                // Enforce strict price boundary: Not more than 300 Ksh ($2.30 USD) and not less than 100 Ksh ($0.77 USD)
+                // Enforce strict price boundary: Not more than 200 Ksh ($1.54 USD) and not less than 100 Ksh ($0.77 USD)
                 apps = apps.map(app => {
-                    const price = parseFloat(app.price) || 1.99;
-                    if (price > 2.30) {
-                        return { ...app, price: 2.30 };
+                    const price = parseFloat(app.price) || 1.40;
+                    if (price > 1.54) {
+                        return { ...app, price: 1.54 };
                     } else if (price < 0.77) {
                         return { ...app, price: 0.77 };
                     }
@@ -516,10 +516,10 @@
         },
 
         saveApps(apps) {
-            // Guarantee price boundary on save (100 Ksh to 300 Ksh / $0.77 to $2.30 USD)
+            // Guarantee price boundary on save (100 Ksh to 200 Ksh / $0.77 to $1.54 USD)
             const capped = apps.map(a => {
-                const price = parseFloat(a.price) || 1.99;
-                const boundedPrice = price > 2.30 ? 2.30 : (price < 0.77 ? 0.77 : Math.round(price * 100) / 100);
+                const price = parseFloat(a.price) || 1.40;
+                const boundedPrice = price > 1.54 ? 1.54 : (price < 0.77 ? 0.77 : Math.round(price * 100) / 100);
                 return { ...a, price: boundedPrice };
             });
             localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(capped));
@@ -533,8 +533,8 @@
 
         addApp(appData) {
             const apps = this.getApps();
-            const rawPrice = parseFloat(appData.price) || 1.99;
-            const boundedPrice = rawPrice > 2.30 ? 2.30 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
+            const rawPrice = parseFloat(appData.price) || 1.40;
+            const boundedPrice = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
 
             const newApp = {
                 id: 'app_' + Math.random().toString(36).substring(2, 7),
@@ -568,8 +568,8 @@
             const idx = apps.findIndex(a => a.id === id);
             if (idx !== -1) {
                 if (updates.price !== undefined) {
-                    const rawPrice = parseFloat(updates.price) || 1.99;
-                    updates.price = rawPrice > 2.30 ? 2.30 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
+                    const rawPrice = parseFloat(updates.price) || 1.40;
+                    updates.price = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
                 }
                 apps[idx] = { ...apps[idx], ...updates };
                 this.saveApps(apps);
