@@ -964,7 +964,7 @@
             if (!localStorage.getItem(STORAGE_KEYS.APPS)) {
                 localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(DEFAULT_APPS));
             } else {
-                // Ensure existing cached catalog adheres to max price <= Ksh 600
+                // Ensure existing cached catalog adheres to price range 100 - 200 Ksh ($0.77 - $1.54 USD)
                 const apps = this.getApps();
                 this.saveApps(apps);
             }
