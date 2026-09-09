@@ -50,6 +50,223 @@
     // Note: All product prices are strictly bounded between 100 Ksh and 200 Ksh ($0.77 – $1.54 USD at 130 KES/USD)
     const DEFAULT_APPS = [
         {
+            id: 'app_moviebox_pro',
+            title: 'MovieBox Pro VIP Cinema',
+            tagline: 'VIP 4K HDR movie streaming, trending TV series & unlimited offline caching',
+            category: 'Entertainment',
+            price: 1.54,
+            rating: 4.9,
+            ratingCount: 840,
+            downloads: 34200,
+            version: '15.4.2',
+            size: '56.0 MB',
+            platform: 'Android / iOS / Windows / macOS / Android TV',
+            coverImage: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'MovieBox Pro VIP delivers unrestricted access to thousands of blockbuster movies, trending television series, and anime in pristine 4K UHD and 1080p 60FPS. Experience zero advertisements, multi-language synchronized subtitles, high-speed VIP servers, and seamless offline downloads.',
+            features: [
+                'Multi-server VIP 4K UHD & 1080p high-bitrate streaming',
+                '1-Click batch download and offline playback without internet',
+                'Zero advertisements, sponsored popups, or buffering delays',
+                'Dolby Atmos sound support & auto-synchronized subtitles'
+            ],
+            releaseNotes: 'v15.4.2: Added Dolby Atmos sound decoding, Apple TV / AirPlay 2 screen mirroring, and renewed VIP movie cloud servers.',
+            downloadUrl: 'https://vault-storage.app/packages/moviebox-pro-v15.4.2.apk',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-08T10:00:00Z'
+        },
+        {
+            id: 'app_vpn_china_pro',
+            title: 'VPN China Premium (GFW Bypass)',
+            tagline: 'Stealth Shadowsocks, V2Ray & Trojan protocol tunnels for mainland China entry & exit',
+            category: 'VPN & Security',
+            price: 1.54,
+            rating: 5.0,
+            ratingCount: 520,
+            downloads: 19500,
+            version: '8.3.0',
+            size: '36.5 MB',
+            platform: 'Android / Windows / macOS / iOS / Linux / Router',
+            coverImage: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'VPN China Premium is engineered with specialized obfuscated stealth protocols designed specifically to bypass the Great Firewall of China (GFW). Provides high-speed IPLC dedicated low-ping gaming routes, unlocking international platforms (Google, YouTube, ChatGPT, Netflix, WhatsApp) inside China and providing secure reverse access into China.',
+            features: [
+                'Obfuscated Stealth tunnels bypassing the Great Firewall of China (GFW)',
+                'Dedicated IPLC / BGP direct transit lines with <35ms ultra-low ping',
+                'Shadowrocket, V2Ray (VMess/VLESS), Trojan-GFW, and Hysteria 2 protocols',
+                'Unlocks Google, YouTube, ChatGPT, TikTok, WhatsApp & Netflix anywhere'
+            ],
+            releaseNotes: 'v8.3.0: Deployed Hysteria 2 protocol support, dynamic node rotation, and automated DPI packet camouflage.',
+            downloadUrl: 'https://vault-storage.app/packages/vpn-china-pro-v8.3.0.zip',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-08T10:10:00Z'
+        },
+        {
+            id: 'app_spotify_pro',
+            title: 'Spotify Premium Music & Hi-Fi',
+            tagline: 'Lossless 320kbps audio, unlimited song skips, offline downloads & AI DJ',
+            category: 'Music & Audio',
+            price: 1.50,
+            rating: 4.9,
+            ratingCount: 960,
+            downloads: 41800,
+            version: '8.9.74',
+            size: '68.0 MB',
+            platform: 'Android / Windows / macOS / iOS / WearOS',
+            coverImage: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'Spotify Premium unlocks the ultimate music and podcast experience. Listen to over 100 million tracks in 320kbps Extreme Master audio quality, download full albums and playlists for offline playback, skip unlimited tracks with zero advertisements, and discover new sounds with smart AI DJ.',
+            features: [
+                'Extreme 320kbps & FLAC master quality audio streaming',
+                'Offline music and podcast downloading for playback anywhere',
+                '100% ad-free listening with unlimited track skips and repeats',
+                'Real-time synced lyrics, personalized AI DJ, and Spotify Connect'
+            ],
+            releaseNotes: 'v8.9.74: Enabled lossless audio cache engine, enhanced playlist smart shuffle, and upgraded offline equalizer.',
+            downloadUrl: 'https://vault-storage.app/packages/spotify-premium-v8.9.74.apk',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-08T10:20:00Z'
+        },
+        {
+            id: 'app_telegram_pro',
+            title: 'Telegram Premium Ultimate',
+            tagline: '4GB mega-uploads, fastest download speeds, voice-to-text & VIP star badges',
+            category: 'Social Apps',
+            price: 1.38,
+            rating: 4.9,
+            ratingCount: 710,
+            downloads: 28900,
+            version: '10.14.5',
+            size: '72.4 MB',
+            platform: 'Android / iOS / Windows / macOS / Linux',
+            coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1577563908411-5077b6dc7624?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'Telegram Premium elevates your cloud messaging to unmatched productivity and speed. Upload media files up to 4GB each, enjoy ultra-fast uncapped download speeds, transcribe voice messages to text with 1 tap, translate foreign chats in real time, and customize your profile with exclusive animated badges.',
+            features: [
+                '4GB maximum file upload limit with uncapped download speeds',
+                'Instant automated Voice-to-Text audio message transcription',
+                'Real-time entire chat translation for 100+ international languages',
+                'Premium animated emoji reactions, profile star badge & custom folder icons'
+            ],
+            releaseNotes: 'v10.14.5: Upgraded voice transcription engine, added custom channel boosts, and enhanced cloud media caching.',
+            downloadUrl: 'https://vault-storage.app/packages/telegram-premium-v10.14.5.apk',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-08T10:30:00Z'
+        },
+        {
+            id: 'app_x_premium',
+            title: 'X Premium Pro (Twitter Blue)',
+            tagline: 'Verified checkmark, Grok AI integration, 25k char posts & 50% fewer ads',
+            category: 'Social Apps',
+            price: 1.50,
+            rating: 4.8,
+            ratingCount: 630,
+            downloads: 26400,
+            version: '10.58.0',
+            size: '85.0 MB',
+            platform: 'Android / iOS / Windows / Web App',
+            coverImage: 'https://images.unsplash.com/photo-1611605698335-8b1569810432?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1611605698335-8b1569810432?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'X Premium Pro provides creators, professionals, and thought leaders with enhanced visibility and cutting-edge features. Gain an official verified checkmark, access the Grok 2 AI assistant, publish long-form posts up to 25,000 characters, upload 3-hour 1080p videos, and edit published posts.',
+            features: [
+                'Official Verified Blue checkmark and prioritized reply rankings',
+                'Built-in Grok 2 AI assistant with real-time web intelligence',
+                'Edit published posts within 1 hour and compose up to 25,000 characters',
+                '1080p 3-hour video uploads and ad revenue sharing analytics hub'
+            ],
+            releaseNotes: 'v10.58.0: Integrated Grok 2 mini, enabled long-form article publishing, and reduced video playback buffering.',
+            downloadUrl: 'https://vault-storage.app/packages/x-premium-pro-v10.58.0.apk',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-08T10:40:00Z'
+        },
+        {
+            id: 'app_discord_nitro',
+            title: 'Discord Nitro & Premium Suite',
+            tagline: 'Custom emojis everywhere, 500MB uploads, 4K 60FPS stream & 2 Free Server Boosts',
+            category: 'Gaming & Community',
+            price: 1.42,
+            rating: 4.9,
+            ratingCount: 890,
+            downloads: 38700,
+            version: '242.16',
+            size: '104.0 MB',
+            platform: 'Android / Windows / macOS / iOS / Linux',
+            coverImage: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'Discord Nitro unlocks the pinnacle of gaming communication and community interaction. Stream your games in glorious 4K 60FPS, share large files up to 500MB, use custom animated emojis and soundboard sounds in any server, power your favorite servers with 2 free boosts, and express yourself with dynamic profile themes.',
+            features: [
+                'Use custom animated emojis and soundboard clips in any server',
+                '500MB high-capacity file sharing and HD 4K 60FPS screen streaming',
+                '2 Free Server Boosts included + 30% discount on extra boost packs',
+                'Custom animated profile banner, avatar decorations, and special Nitro badge'
+            ],
+            releaseNotes: 'v242.16: Added new seasonal profile themes, soundboard clip sequencer, and low-latency 4K screen sharing.',
+            downloadUrl: 'https://vault-storage.app/packages/discord-nitro-suite-v242.16.zip',
+            featured: false,
+            status: 'published',
+            createdAt: '2026-09-08T10:50:00Z'
+        },
+        {
+            id: 'app_proxy_master_pro',
+            title: 'Proxy Master Pro Security Shield',
+            tagline: 'High-speed global proxy network, zero-log privacy & firewall unblocker',
+            category: 'VPN & Security',
+            price: 1.23,
+            rating: 4.7,
+            ratingCount: 380,
+            downloads: 15400,
+            version: '5.4.1',
+            size: '28.2 MB',
+            platform: 'Android / Windows / iOS / Chrome Extension',
+            coverImage: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'Proxy Master Pro provides seamless one-click internet freedom and personal data encryption. Connect through 6,000+ proxy servers across 85+ countries, bypass geo-restrictions and institutional firewalls, protect your WiFi traffic on public networks, and maintain absolute browsing anonymity.',
+            features: [
+                '6,000+ high-speed proxy servers across 85+ global regions',
+                '1-Tap connection with intelligent automatic server selection',
+                'Military-grade 256-bit SSL encryption and strict zero-log policy',
+                'Unblock restricted apps, school/work firewalls, and streaming sites'
+            ],
+            releaseNotes: 'v5.4.1: Upgraded proxy routing speed by 30%, fixed DNS leak on IPv6 networks, and improved power consumption.',
+            downloadUrl: 'https://vault-storage.app/packages/proxy-master-pro-v5.4.1.apk',
+            featured: false,
+            status: 'published',
+            createdAt: '2026-09-08T11:00:00Z'
+        },
+        {
             id: 'app_capcut_pro',
             title: 'CapCut Pro Video & AI Studio',
             tagline: 'VIP 4K 60FPS video editor, AI body effects & dynamic chroma key suite',

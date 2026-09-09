@@ -1980,9 +1980,9 @@
                     btn.onclick = () => selectCategory(cat);
                     bar.appendChild(btn);
                 });
+            if (typeof renderMobileCategoryShortcuts === 'function') {
+                renderMobileCategoryShortcuts();
             }
-
-            renderMobileCategoryShortcuts();
         }
 
         function selectCategory(cat) {
@@ -3062,8 +3062,9 @@
                         <span>My Library</span>
                     </button>
                 `;
+            if (typeof updateMobileDrawerContent === 'function') {
+                updateMobileDrawerContent();
             }
-            updateMobileDrawerContent();
             lucide.createIcons();
         }
 
