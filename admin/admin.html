@@ -230,6 +230,26 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> <span class="hidden sm:inline">Storefront Operational</span><span class="sm:hidden">Live</span>
                 </span>
 
+                <!-- Multi-Currency Selector Dropdown (Admin) -->
+                <div class="relative" id="admin-currency-dropdown-container">
+                    <button id="admin-currency-btn" onclick="toggleAdminCurrencyDropdown()" title="Switch Admin Display Currency"
+                        class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all text-xs font-semibold shadow-sm">
+                        <span id="admin-header-curr-flag" class="text-sm sm:text-base leading-none">🇺🇸</span>
+                        <span id="admin-header-curr-code" class="font-mono font-bold text-white text-xs">USD</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div id="admin-currency-menu" class="hidden absolute right-0 mt-2 w-60 sm:w-64 bg-[#0b101d] border border-slate-800 rounded-2xl shadow-2xl p-2 z-50 animate-fade-in max-h-80 overflow-y-auto">
+                        <div class="px-3 py-2 border-b border-slate-800/80 mb-1">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Display Currency</span>
+                        </div>
+                        <div id="admin-currency-options-list" class="space-y-1">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+
                 <button onclick="refreshDashboard()" title="Refresh Data" class="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-colors">
                     <i data-lucide="rotate-cw" class="w-4 h-4"></i>
                 </button>
@@ -282,6 +302,17 @@
             </div>
 
             <div class="pt-6 border-t border-slate-800 space-y-3">
+                <!-- Mobile Drawer Currency Matrix Switcher -->
+                <div class="p-3 bg-slate-900/90 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="text-slate-400 font-medium">Display Currency:</span>
+                        <span id="admin-drawer-curr-badge" class="font-mono text-brand-400 font-bold">USD ($)</span>
+                    </div>
+                    <div id="admin-drawer-currency-chips" class="grid grid-cols-4 gap-1.5 pt-1">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </div>
+
                 <div class="flex items-center space-x-3 p-3 bg-slate-900/80 rounded-2xl border border-slate-800">
                     <div class="w-8 h-8 rounded-xl bg-brand-600/20 text-brand-400 border border-brand-500/30 flex items-center justify-center font-bold text-xs shrink-0">
                         AD
@@ -622,6 +653,50 @@
                             <button onclick="resetAllDemoData()" class="px-4 py-2.5 text-xs text-red-400 hover:text-red-300 font-semibold border border-red-500/30 rounded-xl hover:bg-red-500/10 transition-colors text-center">
                                 Reset Demo Data
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Storefront & Admin Multi-Currency Engine Matrix -->
+                    <div class="lg:col-span-2 glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-8 space-y-6 border border-slate-800">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-display font-bold text-base text-white flex items-center gap-2">
+                                        <i data-lucide="coins" class="w-4 h-4 text-brand-400"></i> Multi-Currency Conversion Engine
+                                    </h3>
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brand-500/20 text-brand-300 border border-brand-500/30">12 Global Currencies</span>
+                                </div>
+                                <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Switch active display currency across the Admin Console, transaction matrices, and store reports in real time</p>
+                            </div>
+                            
+                            <!-- Base Currency Quick Select -->
+                            <div class="flex items-center gap-2.5">
+                                <label class="text-xs font-semibold text-slate-400">Base Currency:</label>
+                                <select id="settings-currency-select" onchange="selectAdminCurrency(this.value)"
+                                    class="bg-slate-950 border border-slate-800 text-brand-300 font-mono font-bold text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:border-brand-500 cursor-pointer">
+                                    <!-- Options injected dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Live Conversion Rate Matrix Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs text-slate-300 min-w-[650px]">
+                                <thead class="bg-slate-950/80 text-[11px] text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                                    <tr>
+                                        <th class="p-3">Country & Flag</th>
+                                        <th class="p-3">Currency Code</th>
+                                        <th class="p-3">Currency Name</th>
+                                        <th class="p-3">Symbol</th>
+                                        <th class="p-3">Exchange Rate (per $1 USD)</th>
+                                        <th class="p-3">Sample Price ($1.54 / 200 Ksh)</th>
+                                        <th class="p-3 text-right">Status / Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="currency-rates-matrix-tbody" class="divide-y divide-slate-800/60">
+                                    <!-- Injected dynamically by JS -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -1098,6 +1173,8 @@
         }
 
         function initAdminPortal() {
+            renderAdminCurrencySelector();
+            renderCurrencyRatesMatrix();
             renderDashboardKPIs();
             renderAdminAppsTable();
             renderAdminTransactionsTable();
@@ -1109,6 +1186,8 @@
 
         function setupAdminEventListeners() {
             const updateAll = () => {
+                renderAdminCurrencySelector();
+                renderCurrencyRatesMatrix();
                 renderDashboardKPIs();
                 renderAdminAppsTable();
                 renderAdminTransactionsTable();
@@ -1119,15 +1198,178 @@
             window.addEventListener('premiumstore:statechange', updateAll);
             window.addEventListener('appvault:statechange', updateAll);
             window.addEventListener('storage', updateAll);
+
+            // Close currency dropdown on click outside
+            document.addEventListener('click', (e) => {
+                const container = document.getElementById('admin-currency-dropdown-container');
+                const menu = document.getElementById('admin-currency-menu');
+                if (container && menu && !container.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
         }
 
         function refreshDashboard() {
+            renderAdminCurrencySelector();
+            renderCurrencyRatesMatrix();
             renderDashboardKPIs();
             renderAdminAppsTable();
             renderAdminTransactionsTable();
             renderAdminCustomersTable();
             renderAdminReferralsTable();
-            showAdminToast('Dashboard & customer vaults refreshed with latest data.', 'info');
+            showAdminToast('Dashboard, currency engine & customer vaults refreshed with latest data.', 'info');
+        }
+
+        // ==========================================
+        // Multi-Country Currency Controller (Admin)
+        // ==========================================
+        function toggleAdminCurrencyDropdown() {
+            const menu = document.getElementById('admin-currency-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
+
+        function renderAdminCurrencySelector() {
+            const currencies = window.PremiumStore.getCurrencies();
+            const selected = window.PremiumStore.getSelectedCurrency();
+            const list = document.getElementById('admin-currency-options-list');
+            const chips = document.getElementById('admin-drawer-currency-chips');
+            const selectEl = document.getElementById('settings-currency-select');
+
+            // 1. Header Dropdown Options
+            if (list) {
+                list.innerHTML = '';
+                Object.values(currencies).forEach(curr => {
+                    const isCurrent = curr.code === selected.code;
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `w-full px-3 py-2 rounded-xl text-left flex items-center justify-between transition-all ${
+                        isCurrent
+                            ? 'bg-brand-600/20 border border-brand-500/50 text-white font-bold shadow-sm'
+                            : 'hover:bg-slate-800/80 border border-transparent text-slate-300 hover:text-white'
+                    }`;
+                    btn.onclick = () => selectAdminCurrency(curr.code);
+                    btn.innerHTML = `
+                        <div class="flex items-center space-x-2.5 min-w-0">
+                            <span class="text-base leading-none shrink-0">${curr.flag}</span>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-mono text-xs font-bold ${isCurrent ? 'text-brand-300' : 'text-white'}">${curr.code}</span>
+                                    <span class="text-[10px] text-slate-400 truncate">(${curr.country})</span>
+                                </div>
+                                <span class="text-[10px] text-slate-500 block truncate">${curr.name}</span>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0 flex items-center gap-1">
+                            <span class="font-mono text-xs font-semibold ${isCurrent ? 'text-brand-300' : 'text-slate-400'}">${curr.symbol}</span>
+                            ${isCurrent ? '<i data-lucide="check" class="w-3.5 h-3.5 text-brand-400 inline-block"></i>' : ''}
+                        </div>
+                    `;
+                    list.appendChild(btn);
+                });
+            }
+
+            // 2. Mobile Drawer Chips
+            if (chips) {
+                chips.innerHTML = '';
+                Object.values(currencies).forEach(curr => {
+                    const isCurrent = curr.code === selected.code;
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    chip.className = `p-1.5 rounded-xl text-center flex flex-col items-center justify-center transition-all ${
+                        isCurrent
+                            ? 'bg-brand-600 text-white font-bold ring-2 ring-brand-400/50 shadow-md shadow-brand-600/30'
+                            : 'bg-slate-950/80 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                    }`;
+                    chip.onclick = () => selectAdminCurrency(curr.code);
+                    chip.innerHTML = `
+                        <span class="text-xs leading-none">${curr.flag}</span>
+                        <span class="text-[10px] font-mono mt-0.5">${curr.code}</span>
+                    `;
+                    chips.appendChild(chip);
+                });
+            }
+
+            // 3. Settings Quick Select Dropdown
+            if (selectEl) {
+                selectEl.innerHTML = '';
+                Object.values(currencies).forEach(curr => {
+                    const opt = document.createElement('option');
+                    opt.value = curr.code;
+                    opt.selected = curr.code === selected.code;
+                    opt.text = `${curr.flag} ${curr.code} — ${curr.name} (${curr.symbol.trim()})`;
+                    selectEl.appendChild(opt);
+                });
+            }
+
+            updateAdminCurrencyHeader();
+            lucide.createIcons();
+        }
+
+        function updateAdminCurrencyHeader() {
+            const selected = window.PremiumStore.getSelectedCurrency();
+            const flagEl = document.getElementById('admin-header-curr-flag');
+            const codeEl = document.getElementById('admin-header-curr-code');
+            const drawerBadge = document.getElementById('admin-drawer-curr-badge');
+            if (flagEl) flagEl.innerText = selected.flag;
+            if (codeEl) codeEl.innerText = selected.code;
+            if (drawerBadge) drawerBadge.innerText = `${selected.code} (${selected.symbol.trim()})`;
+        }
+
+        function selectAdminCurrency(code) {
+            const curr = window.PremiumStore.setSelectedCurrency(code);
+            const menu = document.getElementById('admin-currency-menu');
+            if (menu) menu.classList.add('hidden');
+
+            renderAdminCurrencySelector();
+            renderCurrencyRatesMatrix();
+            renderDashboardKPIs();
+            renderAdminAppsTable();
+            renderAdminTransactionsTable();
+            renderAdminCustomersTable();
+            renderAdminReferralsTable();
+
+            showAdminToast(`Admin currency changed to ${curr.name} (${curr.code} ${curr.flag})`, 'success');
+        }
+
+        function renderCurrencyRatesMatrix() {
+            const tbody = document.getElementById('currency-rates-matrix-tbody');
+            if (!tbody) return;
+            const currencies = window.PremiumStore.getCurrencies();
+            const selected = window.PremiumStore.getSelectedCurrency();
+
+            tbody.innerHTML = '';
+            Object.values(currencies).forEach(curr => {
+                const isSelected = curr.code === selected.code;
+                const samplePrice = window.PremiumStore.formatPrice(1.54, curr);
+                const tr = document.createElement('tr');
+                tr.className = `transition-colors ${isSelected ? 'bg-brand-950/30' : 'hover:bg-slate-900/40'}`;
+                tr.innerHTML = `
+                    <td class="p-3 font-semibold text-white">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">${curr.flag}</span>
+                            <span>${curr.country}</span>
+                        </div>
+                    </td>
+                    <td class="p-3 font-mono font-bold ${isSelected ? 'text-brand-300' : 'text-slate-300'}">${curr.code}</td>
+                    <td class="p-3 text-slate-300">${curr.name}</td>
+                    <td class="p-3 font-mono text-slate-400 font-bold">${curr.symbol}</td>
+                    <td class="p-3 font-mono text-xs text-slate-300">1 USD = ${curr.rate.toLocaleString()} ${curr.code}</td>
+                    <td class="p-3 font-bold text-white font-display">${samplePrice}</td>
+                    <td class="p-3 text-right">
+                        ${
+                            isSelected 
+                            ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-brand-500/20 text-brand-300 border border-brand-500/30 inline-flex items-center gap-1">
+                                <i data-lucide="check" class="w-3 h-3"></i> Active Base
+                               </span>`
+                            : `<button onclick="selectAdminCurrency('${curr.code}')" class="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 rounded-xl text-xs font-semibold transition-all">
+                                Set Active
+                               </button>`
+                        }
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
         }
 
         // Navigation Tabs
@@ -1196,7 +1438,7 @@
             const pendingCount = orders.filter(o => o.paymentStatus === 'pending').length;
             const publishedApps = apps.filter(a => a.status === 'published').length;
 
-            document.getElementById('kpi-revenue').innerText = `$${totalRev.toFixed(2)}`;
+            document.getElementById('kpi-revenue').innerText = window.PremiumStore.formatPrice(totalRev);
             document.getElementById('kpi-cleared').innerText = clearedCount;
             document.getElementById('kpi-pending').innerText = pendingCount;
             document.getElementById('kpi-apps').innerText = publishedApps;
@@ -1209,7 +1451,7 @@
 
             if (totalCustEl) totalCustEl.innerText = customers.length;
             if (activeCustEl) activeCustEl.innerText = customers.filter(c => c.clearedOrdersCount > 0).length;
-            if (ltvCustEl) ltvCustEl.innerText = `$${totalRev.toFixed(2)}`;
+            if (ltvCustEl) ltvCustEl.innerText = window.PremiumStore.formatPrice(totalRev);
             if (pendingCustEl) pendingCustEl.innerText = customers.filter(c => c.pendingOrdersCount > 0).length;
 
             // Referral Tab KPIs
@@ -1226,8 +1468,8 @@
             const totalPendingPayouts = affiliates.reduce((acc, a) => acc + (a.payouts || []).filter(p => p.status === 'pending').length, 0);
 
             if (refTotalEl) refTotalEl.innerText = affiliates.length;
-            if (refRevEl) refRevEl.innerText = `$${referredOrdersRevenue.toFixed(2)}`;
-            if (refCommEl) refCommEl.innerText = `$${totalCommissionsEarned.toFixed(2)}`;
+            if (refRevEl) refRevEl.innerText = window.PremiumStore.formatPrice(referredOrdersRevenue);
+            if (refCommEl) refCommEl.innerText = window.PremiumStore.formatPrice(totalCommissionsEarned);
             if (refPendingPayoutsEl) refPendingPayoutsEl.innerText = totalPendingPayouts;
 
             const maintBadge = document.getElementById('header-maintenance-badge');
@@ -1266,7 +1508,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="font-bold text-white block">$${(order.totalAmount || 0).toFixed(2)}</span>
+                            <span class="font-bold text-white block">${window.PremiumStore.formatPrice(order.totalAmount || 0)}</span>
                             <span class="text-[10px] font-semibold ${isCleared ? 'text-emerald-400' : 'text-amber-400'} uppercase">${order.paymentStatus}</span>
                         </div>
                     `;
@@ -1303,7 +1545,7 @@
                         </div>
                     </td>
                     <td class="p-4 sm:p-5">${app.category}</td>
-                    <td class="p-4 sm:p-5 font-bold text-white font-display text-sm">$${app.price.toFixed(2)}</td>
+                    <td class="p-4 sm:p-5 font-bold text-white font-display text-sm">${window.PremiumStore.formatPrice(app.price)}</td>
                     <td class="p-4 sm:p-5 text-amber-400 font-medium">★ ${app.rating} <span class="text-slate-500 text-[10px]">(${app.downloads || 0} dl)</span></td>
                     <td class="p-4 sm:p-5">
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
@@ -1564,7 +1806,7 @@
                     </td>
                     <td class="p-4 sm:p-5">
                         <span class="font-semibold text-white block truncate max-w-[180px]">${order.items.map(i => i.title).join(', ')}</span>
-                        <span class="text-brand-400 font-bold font-display">$${(order.totalAmount || 0).toFixed(2)}</span>
+                        <span class="text-brand-400 font-bold font-display">${window.PremiumStore.formatPrice(order.totalAmount || 0)}</span>
                     </td>
                     <td class="p-4 sm:p-5">
                         <span class="uppercase font-bold text-[10px] ${order.paymentMethod === 'kcb' || order.paymentMethod === 'mpesa' ? 'text-emerald-400' : 'text-indigo-400'} block">
@@ -1637,7 +1879,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-slate-500">Total Paid:</span>
-                        <span class="text-white font-bold">$${(o.totalAmount || 0).toFixed(2)}</span>
+                        <span class="text-white font-bold">${window.PremiumStore.formatPrice(o.totalAmount || 0)}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-slate-500">Review Status:</span>
@@ -1690,6 +1932,7 @@
             if (search) {
                 customers = customers.filter(c => 
                     c.email.toLowerCase().includes(search) ||
+                    (c.username && c.username.toLowerCase().includes(search)) ||
                     (c.phone && c.phone.includes(search))
                 );
             }
@@ -1703,7 +1946,8 @@
                     <tr>
                         <td colspan="6" class="p-8 text-center text-slate-500">
                             <i data-lucide="users" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-                            <p class="font-semibold text-slate-400">No customer accounts match query</p>
+                            <p class="font-semibold text-slate-400">No customer accounts registered yet</p>
+                            <p class="text-xs text-slate-600 mt-1">Real customer profiles will appear here as users authenticate, browse, or complete orders.</p>
                         </td>
                     </tr>
                 `;
@@ -1712,8 +1956,10 @@
             }
 
             customers.forEach(cust => {
-                const initial = cust.email.charAt(0).toUpperCase();
+                const initial = (cust.username ? cust.username.charAt(0) : cust.email.charAt(0)).toUpperCase();
                 const firstDate = cust.firstSeen ? new Date(cust.firstSeen).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent';
+                const clearedCount = cust.clearedOrdersCount || cust.clearedOrders || 0;
+                const pendingCount = cust.pendingOrdersCount || cust.pendingOrders || 0;
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-900/40 transition-colors";
                 tr.innerHTML = `
@@ -1723,26 +1969,28 @@
                                 ${initial}
                             </div>
                             <div class="min-w-0">
-                                <span class="font-bold text-white block text-xs truncate cursor-pointer hover:text-brand-400 transition-colors" onclick="openCustomerDetailModal('${cust.email}')">${cust.email}</span>
+                                <span class="font-bold text-white block text-xs truncate cursor-pointer hover:text-brand-400 transition-colors" onclick="openCustomerDetailModal('${cust.email}')">
+                                    ${cust.username ? `<span class="text-brand-300 font-mono">@${cust.username}</span> • ` : ''}${cust.email}
+                                </span>
                                 <span class="text-[10px] text-slate-500 font-mono">${cust.phone || 'No phone recorded'}</span>
                             </div>
                         </div>
                     </td>
                     <td class="p-4 sm:p-5 font-mono text-slate-400 text-xs">${firstDate}</td>
                     <td class="p-4 sm:p-5">
-                        <span class="font-bold text-white">${cust.totalOrders} Order${cust.totalOrders > 1 ? 's' : ''}</span>
+                        <span class="font-bold text-white">${cust.totalOrders} Order${cust.totalOrders === 1 ? '' : 's'}</span>
                     </td>
                     <td class="p-4 sm:p-5">
-                        <span class="font-display font-extrabold text-sm text-brand-300">$${cust.totalSpend.toFixed(2)}</span>
+                        <span class="font-display font-extrabold text-sm text-brand-300">${window.PremiumStore.formatPrice(cust.totalSpend || 0)}</span>
                     </td>
                     <td class="p-4 sm:p-5">
                         <div class="flex items-center gap-1.5 flex-wrap">
                             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                ${cust.clearedOrdersCount} Active
+                                ${clearedCount} Active
                             </span>
-                            ${cust.pendingOrdersCount > 0 ? `
+                            ${pendingCount > 0 ? `
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 animate-pulse">
-                                    ${cust.pendingOrdersCount} Pending
+                                    ${pendingCount} Pending
                                 </span>
                             ` : ''}
                         </div>
@@ -1782,7 +2030,7 @@
                     </div>
                     <div>
                         <span class="text-slate-500 block text-[10px] uppercase font-semibold">Lifetime Spend</span>
-                        <span class="font-bold text-base text-brand-400 mt-0.5 block">$${totalSpend.toFixed(2)}</span>
+                        <span class="font-bold text-base text-brand-400 mt-0.5 block">${window.PremiumStore.formatPrice(totalSpend)}</span>
                     </div>
                     <div>
                         <span class="text-slate-500 block text-[10px] uppercase font-semibold">Active Licenses</span>
@@ -1813,7 +2061,7 @@
                                 <div class="p-3 bg-amber-950/20 border border-amber-800/40 rounded-xl flex items-center justify-between gap-3 text-xs">
                                     <div>
                                         <div class="font-bold text-white">${o.items.map(i => i.title).join(', ')}</div>
-                                        <div class="text-[10px] text-slate-400 mt-0.5">Order #${o.id} • Ref: <span class="text-amber-300 font-mono">${o.mpesaRef || o.kcbRef || 'Pending'}</span> • $${(o.totalAmount || 0).toFixed(2)}</div>
+                                        <div class="text-[10px] text-slate-400 mt-0.5">Order #${o.id} • Ref: <span class="text-amber-300 font-mono">${o.mpesaRef || o.kcbRef || 'Pending'}</span> • ${window.PremiumStore.formatPrice(o.totalAmount || 0)}</div>
                                     </div>
                                     <button onclick="approveCustomerPendingOrder('${o.id}', '${email}')"
                                         class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs flex items-center gap-1 transition-all shrink-0">
@@ -1909,7 +2157,15 @@
                 );
 
                 if (filtered.length === 0) {
-                    affiliatesTbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">No affiliate partners matching query.</td></tr>`;
+                    affiliatesTbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="p-8 text-center text-slate-500">
+                                <i data-lucide="gift" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                                <p class="font-semibold text-slate-400">No affiliate partners registered yet</p>
+                                <p class="text-xs text-slate-600 mt-1">Real referral partners and 30% commission records will appear here as users share their referral links.</p>
+                            </td>
+                        </tr>
+                    `;
                 } else {
                     filtered.forEach(aff => {
                         const initial = aff.username.charAt(0).toUpperCase();
@@ -1935,10 +2191,10 @@
                                 </span>
                             </td>
                             <td class="p-3.5 sm:p-5">
-                                <span class="font-display font-extrabold text-sm text-emerald-400">$${(aff.totalEarnedUsd || 0).toFixed(2)}</span>
+                                <span class="font-display font-extrabold text-sm text-emerald-400">${window.PremiumStore.formatPrice(aff.totalEarnedUsd || aff.totalCommissionUsd || 0)}</span>
                             </td>
                             <td class="p-3.5 sm:p-5">
-                                <span class="font-display font-extrabold text-sm text-amber-300">$${(aff.balanceUsd || 0).toFixed(2)}</span>
+                                <span class="font-display font-extrabold text-sm text-amber-300">${window.PremiumStore.formatPrice(aff.balanceUsd || 0)}</span>
                             </td>
                             <td class="p-3.5 sm:p-5">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -1963,7 +2219,7 @@
                     });
                 });
 
-                allPayouts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                allPayouts.sort((a, b) => new Date(b.requestedAt || b.createdAt || Date.now()) - new Date(a.requestedAt || a.createdAt || Date.now()));
                 const pendingPayouts = allPayouts.filter(p => p.status === 'pending');
 
                 if (payoutsBadge) {
@@ -1976,7 +2232,15 @@
                 }
 
                 if (allPayouts.length === 0) {
-                    payoutsTbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">No withdrawal requests found.</td></tr>`;
+                    payoutsTbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="p-8 text-center text-slate-500">
+                                <i data-lucide="wallet" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                                <p class="font-semibold text-slate-400">No withdrawal requests found</p>
+                                <p class="text-xs text-slate-600 mt-1">When affiliate partners request commission withdrawals, they will be listed here for approval.</p>
+                            </td>
+                        </tr>
+                    `;
                 } else {
                     allPayouts.forEach(p => {
                         const tr = document.createElement('tr');
@@ -1992,13 +2256,13 @@
                                 <span class="text-[10px] text-slate-500 block truncate">${p.email || ''}</span>
                             </td>
                             <td class="p-3.5">
-                                <span class="font-display font-extrabold text-sm text-emerald-400">$${p.amountUsd.toFixed(2)}</span>
+                                <span class="font-display font-extrabold text-sm text-emerald-400">${window.PremiumStore.formatPrice(p.amountUsd || 0)}</span>
                             </td>
                             <td class="p-3.5">
-                                <span class="font-mono text-xs text-white font-bold block">${p.mpesaPhone}</span>
-                                <span class="text-[10px] text-slate-400 block truncate">${p.recipientNote || 'Direct M-Pesa'}</span>
+                                <span class="font-mono text-xs text-white font-bold block">${p.mpesaNumber || p.mpesaPhone || p.phone || 'Direct M-Pesa'}</span>
+                                <span class="text-[10px] text-slate-400 block truncate">${p.paymentMethod === 'mpesa' ? 'M-PESA' : (p.paymentMethod || 'M-Pesa').toUpperCase()} • ${p.accountDetails || p.recipientNote || 'Direct Payout'}</span>
                             </td>
-                            <td class="p-3.5 font-mono text-slate-400 text-xs">${new Date(p.createdAt).toLocaleDateString()}</td>
+                            <td class="p-3.5 font-mono text-slate-400 text-xs">${new Date(p.requestedAt || p.createdAt || Date.now()).toLocaleDateString()}</td>
                             <td class="p-3.5">${statusBadge}</td>
                             <td class="p-3.5 text-right">
                                 ${p.status === 'pending' ? `

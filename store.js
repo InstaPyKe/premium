@@ -659,34 +659,8 @@
         currencySymbol: '$'
     };
 
-    // Default Referrals State
-    const DEFAULT_REFERRALS = {
-        'alex_pro': {
-            username: 'alex_pro',
-            email: 'alex.creator@gmail.com',
-            totalClicks: 48,
-            successfulOrders: 4,
-            totalRevenueUsd: 6.16,
-            totalCommissionUsd: 1.85,
-            balanceUsd: 1.85,
-            paidPayoutsUsd: 0,
-            freeAppsClaimed: [{
-                milestoneId: 'm1_3apps',
-                appId: 'app_capcut_pro',
-                appTitle: 'CapCut Pro Video & AI Studio',
-                claimedAt: '2026-09-07T12:00:00Z'
-            }],
-            referralOrders: [
-                { orderId: 'ORD-5120', customerEmail: 'mark.editor@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-07T10:15:00Z' },
-                { orderId: 'ORD-6210', customerEmail: 'grace.media@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-07T14:30:00Z' },
-                { orderId: 'ORD-7341', customerEmail: 'kevin.dev@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-08T09:12:00Z' },
-                { orderId: 'ORD-8452', customerEmail: 'sharon.pro@gmail.com', orderTotalUsd: 1.54, commissionEarnedUsd: 0.46, currencyCode: 'USD', clearedAt: '2026-09-08T15:20:00Z' }
-            ],
-            payoutRequests: [],
-            createdAt: '2026-09-07T08:00:00Z',
-            lastActive: '2026-09-08T15:20:00Z'
-        }
-    };
+    // Default Referrals State (Clean dynamic state for real affiliate users)
+    const DEFAULT_REFERRALS = {};
 
     // Store State Object
     const Store = {
@@ -1319,7 +1293,13 @@
 
         getAllAffiliates() {
             const referrals = this.getReferrals();
-            return Object.values(referrals).sort((a, b) => (b.totalCommissionUsd || 0) - (a.totalCommissionUsd || 0));
+            return Object.values(referrals).map(a => ({
+                ...a,
+                clicks: a.totalClicks || 0,
+                totalOrders: a.successfulOrders || 0,
+                totalEarnedUsd: a.totalCommissionUsd || 0,
+                payouts: a.payoutRequests || [],
+            })).sort((a, b) => (b.totalEarnedUsd || 0) - (a.totalEarnedUsd || 0));
         },
 
         updatePayoutStatus(arg1, arg2, arg3) {
@@ -1361,18 +1341,24 @@
             }
 
             if (targetProfile && targetPayout) {
+                const prevStatus = targetPayout.status;
                 targetPayout.status = newStatus;
-                if (newStatus === 'paid') {
+                if (newStatus === 'paid' || newStatus === 'approved') {
+                    targetPayout.status = 'approved';
                     targetPayout.paidAt = new Date().toISOString();
-                    targetProfile.paidPayoutsUsd = (targetProfile.paidPayoutsUsd || 0) + (targetPayout.amountUsd || 0);
+                    if (prevStatus !== 'approved' && prevStatus !== 'paid') {
+                        targetProfile.paidPayoutsUsd = (targetProfile.paidPayoutsUsd || 0) + (targetPayout.amountUsd || 0);
+                    }
                 } else if (newStatus === 'rejected') {
-                    // Refund back to available balance
-                    targetProfile.balanceUsd = Math.round(((targetProfile.balanceUsd || 0) + (targetPayout.amountUsd || 0)) * 100) / 100;
+                    if (prevStatus === 'pending') {
+                        // Refund back to available balance
+                        targetProfile.balanceUsd = Math.round(((targetProfile.balanceUsd || 0) + (targetPayout.amountUsd || 0)) * 100) / 100;
+                    }
                 }
                 this.saveReferrals(referrals);
-                return targetPayout;
+                return { success: true, message: `Payout request #${payoutId} marked as ${newStatus}`, payout: targetPayout };
             }
-            return null;
+            return { success: false, message: 'Payout request not found.' };
         },
 
         getCustomerOrders(email) {
@@ -1423,19 +1409,27 @@
 
         getAllCustomers() {
             const orders = this.getOrders();
+            const referrals = this.getReferrals();
+            const authUser = this.getAuthenticatedUser();
             const map = {};
+
+            // 1. Ingest real customer purchase transactions
             orders.forEach(o => {
-                const email = (o.customerEmail || 'anonymous@store.app').trim().toLowerCase();
+                const email = (o.customerEmail || 'customer@store.app').trim().toLowerCase();
+                const username = (o.customerUsername || (email.includes('@') ? email.split('@')[0].slice(0, 20) : 'customer')).trim().toLowerCase();
                 if (!map[email]) {
                     map[email] = {
                         email: email,
+                        username: username,
                         phone: o.customerPhone || '',
                         totalOrders: 0,
                         clearedOrders: 0,
+                        clearedOrdersCount: 0,
                         pendingOrders: 0,
+                        pendingOrdersCount: 0,
                         totalSpend: 0,
-                        firstSeen: o.createdAt,
-                        lastActive: o.createdAt,
+                        firstSeen: o.createdAt || new Date().toISOString(),
+                        lastActive: o.createdAt || new Date().toISOString(),
                         orders: []
                     };
                 }
@@ -1443,16 +1437,70 @@
                 c.totalOrders += 1;
                 if (o.paymentStatus === 'cleared') {
                     c.clearedOrders += 1;
+                    c.clearedOrdersCount += 1;
                     c.totalSpend += (o.totalAmount || 0);
                 } else if (o.paymentStatus === 'pending') {
                     c.pendingOrders += 1;
+                    c.pendingOrdersCount += 1;
                 }
                 if (new Date(o.createdAt) > new Date(c.lastActive)) {
                     c.lastActive = o.createdAt;
                 }
                 if (o.customerPhone && !c.phone) c.phone = o.customerPhone;
+                if (o.customerUsername && (!c.username || c.username === 'customer')) c.username = o.customerUsername;
                 c.orders.push(o);
             });
+
+            // 2. Ingest active authenticated customer session
+            if (authUser && authUser.email) {
+                const authEmail = authUser.email.trim().toLowerCase();
+                const authUsername = (authUser.username || (authEmail.includes('@') ? authEmail.split('@')[0].slice(0, 20) : 'customer')).trim().toLowerCase();
+                if (!map[authEmail]) {
+                    map[authEmail] = {
+                        email: authEmail,
+                        username: authUsername,
+                        phone: authUser.customerPhone || authUser.phone || '',
+                        totalOrders: 0,
+                        clearedOrders: 0,
+                        clearedOrdersCount: 0,
+                        pendingOrders: 0,
+                        pendingOrdersCount: 0,
+                        totalSpend: 0,
+                        firstSeen: authUser.authenticatedAt || new Date().toISOString(),
+                        lastActive: authUser.authenticatedAt || new Date().toISOString(),
+                        orders: []
+                    };
+                } else {
+                    if (authUser.username) map[authEmail].username = authUser.username;
+                    if (authUser.customerPhone && !map[authEmail].phone) map[authEmail].phone = authUser.customerPhone;
+                }
+            }
+
+            // 3. Ingest registered affiliate / referral partners
+            Object.entries(referrals).forEach(([handle, ref]) => {
+                const refEmail = (ref.email || `${handle}@customer.store`).trim().toLowerCase();
+                if (!map[refEmail]) {
+                    map[refEmail] = {
+                        email: refEmail,
+                        username: handle,
+                        phone: ref.phone || '',
+                        totalOrders: 0,
+                        clearedOrders: 0,
+                        clearedOrdersCount: 0,
+                        pendingOrders: 0,
+                        pendingOrdersCount: 0,
+                        totalSpend: 0,
+                        firstSeen: ref.createdAt || new Date().toISOString(),
+                        lastActive: ref.lastActive || new Date().toISOString(),
+                        orders: []
+                    };
+                } else {
+                    if (!map[refEmail].username || map[refEmail].username === 'customer') {
+                        map[refEmail].username = handle;
+                    }
+                }
+            });
+
             return Object.values(map).sort((a, b) => new Date(b.lastActive) - new Date(a.lastActive));
         },
 
@@ -1578,6 +1626,15 @@
             }
             if (!localStorage.getItem(STORAGE_KEYS.REFERRALS)) {
                 localStorage.setItem(STORAGE_KEYS.REFERRALS, JSON.stringify(DEFAULT_REFERRALS));
+            } else {
+                // Purge legacy mock data if present from previous builds
+                try {
+                    const storedRefs = JSON.parse(localStorage.getItem(STORAGE_KEYS.REFERRALS) || '{}');
+                    if (storedRefs && storedRefs['alex_pro'] && storedRefs['alex_pro'].email === 'alex.creator@gmail.com') {
+                        delete storedRefs['alex_pro'];
+                        localStorage.setItem(STORAGE_KEYS.REFERRALS, JSON.stringify(storedRefs));
+                    }
+                } catch (e) {}
             }
             if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
                 localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
