@@ -928,8 +928,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Price ($) <span class="text-slate-400 text-[10px] font-normal">[100 – 200 Ksh ($0.77 – $1.54)]</span> <span class="text-brand-400">*</span></label>
-                        <input type="number" id="form-app-price" step="0.01" min="0.77" max="1.54" required placeholder="1.54"
+                        <label class="block font-semibold text-slate-300 uppercase tracking-wider mb-1">Price ($) <span class="text-slate-400 text-[10px] font-normal">[20 – 200 Ksh ($0.15 – $1.54)]</span> <span class="text-brand-400">*</span></label>
+                        <input type="number" id="form-app-price" step="0.01" min="0.15" max="1.54" required placeholder="0.15"
                             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-brand-500">
                     </div>
                     <div>
@@ -1545,7 +1545,14 @@
                         </div>
                     </td>
                     <td class="p-4 sm:p-5">${app.category}</td>
-                    <td class="p-4 sm:p-5 font-bold text-white font-display text-sm">${window.PremiumStore.formatPrice(app.price)}</td>
+                    <td class="p-4 sm:p-5">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="font-bold text-white font-display text-sm">${window.PremiumStore.formatPrice(app.price)}</span>
+                            <span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-red-500/20 text-red-400 border border-red-500/30 inline-flex items-center gap-0.5">
+                                <i data-lucide="flame" class="w-2.5 h-2.5 fill-red-400"></i> OFFER
+                            </span>
+                        </div>
+                    </td>
                     <td class="p-4 sm:p-5 text-amber-400 font-medium">★ ${app.rating} <span class="text-slate-500 text-[10px]">(${app.downloads || 0} dl)</span></td>
                     <td class="p-4 sm:p-5">
                         <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
@@ -1714,8 +1721,8 @@
             const coverVal = document.getElementById('form-app-cover').value.trim();
             const finalGallery = activeGalleryArray.length ? activeGalleryArray : [coverVal];
 
-            const rawPrice = parseFloat(document.getElementById('form-app-price').value) || 1.54;
-            const boundedPrice = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.77 ? 0.77 : Math.round(rawPrice * 100) / 100);
+            const rawPrice = parseFloat(document.getElementById('form-app-price').value) || 0.15;
+            const boundedPrice = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.15 ? 0.15 : Math.round(rawPrice * 100) / 100);
 
             const appData = {
                 title: document.getElementById('form-app-title').value.trim(),
