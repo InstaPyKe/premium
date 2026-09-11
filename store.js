@@ -17,7 +17,8 @@
         CURRENCY: 'premiumstore_selected_currency_v2',
         AUTH_USER: 'premiumstore_auth_user_v2',
         REFERRALS: 'premiumstore_referrals_v1',
-        ACTIVE_REFERRER: 'premiumstore_active_referrer_v1'
+        ACTIVE_REFERRER: 'premiumstore_active_referrer_v1',
+        VISITORS: 'premiumstore_visitors_v1'
     };
 
     // Supported Countries & Currencies with Live Conversion Matrix
@@ -47,15 +48,15 @@
     }
 
     // Initial Premium Applications Catalog with high-resolution imagery
-    // Note: All product prices are strictly bounded between 20 Ksh and 200 Ksh ($0.15 – $1.54 USD at 130 KES/USD)
+    // Note: All product prices are strictly bounded between 20 Ksh and 500 Ksh ($0.15 – $3.85 USD at 130 KES/USD)
     const DEFAULT_APPS = [
         {
             id: 'app_moviebox_pro',
             title: 'MovieBox Pro VIP Cinema',
             tagline: 'VIP 4K HDR movie streaming, trending TV series & unlimited offline caching',
             category: 'Entertainment',
-            price: 1.54,
-            originalPrice: 2.30,
+            price: 3.85,
+            originalPrice: 5.75,
             rating: 4.9,
             ratingCount: 840,
             downloads: 34200,
@@ -86,8 +87,8 @@
             title: 'VPN China Premium (GFW Bypass)',
             tagline: 'Stealth Shadowsocks, V2Ray & Trojan protocol tunnels for mainland China entry & exit',
             category: 'VPN & Security',
-            price: 1.54,
-            originalPrice: 2.30,
+            price: 3.85,
+            originalPrice: 5.75,
             rating: 5.0,
             ratingCount: 520,
             downloads: 19500,
@@ -118,8 +119,8 @@
             title: 'Spotify Premium Music & Hi-Fi',
             tagline: 'Lossless 320kbps audio, unlimited song skips, offline downloads & AI DJ',
             category: 'Music & Audio',
-            price: 1.35,
-            originalPrice: 1.54,
+            price: 2.30,
+            originalPrice: 3.85,
             rating: 4.9,
             ratingCount: 960,
             downloads: 41800,
@@ -150,8 +151,8 @@
             title: 'Telegram Premium Ultimate',
             tagline: '4GB mega-uploads, fastest download speeds, voice-to-text & VIP star badges',
             category: 'Social Apps',
-            price: 1.38,
-            originalPrice: 1.54,
+            price: 2.15,
+            originalPrice: 3.85,
             rating: 4.9,
             ratingCount: 710,
             downloads: 28900,
@@ -182,8 +183,8 @@
             title: 'X Premium Pro (Twitter Blue)',
             tagline: 'Verified checkmark, Grok AI integration, 25k char posts & 50% fewer ads',
             category: 'Social Apps',
-            price: 1.35,
-            originalPrice: 1.54,
+            price: 2.50,
+            originalPrice: 3.85,
             rating: 4.8,
             ratingCount: 630,
             downloads: 26400,
@@ -214,8 +215,8 @@
             title: 'Discord Nitro & Premium Suite',
             tagline: 'Custom emojis everywhere, 500MB uploads, 4K 60FPS stream & 2 Free Server Boosts',
             category: 'Gaming & Community',
-            price: 1.15,
-            originalPrice: 1.54,
+            price: 1.90,
+            originalPrice: 3.85,
             rating: 4.9,
             ratingCount: 890,
             downloads: 38700,
@@ -278,8 +279,8 @@
             title: 'CapCut Pro Video & AI Studio',
             tagline: 'VIP 4K 60FPS video editor, AI body effects & dynamic chroma key suite',
             category: 'Design & Media',
-            price: 1.46,
-            originalPrice: 1.54,
+            price: 3.46,
+            originalPrice: 4.60,
             rating: 4.9,
             ratingCount: 412,
             downloads: 14850,
@@ -310,8 +311,8 @@
             title: 'TikTok Pro Creator Suite',
             tagline: 'Ad-free video engine, watermark-free downloader & live analytics',
             category: 'Social Apps',
-            price: 1.15,
-            originalPrice: 1.54,
+            price: 2.70,
+            originalPrice: 3.85,
             rating: 4.9,
             ratingCount: 580,
             downloads: 22400,
@@ -342,8 +343,8 @@
             title: 'NordVPN Pro CyberShield',
             tagline: 'Ultra-fast WireGuard NordLynx VPN with Threat Protection & Double VPN',
             category: 'VPN & Security',
-            price: 1.54,
-            originalPrice: 2.30,
+            price: 3.85,
+            originalPrice: 5.75,
             rating: 5.0,
             ratingCount: 620,
             downloads: 19800,
@@ -374,8 +375,8 @@
             title: 'ExpressVPN Pro Ultra Stealth',
             tagline: 'Lightning-fast Lightway protocol with global streaming unblocker',
             category: 'VPN & Security',
-            price: 1.54,
-            originalPrice: 2.30,
+            price: 3.85,
+            originalPrice: 5.75,
             rating: 4.9,
             ratingCount: 490,
             downloads: 16700,
@@ -406,8 +407,8 @@
             title: 'Surfshark VPN Pro Unlimited',
             tagline: 'Unlimited multi-device protection, CleanWeb ad-blocker & MultiHop',
             category: 'VPN & Security',
-            price: 0.77,
-            originalPrice: 1.54,
+            price: 1.54,
+            originalPrice: 3.00,
             rating: 4.8,
             ratingCount: 310,
             downloads: 11200,
@@ -502,8 +503,8 @@
             title: 'NeuroStudio AI Studio',
             tagline: 'On-device neural image rendering and generative design engine',
             category: 'AI Solutions',
-            price: 1.54,
-            originalPrice: 2.30,
+            price: 3.85,
+            originalPrice: 5.75,
             rating: 4.8,
             ratingCount: 94,
             downloads: 1890,
@@ -630,8 +631,8 @@
             title: 'VividMotion FX Studio',
             tagline: 'Professional 60FPS video compositor & motion graphic creator',
             category: 'Design & Media',
-            price: 0.92,
-            originalPrice: 1.54,
+            price: 1.15,
+            originalPrice: 2.30,
             rating: 4.8,
             ratingCount: 165,
             downloads: 4100,
@@ -740,16 +741,16 @@
                     }
                 }
 
-                // Enforce strict price boundary: Not more than 200 Ksh ($1.54 USD) and not less than 20 Ksh ($0.15 USD)
+                // Enforce strict price boundary: Not more than 500 Ksh ($3.85 USD) and not less than 20 Ksh ($0.15 USD)
                 apps = apps.map(app => {
                     const price = parseFloat(app.price) || 0.15;
                     let bounded = price;
-                    if (price > 1.54) {
-                        bounded = 1.54;
+                    if (price > 3.85) {
+                        bounded = 3.85;
                     } else if (price < 0.15) {
                         bounded = 0.15;
                     }
-                    const origPrice = parseFloat(app.originalPrice) || (bounded < 1.54 ? 1.54 : 2.30);
+                    const origPrice = parseFloat(app.originalPrice) || (bounded < 3.85 ? Math.min(5.75, Math.round(bounded * 1.5 * 100) / 100) : 5.75);
                     return { ...app, price: bounded, originalPrice: origPrice };
                 });
                 return apps;
@@ -759,11 +760,11 @@
         },
 
         saveApps(apps) {
-            // Guarantee price boundary on save (20 Ksh to 200 Ksh / $0.15 to $1.54 USD)
+            // Guarantee price boundary on save (20 Ksh to 500 Ksh / $0.15 to $3.85 USD)
             const capped = apps.map(a => {
                 const price = parseFloat(a.price) || 0.15;
-                const boundedPrice = price > 1.54 ? 1.54 : (price < 0.15 ? 0.15 : Math.round(price * 100) / 100);
-                const origPrice = parseFloat(a.originalPrice) || (boundedPrice < 1.54 ? 1.54 : 2.30);
+                const boundedPrice = price > 3.85 ? 3.85 : (price < 0.15 ? 0.15 : Math.round(price * 100) / 100);
+                const origPrice = parseFloat(a.originalPrice) || (boundedPrice < 3.85 ? Math.min(5.75, Math.round(boundedPrice * 1.5 * 100) / 100) : 5.75);
                 return { ...a, price: boundedPrice, originalPrice: origPrice };
             });
             localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(capped));
@@ -778,8 +779,8 @@
         addApp(appData) {
             const apps = this.getApps();
             const rawPrice = parseFloat(appData.price) || 0.15;
-            const boundedPrice = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.15 ? 0.15 : Math.round(rawPrice * 100) / 100);
-            const origPrice = parseFloat(appData.originalPrice) || (boundedPrice < 1.54 ? 1.54 : 2.30);
+            const boundedPrice = rawPrice > 3.85 ? 3.85 : (rawPrice < 0.15 ? 0.15 : Math.round(rawPrice * 100) / 100);
+            const origPrice = parseFloat(appData.originalPrice) || (boundedPrice < 3.85 ? Math.min(5.75, Math.round(boundedPrice * 1.5 * 100) / 100) : 5.75);
 
             const newApp = {
                 id: 'app_' + Math.random().toString(36).substring(2, 7),
@@ -815,10 +816,10 @@
             if (idx !== -1) {
                 if (updates.price !== undefined) {
                     const rawPrice = parseFloat(updates.price) || 0.15;
-                    updates.price = rawPrice > 1.54 ? 1.54 : (rawPrice < 0.15 ? 0.15 : Math.round(rawPrice * 100) / 100);
+                    updates.price = rawPrice > 3.85 ? 3.85 : (rawPrice < 0.15 ? 0.15 : Math.round(rawPrice * 100) / 100);
                 }
                 if (updates.originalPrice !== undefined) {
-                    updates.originalPrice = parseFloat(updates.originalPrice) || 1.54;
+                    updates.originalPrice = parseFloat(updates.originalPrice) || 3.85;
                 }
                 apps[idx] = { ...apps[idx], ...updates };
                 this.saveApps(apps);
@@ -1618,6 +1619,163 @@
             this.saveCart([]);
         },
 
+        // Live Visitor Telemetry Engine (Captures real live traffic & visitors)
+        recordVisitorHit(page = 'Home', meta = {}) {
+            try {
+                const deviceId = getDeviceId();
+                const visitors = this.getVisitors();
+                const now = new Date().toISOString();
+                const currency = this.getSelectedCurrency();
+                const cart = this.getCart();
+                const cartValue = cart.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0);
+                const authUser = this.getAuthUser ? this.getAuthUser() : null;
+                
+                let visitor = visitors.find(v => v.deviceId === deviceId);
+                const userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : '';
+                
+                // Device detection
+                let deviceType = 'Desktop';
+                if (/mobile/i.test(userAgent)) deviceType = 'Mobile';
+                else if (/tablet|ipad/i.test(userAgent)) deviceType = 'Tablet';
+
+                let browser = 'Chrome';
+                if (/firefox/i.test(userAgent)) browser = 'Firefox';
+                else if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) browser = 'Safari';
+                else if (/edg/i.test(userAgent)) browser = 'Edge';
+
+                let os = 'Windows';
+                if (/android/i.test(userAgent)) os = 'Android';
+                else if (/iphone|ipad|ipod/i.test(userAgent)) os = 'iOS';
+                else if (/macintosh|mac os x/i.test(userAgent)) os = 'macOS';
+                else if (/linux/i.test(userAgent)) os = 'Linux';
+
+                // Country detection estimate based on timezone or selected currency
+                let countryGuess = currency.country || 'Global';
+                let flagGuess = currency.flag || '🌐';
+                try {
+                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+                    if (timezone.includes('Nairobi') || timezone.includes('Africa/')) {
+                        countryGuess = 'Kenya';
+                        flagGuess = '🇰🇪';
+                    }
+                } catch (e) {}
+
+                if (!visitor) {
+                    visitor = {
+                        id: 'vis_' + Math.random().toString(36).substring(2, 9),
+                        deviceId: deviceId,
+                        firstSeen: now,
+                        lastSeen: now,
+                        pageViews: 1,
+                        currentPage: page || 'Marketplace Storefront',
+                        country: countryGuess,
+                        flag: flagGuess,
+                        currency: currency.code,
+                        deviceType: deviceType,
+                        browser: browser,
+                        os: os,
+                        referrer: (typeof document !== 'undefined' && document.referrer) || (meta && meta.referrer) || 'Direct Search / Bookmark',
+                        cartCount: cart.length,
+                        cartValue: cartValue,
+                        email: (authUser && authUser.email) || (meta && meta.email) || '',
+                        username: (authUser && authUser.username) || (meta && meta.username) || 'Anonymous Guest',
+                        customerPhone: (authUser && authUser.customerPhone) || (meta && meta.phone) || '',
+                        ordersCount: 0,
+                        totalSpent: 0
+                    };
+                    visitors.unshift(visitor);
+                } else {
+                    visitor.lastSeen = now;
+                    visitor.pageViews = (visitor.pageViews || 0) + 1;
+                    if (page) visitor.currentPage = page;
+                    visitor.currency = currency.code;
+                    visitor.cartCount = cart.length;
+                    visitor.cartValue = cartValue;
+                    if (authUser && authUser.email) visitor.email = authUser.email;
+                    if (authUser && authUser.username) visitor.username = authUser.username;
+                    if (authUser && authUser.customerPhone) visitor.customerPhone = authUser.customerPhone;
+                    if (meta) {
+                        if (meta.email) visitor.email = meta.email;
+                        if (meta.username && meta.username !== 'Anonymous Guest') visitor.username = meta.username;
+                        if (meta.phone) visitor.customerPhone = meta.phone;
+                    }
+                }
+
+                // Correlate with real orders to compute ordersCount & totalSpent
+                const orders = this.getOrders();
+                if (visitor.email) {
+                    const userOrders = orders.filter(o => o.customerEmail && o.customerEmail.toLowerCase() === visitor.email.toLowerCase());
+                    visitor.ordersCount = userOrders.length;
+                    visitor.totalSpent = userOrders.filter(o => o.status === 'approved' || o.status === 'cleared' || o.status === 'completed').reduce((sum, o) => sum + (parseFloat(o.totalUsd) || parseFloat(o.total) || 0), 0);
+                }
+
+                // Keep max 150 visitors in local buffer
+                const trimmed = visitors.slice(0, 150);
+                localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify(trimmed));
+                this.dispatchUpdate('visitor_hit', visitor);
+                return visitor;
+            } catch (e) {
+                console.warn('Visitor hit recording failed:', e);
+                return null;
+            }
+        },
+
+        getVisitors() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEYS.VISITORS);
+                return data ? JSON.parse(data) : [];
+            } catch (e) {
+                return [];
+            }
+        },
+
+        getVisitorStats() {
+            const visitors = this.getVisitors();
+            const now = Date.now();
+            let online = 0;
+            let idle = 0;
+            let activeCarts = 0;
+            let totalCartVal = 0;
+            let converters = 0;
+
+            visitors.forEach(v => {
+                const diffSec = (now - new Date(v.lastSeen).getTime()) / 1000;
+                if (diffSec <= 180) { // < 3 mins
+                    online++;
+                } else if (diffSec <= 900) { // < 15 mins
+                    idle++;
+                }
+                if (v.cartCount > 0) {
+                    activeCarts++;
+                    totalCartVal += (parseFloat(v.cartValue) || 0);
+                }
+                if (v.ordersCount > 0) {
+                    converters++;
+                }
+            });
+
+            return {
+                totalVisitors: visitors.length,
+                onlineNow: online,
+                idleRecent: idle,
+                activeCarts: activeCarts,
+                totalCartValue: totalCartVal,
+                convertingVisitors: converters
+            };
+        },
+
+        deleteVisitor(id) {
+            let visitors = this.getVisitors();
+            visitors = visitors.filter(v => v.id !== id);
+            localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify(visitors));
+            this.dispatchUpdate('visitors_updated', visitors);
+        },
+
+        clearVisitors() {
+            localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify([]));
+            this.dispatchUpdate('visitors_updated', []);
+        },
+
         // Reset Demo Data
         resetDemoData() {
             localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(DEFAULT_APPS));
@@ -1627,6 +1785,7 @@
             localStorage.removeItem(STORAGE_KEYS.CART);
             localStorage.removeItem(STORAGE_KEYS.USER_RATINGS);
             localStorage.removeItem(STORAGE_KEYS.ACTIVE_REFERRER);
+            localStorage.removeItem(STORAGE_KEYS.VISITORS);
             localStorage.setItem(STORAGE_KEYS.CURRENCY, 'USD');
             this.dispatchUpdate('all_reset', {});
         },
@@ -1644,7 +1803,7 @@
             if (!localStorage.getItem(STORAGE_KEYS.APPS)) {
                 localStorage.setItem(STORAGE_KEYS.APPS, JSON.stringify(DEFAULT_APPS));
             } else {
-                // Ensure existing cached catalog adheres to price range 20 - 200 Ksh ($0.15 - $1.54 USD)
+                // Ensure existing cached catalog adheres to price range 20 - 500 Ksh ($0.15 - $3.85 USD)
                 const apps = this.getApps();
                 this.saveApps(apps);
             }
