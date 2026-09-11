@@ -51,6 +51,38 @@
     // Note: All product prices are strictly bounded between 20 Ksh and 500 Ksh ($0.15 – $3.85 USD at 130 KES/USD)
     const DEFAULT_APPS = [
         {
+            id: 'app_adblocker_pro',
+            title: 'AdBlocker Pro Shield Ultimate',
+            tagline: 'System-wide ad, popup, video ads & malware tracker blocker with encrypted DNS filter',
+            category: 'Utilities',
+            price: 0.77,
+            originalPrice: 1.54,
+            rating: 5.0,
+            ratingCount: 740,
+            downloads: 29800,
+            version: '7.18.4',
+            size: '24.8 MB',
+            platform: 'Android / Windows / macOS / iOS / Chrome / Firefox / Safari',
+            coverImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+            gallery: [
+                'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
+            ],
+            description: 'AdBlocker Pro Shield Ultimate delivers military-grade system-wide ad and tracker blocking across all apps, browsers, and streaming platforms. Eliminates unskippable video ads (YouTube, Twitch, Streaming), annoying popups, cookie consent overlays, telemetry tracking spyware, and phishing domains. Features ultra-fast encrypted DNS filtering (DNS-over-HTTPS / DNS-over-TLS), bandwidth compression technology, and stealth anti-adblock detection circumvention.',
+            features: [
+                'System-wide ad blocking across all apps, web browsers, games, and streaming',
+                'Blocks unskippable video ads (YouTube, Twitch), popups, and banner overlays',
+                'Integrated Privacy Shield preventing tracking telemetry and profiling spyware',
+                'Encrypted DNS filtering (DoH / DoT) with 40% faster web page load speeds'
+            ],
+            releaseNotes: 'v7.18.4: Upgraded 2026 YouTube video ad-block filters, integrated encrypted DoH protocol, and optimized battery consumption.',
+            downloadUrl: 'https://vault-storage.app/packages/adblocker-pro-shield-v7.18.4.apk',
+            featured: true,
+            status: 'published',
+            createdAt: '2026-09-11T07:30:00Z'
+        },
+        {
             id: 'app_moviebox_pro',
             title: 'MovieBox Pro VIP Cinema',
             tagline: 'VIP 4K HDR movie streaming, trending TV series & unlimited offline caching',
