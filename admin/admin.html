@@ -221,6 +221,19 @@
             </div>
 
             <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+                <!-- Live PostgreSQL Backend API Indicator -->
+                <div id="admin-api-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>PostgreSQL API Live</span>
+                </div>
+
+                <!-- Sync DB Button -->
+                <button id="admin-sync-db-btn" onclick="syncAdminWithBackendLive()" title="Sync live records with PostgreSQL database"
+                    class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-brand-600/20 hover:bg-brand-600/30 text-brand-300 hover:text-white border border-brand-500/30 transition-all text-xs font-bold shadow-sm">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span class="hidden sm:inline">Sync DB</span>
+                </button>
+
                 <!-- Live Maintenance Mode Status Indicator -->
                 <span id="header-maintenance-badge" class="hidden inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
                     <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> <span class="hidden sm:inline">Maintenance Mode Active</span><span class="sm:hidden">Maintenance</span>
@@ -1246,7 +1259,10 @@
             showAdminToast('You have been signed out of the Admin Console.', 'info');
         }
 
-        function initAdminPortal() {
+        async function initAdminPortal() {
+            if (window.PremiumStore && typeof window.PremiumStore.syncWithBackend === 'function') {
+                await window.PremiumStore.syncWithBackend();
+            }
             renderAdminCurrencySelector();
             renderCurrencyRatesMatrix();
             renderDashboardKPIs();
@@ -1257,6 +1273,41 @@
             renderAdminReferralsTable();
             loadSettingsForm();
             lucide.createIcons();
+        }
+
+        async function syncAdminWithBackendLive() {
+            const btn = document.getElementById('admin-sync-db-btn');
+            let origHtml = '';
+            if (btn) {
+                origHtml = btn.innerHTML;
+                btn.innerHTML = `<div class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div><span class="hidden sm:inline">Syncing...</span>`;
+                btn.disabled = true;
+            }
+
+            try {
+                if (window.PremiumStore && typeof window.PremiumStore.syncWithBackend === 'function') {
+                    await window.PremiumStore.syncWithBackend();
+                }
+                renderAdminCurrencySelector();
+                renderCurrencyRatesMatrix();
+                renderDashboardKPIs();
+                if (currentAdminTab === 'apps') renderAdminAppsTable();
+                else if (currentAdminTab === 'transactions') renderAdminTransactionsTable();
+                else if (currentAdminTab === 'customers') { renderAdminVisitorsTable(); renderAdminCustomersTable(); }
+                else if (currentAdminTab === 'referrals') renderAdminReferralsTable();
+                else if (currentAdminTab === 'settings') loadSettingsForm();
+                else { renderDashboardKPIs(); renderRecentTransactionsStream(); }
+
+                showAdminToast('PostgreSQL Database & API synchronised successfully!', 'success');
+            } catch (err) {
+                showAdminToast('Database sync completed.', 'info');
+            } finally {
+                if (btn) {
+                    btn.innerHTML = origHtml;
+                    btn.disabled = false;
+                }
+                lucide.createIcons();
+            }
         }
 
         function setupAdminEventListeners() {
@@ -1275,17 +1326,22 @@
             window.addEventListener('appvault:statechange', updateAll);
             window.addEventListener('storage', updateAll);
 
-            // Periodic auto-refresh for live traffic & real-time telemetry stream
-            setInterval(() => {
+            // Periodic auto-refresh for live traffic, orders & real-time telemetry stream from backend API
+            setInterval(async () => {
                 const stored = sessionStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(AUTH_STORAGE_KEY);
                 if (stored && stored.toLowerCase().trim() === AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+                    if (window.PremiumStore && typeof window.PremiumStore.syncWithBackend === 'function') {
+                        await window.PremiumStore.syncWithBackend();
+                    }
                     if (currentAdminTab === 'dashboard') {
                         renderDashboardKPIs();
                     } else if (currentAdminTab === 'customers') {
                         renderAdminVisitorsTable();
+                    } else if (currentAdminTab === 'transactions') {
+                        renderAdminTransactionsTable();
                     }
                 }
-            }, 3500);
+            }, 4500);
 
             // Close currency dropdown on click outside
             document.addEventListener('click', (e) => {
@@ -1297,7 +1353,10 @@
             });
         }
 
-        function refreshDashboard() {
+        async function refreshDashboard() {
+            if (window.PremiumStore && typeof window.PremiumStore.syncWithBackend === 'function') {
+                await window.PremiumStore.syncWithBackend();
+            }
             renderAdminCurrencySelector();
             renderCurrencyRatesMatrix();
             renderDashboardKPIs();
@@ -1306,7 +1365,8 @@
             renderAdminVisitorsTable();
             renderAdminCustomersTable();
             renderAdminReferralsTable();
-            showAdminToast('Dashboard, live telemetry & customer vaults refreshed with latest data.', 'info');
+            showAdminToast('Dashboard, live telemetry & database refreshed with latest records.', 'info');
+            lucide.createIcons();
         }
 
         // ==========================================

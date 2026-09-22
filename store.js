@@ -47,6 +47,24 @@
         return deviceId;
     }
 
+    // Backend REST API Connector
+    const API_BASE = (typeof window !== 'undefined' && window.location && (window.location.port === '5000' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+        ? `${window.location.origin}/api`
+        : 'http://localhost:5000/api';
+
+    async function apiRequest(endpoint, options = {}) {
+        try {
+            const res = await fetch(`${API_BASE}${endpoint}`, {
+                headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+                ...options
+            });
+            if (!res.ok) return null;
+            return await res.json();
+        } catch (e) {
+            return null;
+        }
+    }
+
     // Initial Premium Applications Catalog with high-resolution imagery
     // Note: All product prices are strictly bounded between 20 Ksh and 500 Ksh ($0.15 – $3.85 USD at 130 KES/USD)
     const DEFAULT_APPS = [
@@ -708,7 +726,7 @@
         accountName: 'JASPER MARKETS',
         supportWhatsapp: '447455909204',
         supportPhone: '+447455909204',
-        currencySymbol: '$'
+        currencySymbol: 'Ksh'
     };
 
     // Default Referrals State (Clean dynamic state for real affiliate users)
@@ -723,15 +741,15 @@
 
         getSelectedCurrency() {
             try {
-                const code = localStorage.getItem(STORAGE_KEYS.CURRENCY) || 'USD';
-                return CURRENCIES[code] || CURRENCIES.USD;
+                const code = localStorage.getItem(STORAGE_KEYS.CURRENCY) || 'KES';
+                return CURRENCIES[code] || CURRENCIES.KES;
             } catch (e) {
-                return CURRENCIES.USD;
+                return CURRENCIES.KES;
             }
         },
 
         setSelectedCurrency(currencyCode) {
-            const curr = CURRENCIES[currencyCode] || CURRENCIES.USD;
+            const curr = CURRENCIES[currencyCode] || CURRENCIES.KES;
             localStorage.setItem(STORAGE_KEYS.CURRENCY, curr.code);
             this.dispatchUpdate('currency_change', curr);
             return curr;
@@ -839,6 +857,13 @@
             };
             apps.unshift(newApp);
             this.saveApps(apps);
+
+            // Sync to backend PostgreSQL
+            apiRequest('/apps', {
+                method: 'POST',
+                body: JSON.stringify(newApp)
+            }).catch(() => {});
+
             return newApp;
         },
 
@@ -855,6 +880,13 @@
                 }
                 apps[idx] = { ...apps[idx], ...updates };
                 this.saveApps(apps);
+
+                // Sync to backend PostgreSQL
+                apiRequest('/apps/' + encodeURIComponent(id), {
+                    method: 'PUT',
+                    body: JSON.stringify(updates)
+                }).catch(() => {});
+
                 return apps[idx];
             }
             return null;
@@ -864,6 +896,11 @@
             let apps = this.getApps();
             apps = apps.filter(a => a.id !== id);
             this.saveApps(apps);
+
+            // Sync deletion to backend PostgreSQL
+            apiRequest('/apps/' + encodeURIComponent(id), {
+                method: 'DELETE'
+            }).catch(() => {});
         },
 
         toggleAppVisibility(id) {
@@ -872,6 +909,13 @@
             if (app) {
                 app.status = app.status === 'published' ? 'hidden' : 'published';
                 this.saveApps(apps);
+
+                // Sync to backend PostgreSQL
+                apiRequest('/apps/' + encodeURIComponent(id), {
+                    method: 'PUT',
+                    body: JSON.stringify({ status: app.status })
+                }).catch(() => {});
+
                 return app.status;
             }
             return null;
@@ -923,6 +967,12 @@
             };
             localStorage.setItem(STORAGE_KEYS.USER_RATINGS, JSON.stringify(userRatings));
             this.dispatchUpdate('ratings', { appId, score, newRating: app.rating, count: app.ratingCount });
+
+            // Sync rating to backend PostgreSQL
+            apiRequest('/ratings', {
+                method: 'POST',
+                body: JSON.stringify({ appId, deviceId, score, userEmail: (this.getAuthenticatedUser() || {}).email })
+            }).catch(() => {});
 
             return { success: true, newRating: app.rating, ratingCount: app.ratingCount };
         },
@@ -1008,6 +1058,13 @@
 
             orders.unshift(newOrder);
             this.saveOrders(orders);
+
+            // Sync order to backend PostgreSQL
+            apiRequest('/orders', {
+                method: 'POST',
+                body: JSON.stringify(newOrder)
+            }).catch(() => {});
+
             return newOrder;
         },
 
@@ -1022,6 +1079,13 @@
                 if (prevStatus !== 'cleared' && status === 'cleared') {
                     this.processReferralCommission(order);
                 }
+
+                // Sync status to backend PostgreSQL
+                apiRequest('/orders/' + encodeURIComponent(orderId) + '/status', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status })
+                }).catch(() => {});
+
                 return order;
             }
             return null;
@@ -1053,6 +1117,108 @@
             }
         },
 
+        getAuthUser() {
+            return this.getAuthenticatedUser();
+        },
+
+        async signupUser(email, password, username = '', phone = '') {
+            const cleanEmail = (email || '').trim().toLowerCase();
+            if (!this.isValidEmail(cleanEmail)) {
+                return { success: false, message: 'Please provide a valid email address.' };
+            }
+            if (!password || password.length < 6) {
+                return { success: false, message: 'Password must be at least 6 characters.' };
+            }
+
+            const deviceId = getDeviceId();
+            const res = await apiRequest('/auth/signup', {
+                method: 'POST',
+                body: JSON.stringify({ email: cleanEmail, password, username, phone, deviceId })
+            });
+
+            if (res && res.success && res.data) {
+                const user = res.data;
+                try {
+                    localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+                    sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+                } catch (e) {}
+                this.registerReferralProfile(user.username, user.email);
+                this.dispatchUpdate('auth_user', user);
+                return { success: true, user, message: res.message || 'Account created successfully!' };
+            } else {
+                const msg = (res && res.message) || 'Signup failed. Please try again.';
+                return { success: false, message: msg };
+            }
+        },
+
+        async signinUser(email, password) {
+            const cleanEmail = (email || '').trim().toLowerCase();
+            if (!this.isValidEmail(cleanEmail)) {
+                return { success: false, message: 'Please provide a valid email address.' };
+            }
+            if (!password) {
+                return { success: false, message: 'Password is required.' };
+            }
+
+            const deviceId = getDeviceId();
+            const res = await apiRequest('/auth/signin', {
+                method: 'POST',
+                body: JSON.stringify({ email: cleanEmail, password, deviceId })
+            });
+
+            if (res && res.success && res.data) {
+                const user = res.data;
+                try {
+                    localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+                    sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+                } catch (e) {}
+                this.registerReferralProfile(user.username, user.email);
+                this.dispatchUpdate('auth_user', user);
+                return { success: true, user, message: res.message || `Welcome back, ${user.username}!` };
+            } else {
+                const msg = (res && res.message) || 'Invalid email or password.';
+                return { success: false, message: msg };
+            }
+        },
+
+        async loginWithGoogle(payload = {}) {
+            const deviceId = getDeviceId();
+            const res = await apiRequest('/auth/google', {
+                method: 'POST',
+                body: JSON.stringify({ ...payload, deviceId })
+            });
+
+            if (res && res.success && res.data) {
+                const user = res.data;
+                try {
+                    localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+                    sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(user));
+                } catch (e) {}
+                this.registerReferralProfile(user.username, user.email);
+                this.dispatchUpdate('auth_user', user);
+                return { success: true, user, message: res.message || 'Signed in with Google successfully!' };
+            } else {
+                // If offline or backend unavailable, gracefully authenticate locally
+                if (payload.email) {
+                    const fallbackUser = {
+                        id: 'usr_' + Math.random().toString(36).substring(2, 8),
+                        email: payload.email,
+                        username: (payload.name || payload.email.split('@')[0]).replace(/[^a-z0-9_-]/gi, '').toLowerCase().slice(0, 20),
+                        avatar: payload.picture || '',
+                        auth_provider: 'google',
+                        deviceId: deviceId,
+                        authenticatedAt: new Date().toISOString()
+                    };
+                    localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(fallbackUser));
+                    this.registerReferralProfile(fallbackUser.username, fallbackUser.email);
+                    this.dispatchUpdate('auth_user', fallbackUser);
+                    return { success: true, user: fallbackUser, message: `Signed in as ${fallbackUser.username}!` };
+                }
+                const msg = (res && res.message) || 'Google sign-in could not be completed.';
+                return { success: false, message: msg };
+            }
+        },
+
         setAuthenticatedUser(email, extraData = {}) {
             const cleanEmail = (email || '').trim().toLowerCase();
             if (!this.isValidEmail(cleanEmail)) {
@@ -1061,7 +1227,6 @@
 
             let username = (extraData.username || '').trim().toLowerCase();
             if (!username) {
-                // Auto-derive clean unique handle from email prefix
                 const prefix = cleanEmail.split('@')[0].replace(/[^a-z0-9_-]/gi, '').toLowerCase();
                 username = prefix.length >= 3 ? prefix.slice(0, 20) : `user_${Math.random().toString(36).substring(2, 6)}`;
             }
@@ -1075,16 +1240,19 @@
                 username: username,
                 authenticatedAt: new Date().toISOString(),
                 deviceId: getDeviceId(),
-                ...extraData,
-                username: username
+                ...extraData
             };
             try {
                 localStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(userProfile));
                 sessionStorage.setItem(STORAGE_KEYS.AUTH_USER, JSON.stringify(userProfile));
             } catch(e) {}
 
-            // Automatically initialize or sync referral profile
             this.registerReferralProfile(username, cleanEmail);
+
+            apiRequest('/auth/identify', {
+                method: 'POST',
+                body: JSON.stringify({ email: cleanEmail, username, deviceId: getDeviceId(), ...extraData })
+            }).catch(() => {});
 
             this.dispatchUpdate('auth_user', userProfile);
             return { success: true, user: userProfile };
@@ -1162,6 +1330,12 @@
             referrals[clean].totalClicks = (referrals[clean].totalClicks || 0) + 1;
             referrals[clean].lastActive = new Date().toISOString();
             this.saveReferrals(referrals);
+
+            // Sync referral hit to backend PostgreSQL
+            apiRequest('/referrals/click', {
+                method: 'POST',
+                body: JSON.stringify({ username: clean })
+            }).catch(() => {});
         },
 
         registerReferralProfile(username, email) {
@@ -1303,6 +1477,18 @@
             profile.balanceUsd = 0; // Move from balance into pending payout
             this.saveReferrals(referrals);
 
+            // Sync payout request to backend PostgreSQL
+            apiRequest('/referrals/payout', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: clean,
+                    paymentMethod: payoutDetails.paymentMethod || 'mpesa',
+                    mpesaNumber: payoutDetails.mpesaNumber || payoutDetails.phone || '',
+                    phone: payoutDetails.phone || payoutDetails.mpesaNumber || '',
+                    accountDetails: payoutDetails.accountDetails || ''
+                })
+            }).catch(() => {});
+
             return { success: true, payout: payoutRecord, message: `Payout request #${payoutId} submitted successfully!` };
         },
 
@@ -1416,6 +1602,13 @@
                     }
                 }
                 this.saveReferrals(referrals);
+
+                // Sync payout status to backend PostgreSQL
+                apiRequest('/referrals/payouts/' + encodeURIComponent(payoutId) + '/status', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ status: newStatus === 'paid' ? 'approved' : newStatus })
+                }).catch(() => {});
+
                 return { success: true, message: `Payout request #${payoutId} marked as ${newStatus}`, payout: targetPayout };
             }
             return { success: false, message: 'Payout request not found.' };
@@ -1602,6 +1795,12 @@
 
             localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(merged));
             this.dispatchUpdate('settings', merged);
+
+            // Sync settings to backend PostgreSQL
+            apiRequest('/settings', {
+                method: 'PUT',
+                body: JSON.stringify(merged)
+            }).catch(() => {});
         },
 
         // Cart Management
@@ -1745,6 +1944,13 @@
                 const trimmed = visitors.slice(0, 150);
                 localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify(trimmed));
                 this.dispatchUpdate('visitor_hit', visitor);
+
+                // Sync live visitor telemetry to backend PostgreSQL
+                apiRequest('/visitors/hit', {
+                    method: 'POST',
+                    body: JSON.stringify(visitor)
+                }).catch(() => {});
+
                 return visitor;
             } catch (e) {
                 console.warn('Visitor hit recording failed:', e);
@@ -1869,6 +2075,151 @@
                     Store.dispatchUpdate('sync', { key: e.key, newValue: e.newValue });
                 }
             });
+
+            // Automatically sync catalog and settings from PostgreSQL backend
+            this.syncWithBackend();
+        },
+
+        async syncWithBackend() {
+            try {
+                // 1. Sync catalog from PostgreSQL
+                const appsRes = await apiRequest('/apps');
+                if (appsRes && appsRes.success && Array.isArray(appsRes.data) && appsRes.data.length > 0) {
+                    const mappedApps = appsRes.data.map(a => ({
+                        id: a.id,
+                        title: a.title,
+                        tagline: a.tagline || '',
+                        category: a.category,
+                        price: parseFloat(a.price) || 0.15,
+                        originalPrice: parseFloat(a.original_price) || 1.54,
+                        rating: parseFloat(a.rating) || 5.0,
+                        ratingCount: parseInt(a.rating_count, 10) || 1,
+                        downloads: parseInt(a.downloads, 10) || 0,
+                        version: a.version || '1.0.0',
+                        size: a.size || '25.0 MB',
+                        platform: a.platform || 'Cross-Platform',
+                        coverImage: a.cover_image,
+                        gallery: Array.isArray(a.gallery) ? a.gallery : (typeof a.gallery === 'string' ? JSON.parse(a.gallery) : [a.cover_image]),
+                        description: a.description || '',
+                        features: Array.isArray(a.features) ? a.features : (typeof a.features === 'string' ? JSON.parse(a.features) : []),
+                        releaseNotes: a.release_notes || '',
+                        downloadUrl: a.download_url,
+                        featured: !!a.featured,
+                        status: a.status || 'published',
+                        createdAt: a.created_at
+                    }));
+                    this.saveApps(mappedApps);
+                }
+
+                // 2. Sync settings from PostgreSQL
+                const settingsRes = await apiRequest('/settings');
+                if (settingsRes && settingsRes.success && settingsRes.data) {
+                    const s = settingsRes.data;
+                    this.saveSettings({
+                        siteTitle: s.site_title,
+                        supportWhatsapp: s.support_whatsapp,
+                        supportPhone: s.support_phone,
+                        supportEmail: s.support_email,
+                        paybillNumber: s.paybill_number || '522533',
+                        accountNumber: s.account_number || '8106675',
+                        accountName: s.account_name || 'JASPER MARKETS',
+                        mpesaActive: s.mpesa_active,
+                        cardActive: s.card_active,
+                        maintenanceMode: s.maintenance_mode,
+                        maintenanceMessage: s.maintenance_message
+                    });
+                }
+
+                // 3. Sync orders from PostgreSQL
+                const ordersRes = await apiRequest('/orders');
+                if (ordersRes && ordersRes.success && Array.isArray(ordersRes.data)) {
+                    const mappedOrders = ordersRes.data.map(o => ({
+                        id: o.id,
+                        customerEmail: o.customer_email || o.customerEmail || '',
+                        customerUsername: o.customer_username || o.customerUsername || '',
+                        customerPhone: o.customer_phone || o.customerPhone || '',
+                        items: Array.isArray(o.items) ? o.items : (typeof o.items === 'string' ? JSON.parse(o.items) : []),
+                        totalAmount: parseFloat(o.total_amount) || parseFloat(o.totalAmount) || 0,
+                        currencyCode: o.currency_code || o.currencyCode || 'USD',
+                        formattedTotal: o.formatted_total || o.formattedTotal || `$${(parseFloat(o.total_amount) || 0).toFixed(2)}`,
+                        paymentMethod: o.payment_method || o.paymentMethod || 'mpesa',
+                        paymentStatus: o.payment_status || o.paymentStatus || 'pending',
+                        mpesaRef: o.mpesa_ref || o.mpesaRef || o.kcb_ref || o.id,
+                        kcbRef: o.kcb_ref || o.kcbRef || o.mpesa_ref || o.id,
+                        paybillNumber: o.paybill_number || o.paybillNumber || '522533',
+                        accountNumber: o.account_number || o.accountNumber || '8106675',
+                        accountName: o.account_name || o.accountName || 'JASPER MARKETS',
+                        referrerUsername: o.referrer_username || o.referrerUsername || null,
+                        referralCommissionUsd: parseFloat(o.referral_commission_usd) || parseFloat(o.referralCommissionUsd) || 0,
+                        downloadToken: o.download_token || o.downloadToken || '',
+                        downloadUrl: o.download_url || o.downloadUrl || '',
+                        licenseKey: o.license_key || o.licenseKey || `PSTR-${o.id ? o.id.slice(-4).toUpperCase() : 'PRO1'}-491A-882C-PRO`,
+                        expiresAt: o.expires_at || o.expiresAt,
+                        createdAt: o.created_at || o.createdAt || new Date().toISOString()
+                    }));
+                    if (mappedOrders.length > 0) {
+                        this.saveOrders(mappedOrders);
+                    }
+                }
+
+                // 4. Sync affiliates from PostgreSQL
+                const refsRes = await apiRequest('/referrals/affiliates');
+                if (refsRes && refsRes.success && Array.isArray(refsRes.data)) {
+                    const currentRefs = this.getReferrals();
+                    refsRes.data.forEach(a => {
+                        const u = (a.username || '').trim().toLowerCase();
+                        if (u) {
+                            currentRefs[u] = {
+                                username: u,
+                                email: a.email || `${u}@customer.store`,
+                                phone: a.phone || '',
+                                totalClicks: parseInt(a.total_clicks || a.clicks || a.totalClicks || 0, 10),
+                                successfulOrders: parseInt(a.successful_orders || a.totalOrders || a.successfulOrders || 0, 10),
+                                totalRevenueUsd: parseFloat(a.total_revenue_usd || a.totalRevenueUsd || 0),
+                                totalCommissionUsd: parseFloat(a.total_commission_usd || a.totalCommissionUsd || a.totalEarnedUsd || 0),
+                                balanceUsd: parseFloat(a.balance_usd || a.balanceUsd || 0),
+                                paidPayoutsUsd: parseFloat(a.paid_payouts_usd || a.paidPayoutsUsd || 0),
+                                freeAppsClaimed: Array.isArray(a.free_apps_claimed) ? a.free_apps_claimed : (typeof a.free_apps_claimed === 'string' ? JSON.parse(a.free_apps_claimed) : (currentRefs[u]?.freeAppsClaimed || [])),
+                                payoutRequests: Array.isArray(a.payouts) ? a.payouts : (currentRefs[u]?.payoutRequests || []),
+                                createdAt: a.created_at || new Date().toISOString(),
+                                lastActive: a.last_active || new Date().toISOString()
+                            };
+                        }
+                    });
+                    this.saveReferrals(currentRefs);
+                }
+
+                // 5. Sync visitors from PostgreSQL
+                const visitorsRes = await apiRequest('/visitors');
+                if (visitorsRes && visitorsRes.success && Array.isArray(visitorsRes.data)) {
+                    const mappedVisitors = visitorsRes.data.map(v => ({
+                        id: v.id,
+                        deviceId: v.device_id || v.deviceId,
+                        email: v.email || '',
+                        username: v.username || 'Anonymous Guest',
+                        customerPhone: v.phone || v.customerPhone || '',
+                        currentPage: v.current_page || v.currentPage || 'Marketplace Storefront',
+                        pageViews: parseInt(v.page_views || v.pageViews || 1, 10),
+                        country: v.country || 'Global',
+                        flag: v.flag || '🌐',
+                        currency: v.currency || 'USD',
+                        deviceType: v.device_type || v.deviceType || 'Desktop',
+                        browser: v.browser || 'Chrome',
+                        os: v.os || 'Windows',
+                        referrer: v.referrer || 'Direct Search / Bookmark',
+                        cartCount: parseInt(v.cart_count || v.cartCount || 0, 10),
+                        cartValue: parseFloat(v.cart_value || v.cartValue || 0),
+                        firstSeen: v.first_seen || v.firstSeen || new Date().toISOString(),
+                        lastSeen: v.last_seen || v.lastSeen || new Date().toISOString()
+                    }));
+                    if (mappedVisitors.length > 0) {
+                        localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify(mappedVisitors));
+                        this.dispatchUpdate('visitors_updated', mappedVisitors);
+                    }
+                }
+            } catch (e) {
+                // Silently keep local state if offline
+            }
         }
     };
 

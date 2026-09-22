@@ -109,13 +109,16 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- Google Identity Services for Continue with Google -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
-        /* Frontend Security & Anti-Inspection Protections */
+        /* UI Base Styles & Glassmorphic Utilities */
         body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
         }
 
         input,
@@ -158,6 +161,15 @@
         .glow-indigo {
             box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4);
         }
+        .glow-emerald {
+            box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.4);
+        }
+        .glow-amber {
+            box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.4);
+        }
+        .glow-rose {
+            box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.4);
+        }
 
         .hero-slide {
             transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -174,6 +186,12 @@
             background: linear-gradient(90deg, #4f46e5 0%, #6366f1 35%, #a855f7 50%, #6366f1 65%, #4f46e5 100%);
             background-size: 200% 100%;
             animation: shimmer 5s infinite linear;
+        }
+
+        /* Pulse glow text */
+        .pulse-text {
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
         }
 
         /* Custom Scrollbar */
@@ -325,9 +343,9 @@
                     <button id="currency-selector-btn" onclick="toggleCurrencyDropdown()"
                         title="Switch Currency / Country"
                         class="flex items-center gap-1 px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl sm:rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white transition-all text-[11px] sm:text-xs font-semibold shadow-md">
-                        <span id="header-currency-flag" class="text-sm sm:text-base leading-none">🇺🇸</span>
+                        <span id="header-currency-flag" class="text-sm sm:text-base leading-none">🇰🇪</span>
                         <span id="header-currency-code"
-                            class="font-mono font-bold text-white text-[11px] sm:text-xs">USD</span>
+                            class="font-mono font-bold text-white text-[11px] sm:text-xs">KES</span>
                         <i data-lucide="chevron-down" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-400"></i>
                     </button>
 
@@ -383,9 +401,9 @@
                         class="hidden absolute -top-1.5 -right-1.5 bg-gradient-to-r from-brand-500 to-indigo-600 text-white text-[10px] font-extrabold rounded-full h-4 min-w-[16px] sm:h-5 sm:min-w-[20px] px-1 flex items-center justify-center shadow-lg shadow-brand-500/30">0</span>
                 </button>
 
-                <!-- Mobile Hamburger Menu Button (Flexible Small Screens) -->
+                <!-- Sidebar Menu Button (Universal All Screens) -->
                 <button id="mobile-menu-btn" onclick="toggleMobileNav()" title="Open Navigation Menu"
-                    class="md:hidden p-2 sm:p-2.5 text-slate-200 hover:text-white rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-brand-500/50 transition-all flex items-center justify-center shrink-0 group shadow-sm active:scale-95">
+                    class="p-2 sm:p-2.5 text-slate-200 hover:text-white rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-brand-500/50 transition-all flex items-center justify-center shrink-0 group shadow-sm active:scale-95">
                     <i data-lucide="menu"
                         class="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 group-hover:text-brand-400 transition-colors"></i>
                 </button>
@@ -403,11 +421,11 @@
     </header>
 
     <!-- Page: Marketplace Home View -->
-    <main id="page-home" class="page-view flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10">
+    <main id="page-home" class="page-view flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-8 sm:space-y-10">
 
         <!-- Picture-Dominated Hero Section with Interactive Slider -->
         <section
-            class="relative rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-950 min-h-[380px] sm:min-h-[440px] flex items-end shadow-2xl group">
+            class="relative rounded-3xl overflow-hidden border border-slate-800/80 bg-slate-950 min-h-[420px] sm:min-h-[480px] flex items-end shadow-2xl group">
 
             <!-- Slider Container -->
             <div id="hero-slider" class="absolute inset-0 w-full h-full">
@@ -415,13 +433,13 @@
             </div>
 
             <!-- Slide Navigation Buttons -->
-            <div class="absolute top-6 right-6 z-20 flex items-center space-x-2">
-                <button onclick="prevSlide()"
-                    class="p-2 rounded-xl bg-slate-950/70 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/50 backdrop-blur-md transition-all">
+            <div class="absolute top-5 right-5 sm:top-6 sm:right-6 z-20 flex items-center space-x-2">
+                <button onclick="prevSlide()" aria-label="Previous Slide"
+                    class="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-950/80 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/60 backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95">
                     <i data-lucide="chevron-left" class="w-4 h-4"></i>
                 </button>
-                <button onclick="nextSlide()"
-                    class="p-2 rounded-xl bg-slate-950/70 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/50 backdrop-blur-md transition-all">
+                <button onclick="nextSlide()" aria-label="Next Slide"
+                    class="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-950/80 hover:bg-slate-900 text-slate-300 hover:text-white border border-slate-700/60 backdrop-blur-md transition-all shadow-lg hover:scale-105 active:scale-95">
                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -432,38 +450,57 @@
             </div>
 
             <!-- Hero Active Slide Content Overlay -->
-            <div class="relative z-10 p-6 sm:p-10 max-w-2xl space-y-4">
+            <div class="relative z-10 p-5 sm:p-8 md:p-10 max-w-3xl space-y-4">
                 <div class="flex flex-wrap items-center gap-2">
                     <span id="hero-offer-badge"
-                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-600/40 border border-red-400/40 animate-pulse">
+                        class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white shadow-xl shadow-red-600/40 border border-red-400/40 animate-pulse">
                         <i data-lucide="flame" class="w-3.5 h-3.5 fill-white text-white"></i> LIMITED OFFER <span id="hero-discount-pct" class="bg-black/30 px-1.5 py-0.5 rounded text-[10px] ml-0.5">SAVE 85%</span>
                     </span>
                     <span id="hero-category"
-                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-brand-200 border border-brand-500/40 backdrop-blur-md shadow-lg shimmer-badge">
+                        class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold text-brand-200 border border-brand-500/40 backdrop-blur-md shadow-lg shimmer-badge">
                         <i data-lucide="sparkles" class="w-3.5 h-3.5 text-brand-300 animate-spin"
                             style="animation-duration: 8s;"></i> Featured Selection
                     </span>
                     <span id="hero-rating"
-                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md shadow-lg">
+                        class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md shadow-lg">
                         <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> 4.9
                     </span>
                 </div>
+                
+                <!-- Main Grand Title Hierarchy -->
                 <h1 id="hero-title"
-                    class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
+                    class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.08] drop-shadow-lg">
                     NextGen Enterprise Workspace
                 </h1>
+                
+                <!-- Subheading / Content Description -->
                 <p id="hero-description"
-                    class="text-slate-300 text-sm sm:text-base leading-relaxed line-clamp-2 max-w-xl drop-shadow">
+                    class="text-slate-300 text-sm sm:text-base md:text-lg leading-relaxed line-clamp-2 max-w-2xl font-normal drop-shadow">
                     Engineered with offline synchronization, high-speed execution, and secure data enclaves.
                 </p>
-                <div class="flex flex-wrap items-center gap-3 pt-2">
+
+                <!-- Value Highlights Row -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-300 pt-1">
+                    <span class="inline-flex items-center gap-1 bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1 backdrop-blur-sm">
+                        <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Instant Delivery
+                    </span>
+                    <span class="inline-flex items-center gap-1 bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1 backdrop-blur-sm">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> 100% Virus-Free
+                    </span>
+                    <span class="inline-flex items-center gap-1 bg-slate-900/80 border border-slate-800 rounded-lg px-2.5 py-1 backdrop-blur-sm">
+                        <i data-lucide="smartphone" class="w-3.5 h-3.5 text-indigo-400"></i> Android & PC Ready
+                    </span>
+                </div>
+
+                <!-- Call to Action Buttons -->
+                <div class="flex flex-wrap items-center gap-3 pt-3">
                     <button id="hero-buy-btn"
-                        class="shimmer-button text-white font-bold px-6 py-3.5 rounded-2xl transition-all shadow-xl shadow-brand-600/30 text-sm flex items-center gap-2 hover:scale-105 active:scale-95">
-                        <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy — <span id="hero-original-price" class="text-xs sm:text-sm line-through text-slate-300/80 mr-1.5"></span><span id="hero-price">$0.15</span>
+                        class="shimmer-button text-white font-extrabold px-6 sm:px-8 py-3.5 rounded-2xl transition-all shadow-xl shadow-brand-600/40 text-sm sm:text-base flex items-center gap-2.5 hover:scale-105 active:scale-95 glow-indigo">
+                        <i data-lucide="zap" class="w-4 h-4"></i> Direct Buy — <span id="hero-original-price" class="text-xs sm:text-sm line-through text-slate-300/80 mr-1.5"></span><span id="hero-price" class="text-emerald-300 font-mono">$0.15</span>
                     </button>
                     <a id="hero-whatsapp-btn" href="https://wa.me/447455909204" target="_blank"
                         rel="noopener noreferrer"
-                        class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-3.5 rounded-2xl transition-all shadow-lg shadow-emerald-600/25 text-sm flex items-center gap-2 hover:scale-105 active:scale-95">
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 sm:px-6 py-3.5 rounded-2xl transition-all shadow-xl shadow-emerald-600/30 text-sm sm:text-base flex items-center gap-2 hover:scale-105 active:scale-95 glow-emerald">
                         <i data-lucide="message-circle" class="w-4 h-4"></i> Order on WhatsApp
                     </a>
                     <button id="hero-details-btn"
@@ -474,23 +511,81 @@
             </div>
         </section>
 
-        <!-- Category Filter & Sort Engine Bar -->
-        <section class="space-y-4">
-            <div
-                class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+        <!-- 4-Card Trust & Live Features Metrics Grid -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-brand-500/40 transition-all flex flex-col justify-between space-y-2 group">
+                <div class="flex items-center justify-between">
+                    <span class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </span>
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider bg-indigo-500/10 px-2 py-0.5 rounded-full">Instant</span>
+                </div>
+                <div>
+                    <h2 class="text-sm sm:text-base font-bold text-white">Automated Delivery</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Permanent license keys & signed high-speed cloud URLs.</p>
+                </div>
+            </div>
 
-                <!-- Category Tags Filter -->
-                <div id="category-bar" class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
-                    <!-- Dynamic categories rendered by JS -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-emerald-500/40 transition-all flex flex-col justify-between space-y-2 group">
+                <div class="flex items-center justify-between">
+                    <span class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                        <i data-lucide="tag" class="w-5 h-5"></i>
+                    </span>
+                    <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full">Capped</span>
+                </div>
+                <div>
+                    <h2 class="text-sm sm:text-base font-bold text-white">Ksh. 20 – 500 Max</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Micro-priced apps ($0.15 – $3.85 USD) with lifetime updates.</p>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-amber-500/40 transition-all flex flex-col justify-between space-y-2 group">
+                <div class="flex items-center justify-between">
+                    <span class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
+                        <i data-lucide="gift" class="w-5 h-5"></i>
+                    </span>
+                    <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider bg-amber-500/10 px-2 py-0.5 rounded-full">Earn 30%</span>
+                </div>
+                <div>
+                    <h2 class="text-sm sm:text-base font-bold text-white">Affiliate Rewards</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Share your link to earn 30% cash payout & unlock free apps.</p>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-rose-500/40 transition-all flex flex-col justify-between space-y-2 group">
+                <div class="flex items-center justify-between">
+                    <span class="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 group-hover:scale-110 transition-transform">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </span>
+                    <span class="text-[10px] font-bold text-rose-400 uppercase tracking-wider bg-rose-500/10 px-2 py-0.5 rounded-full">Secure</span>
+                </div>
+                <div>
+                    <h2 class="text-sm sm:text-base font-bold text-white">M-Pesa & Card Gateways</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Encrypted Paybill 522533 verification & instant checkout.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filter & Sort Engine Bar -->
+        <section class="space-y-4 pt-2">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800/80 pb-4">
+                
+                <!-- Section Title & Subtitle Hierarchy -->
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-brand-500 animate-pulse"></span>
+                        <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Application Catalog</h2>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 font-normal">Explore verified enterprise utilities, modded streaming engines & security suites</p>
                 </div>
 
                 <!-- Sort & View Controls -->
-                <div class="flex items-center space-x-3 self-end md:self-auto shrink-0">
+                <div class="flex items-center space-x-3 shrink-0">
                     <div
-                        class="flex items-center space-x-2 bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5">
+                        class="flex items-center space-x-2 bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-2xl px-3.5 py-2 shadow-sm transition-all">
                         <i data-lucide="arrow-up-down" class="w-3.5 h-3.5 text-slate-400"></i>
                         <label for="sort-select"
-                            class="text-xs text-slate-400 font-medium hidden sm:inline">Sort:</label>
+                            class="text-xs text-slate-400 font-medium hidden sm:inline">Sort by:</label>
                         <select id="sort-select" onchange="handleSortChange(this.value)"
                             class="bg-transparent text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer">
                             <option value="popularity" class="bg-slate-900">Most Popular</option>
@@ -503,16 +598,21 @@
                 </div>
             </div>
 
+            <!-- Category Tags Filter Bar with Dynamic Count Badges -->
+            <div id="category-bar" class="flex items-center space-x-2.5 overflow-x-auto pb-2 scrollbar-none">
+                <!-- Dynamic categories rendered by JS -->
+            </div>
+
             <!-- Active Search/Filter Feedback Banner -->
             <div id="filter-feedback"
-                class="hidden flex items-center justify-between bg-brand-950/40 border border-brand-800/30 rounded-xl px-4 py-2.5 text-xs text-brand-300">
+                class="hidden flex items-center justify-between bg-brand-950/40 border border-brand-800/30 rounded-2xl px-4 py-2.5 text-xs text-brand-300 shadow-sm">
                 <span id="filter-feedback-text">Showing applications</span>
-                <button onclick="resetFilters()" class="font-bold underline hover:text-white">Reset Filters</button>
+                <button onclick="resetFilters()" class="font-bold underline hover:text-white transition-colors">Reset Filters</button>
             </div>
         </section>
 
         <!-- Picture-Dominated App Cards Grid -->
-        <section id="apps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <section id="apps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
             <!-- App cards injected dynamically by JS -->
         </section>
 
@@ -532,315 +632,368 @@
 
     </main>
 
-    <!-- Page: Checkout Portal View -->
+    <!-- Page: Checkout Portal View (Clean & Streamlined) -->
     <main id="page-checkout"
-        class="page-view hidden flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in">
+        class="page-view hidden flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 animate-fade-in">
 
-        <button onclick="showPage('home')"
-            class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm font-medium transition-colors">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Return to PremiumStore
-        </button>
-
-        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <!-- Top Navigation & Header Hierarchy -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
             <div>
-                <h1 class="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">Checkout Portal</h1>
-                <p class="text-slate-400 text-xs sm:text-sm mt-1">Multi-gateway instant verification & encrypted digital
-                    fulfillment</p>
+                <button onclick="showPage('home')"
+                    class="inline-flex items-center gap-1.5 text-slate-400 hover:text-white text-xs font-semibold mb-1.5 transition-colors group">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform"></i>
+                    <span>Back to Marketplace</span>
+                </button>
+                <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Secure Checkout</h1>
             </div>
-            <div
-                class="flex items-center gap-2 text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-full">
-                <i data-lucide="lock" class="w-3.5 h-3.5 text-emerald-400"></i> 256-Bit SSL Encrypted
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full shadow-sm">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> 256-Bit SSL Encrypted
+                </span>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <!-- 2-Column Responsive Checkout Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-            <!-- Left Column: Order Summary -->
+            <!-- Left Column: Order Summary & Customer Info (col-span-5) -->
             <div class="lg:col-span-5 space-y-4">
-                <div class="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 space-y-5">
-                    <h3
-                        class="font-display font-bold text-lg text-white border-b border-slate-800 pb-3 flex items-center justify-between">
-                        <span>Items in Order</span>
-                        <span id="checkout-item-count"
-                            class="text-xs font-medium text-brand-400 bg-brand-950/60 border border-brand-800/40 px-2.5 py-0.5 rounded-full">1
-                            Item</span>
-                    </h3>
+                
+                <!-- Order Items & Totals Card -->
+                <div class="glass-card bg-gradient-to-br from-slate-950 via-[#0a1224] to-slate-950 border-2 border-slate-800/90 hover:border-brand-500/30 rounded-3xl p-5 sm:p-6 space-y-5 shadow-2xl transition-all">
+                    
+                    <div class="flex items-center justify-between pb-3.5 border-b border-slate-800/80">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-brand-500/20 border border-brand-500/40 flex items-center justify-center text-brand-400">
+                                <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                            </div>
+                            <h2 class="font-display font-extrabold text-sm sm:text-base text-white uppercase tracking-wider">Order Summary</h2>
+                        </div>
+                        <span id="checkout-item-count" class="text-xs font-black text-brand-300 bg-gradient-to-r from-brand-500/20 to-indigo-500/20 border border-brand-500/40 px-3 py-1 rounded-full shadow-inner">
+                            1 Item
+                        </span>
+                    </div>
 
-                    <!-- Order Items List -->
+                    <!-- Dynamic Items List -->
                     <div id="checkout-items-list" class="space-y-3 max-h-60 overflow-y-auto pr-1">
-                        <!-- Dynamic Checkout Items -->
+                        <!-- Injected by renderCheckoutView() -->
                     </div>
 
-                    <!-- Voucher Input -->
-                    <div class="pt-3 border-t border-slate-800/80 space-y-2">
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Promo
-                            Voucher</label>
+                    <!-- Promo Voucher Input -->
+                    <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-2">
+                        <label class="block text-[10px] font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                            <i data-lucide="tag" class="w-3.5 h-3.5 text-brand-400"></i>
+                            <span>Discount Voucher Code</span>
+                        </label>
                         <div class="flex gap-2">
-                            <input type="text" id="promo-code-input" placeholder="Enter code (e.g. SAVE20)"
-                                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white uppercase tracking-wider focus:outline-none focus:border-brand-500">
+                            <div class="relative flex-grow">
+                                <input type="text" id="promo-code-input" placeholder="e.g. SAVE20"
+                                    class="w-full bg-slate-950 border border-slate-800 focus:border-brand-400 rounded-xl px-3 py-2 text-xs font-mono font-bold text-white uppercase tracking-widest focus:outline-none transition-colors">
+                            </div>
                             <button type="button" onclick="applyPromoCode()"
-                                class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition-colors">Apply</button>
+                                class="px-4 py-2 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white text-xs font-extrabold rounded-xl border border-brand-400/30 transition-all shadow-md active:scale-95 shrink-0 flex items-center gap-1.5">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+                                <span>Apply</span>
+                            </button>
                         </div>
-                        <p id="promo-message" class="text-[11px] text-emerald-400 hidden">✓ Promo code applied: 20%
-                            discount!</p>
+                        <p id="promo-message" class="text-[11px] text-emerald-400 font-semibold hidden"></p>
                     </div>
 
-                    <!-- Calculation Totals -->
-                    <div class="border-t border-slate-800 pt-4 space-y-2 text-sm">
-                        <div class="flex justify-between text-slate-400">
-                            <span>Subtotal</span>
-                            <span id="checkout-subtotal" class="font-semibold text-white">$3.99</span>
+                    <!-- Pricing Breakdown -->
+                    <div class="border-t border-slate-800/80 pt-4 space-y-2.5 text-xs">
+                        <div class="flex justify-between items-center text-slate-400">
+                            <span class="font-medium">Subtotal</span>
+                            <span id="checkout-subtotal" class="font-mono font-bold text-sm text-white">$0.00</span>
                         </div>
-                        <div id="checkout-discount-row" class="flex justify-between text-emerald-400 hidden">
-                            <span>Discount</span>
-                            <span id="checkout-discount">-$0.00</span>
+                        <div id="checkout-discount-row" class="flex justify-between items-center text-emerald-400 hidden">
+                            <span class="font-bold flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> Promo Discount</span>
+                            <span id="checkout-discount" class="font-mono font-black text-sm">-$0.00</span>
                         </div>
-                        <div class="flex justify-between text-slate-400">
-                            <span>Platform Fee</span>
-                            <span class="text-emerald-400 font-medium">FREE ($0.00)</span>
+                        <div class="flex justify-between items-center text-slate-400">
+                            <span class="flex items-center gap-1.5"><i data-lucide="zap" class="w-3.5 h-3.5 text-emerald-400"></i> Digital Vault Delivery</span>
+                            <span class="text-xs font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Instant (FREE)</span>
                         </div>
-                        <div class="border-t border-slate-800 pt-3 flex justify-between items-center text-lg font-bold">
-                            <span class="text-white">Total Amount</span>
-                            <span id="checkout-total"
-                                class="text-brand-400 font-display text-2xl font-extrabold">$3.99</span>
+                        
+                        <!-- Prominent Total Payable Banner -->
+                        <div class="pt-2">
+                            <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/60 via-slate-900 to-teal-950/60 border-2 border-emerald-500/40 flex justify-between items-center shadow-lg shadow-emerald-500/10">
+                                <div class="space-y-0.5">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-300 block">Total Payable</span>
+                                    <span class="text-[10px] text-emerald-400/90 font-medium">All taxes & fees included</span>
+                                </div>
+                                <span id="checkout-total" class="font-display text-2xl sm:text-3xl font-black text-emerald-400 font-mono tracking-tight drop-shadow-[0_0_12px_rgba(16,185,129,0.35)]">$0.00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Guarantee Box -->
-                <div
-                    class="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-800/30 flex items-start gap-3 text-xs text-emerald-300">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
-                    <div>
-                        <p class="font-semibold text-emerald-200">Verified Direct Delivery</p>
-                        <p class="text-emerald-400/80 mt-0.5">Download credentials and license tokens are dispatched
-                            automatically following gateway verification.</p>
+                <!-- Customer Account & Delivery Card -->
+                <div class="glass-card bg-gradient-to-br from-slate-950 via-[#0a1224] to-slate-950 border-2 border-slate-800/90 hover:border-indigo-500/30 rounded-3xl p-5 sm:p-6 space-y-4 shadow-2xl transition-all">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+                        <div class="flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+                                <i data-lucide="user-check" class="w-4 h-4"></i>
+                            </div>
+                            <h2 class="font-display font-extrabold text-sm sm:text-base text-white uppercase tracking-wider">Customer Account Required</h2>
+                        </div>
+                        <span id="checkout-auth-badge" class="text-[10px] font-bold text-emerald-300 uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified Account
+                        </span>
+                    </div>
+
+                    <!-- Verified Account Info Strip -->
+                    <div id="checkout-verified-user-box" class="p-3.5 bg-gradient-to-r from-emerald-950/40 via-slate-900 to-indigo-950/40 border border-emerald-500/30 rounded-2xl flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div id="checkout-user-avatar" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span id="checkout-verified-email" class="text-xs font-bold text-white block truncate">customer@example.com</span>
+                                <span id="checkout-verified-username" class="text-[10px] text-emerald-400 font-mono block">@username • Delivery Vault Linked</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="openCustomerAuthModal('signin')" class="px-2.5 py-1 text-[11px] font-semibold text-brand-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition-colors shrink-0">
+                            Switch Account
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="mail" class="w-3.5 h-3.5 text-brand-400"></i> Delivery Email <span class="text-brand-400">*</span>
+                                </span>
+                                <span class="text-[10px] text-emerald-400 font-normal">Encrypted Vault Delivery</span>
+                            </label>
+                            <div class="relative">
+                                <i data-lucide="at-sign" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                                <input type="email" id="input-customer-email" required placeholder="name@yourdomain.com"
+                                    class="w-full bg-slate-900/90 border border-slate-800 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none transition-all font-sans placeholder:text-slate-600">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i> Username / Handle
+                                </span>
+                                <span class="text-[10px] font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">Earn 30% Affiliate</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-cyan-400 font-black font-mono text-sm">@</span>
+                                <input type="text" id="input-customer-username" placeholder="e.g. alex_pro" maxlength="20"
+                                    class="w-full bg-slate-900/90 border border-slate-800 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none transition-all font-mono placeholder:text-slate-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verified Security Trust Badge -->
+                <div class="p-4 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-slate-950 to-teal-950/40 border border-emerald-500/30 flex items-center gap-3.5 text-xs text-emerald-300 shadow-xl">
+                    <div class="w-9 h-9 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-sm text-emerald-400">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                    </div>
+                    <div class="space-y-0.5">
+                        <h4 class="font-extrabold text-white text-xs">Instant Automated Fulfillment</h4>
+                        <p class="text-[11px] text-slate-400 leading-tight">Permanent license keys and download links generated immediately upon payment clearance.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column: Gateway Selector & Payment Form -->
-            <div class="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
-
-                <!-- Direct WhatsApp Order & Support Banner -->
-                <div
-                    class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/30">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-bold text-white">Prefer Direct WhatsApp Communication?</h4>
-                            <p class="text-[11px] text-slate-400">Message our official WhatsApp directly for private
-                                order fulfillment and manual setup help.</p>
-                        </div>
-                    </div>
-                    <a id="checkout-whatsapp-link"
-                        href="https://wa.me/447455909204?text=Hello%20PremiumStore,%20I%20am%20at%20checkout%20and%20would%20like%20to%20complete%20my%20order%20directly%20on%20WhatsApp."
-                        target="_blank" rel="noopener noreferrer"
-                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-colors shrink-0 flex items-center gap-1.5 shadow-md shadow-emerald-600/20">
-                        <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Order via WhatsApp
-                    </a>
-                </div>
-
-                <div class="space-y-3">
-                    <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Select Payment
-                        Gateway</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="gateways-container">
-
-                        <!-- M-Pesa Gateway Tab -->
+            <!-- Right Column: Payment & Verification (col-span-7) -->
+            <div class="lg:col-span-7 glass-card bg-[#0b101d] border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-5 shadow-2xl">
+                
+                <!-- Payment Method Toggle -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                        Payment Method
+                    </label>
+                    <div class="grid grid-cols-2 gap-2.5" id="gateways-container">
+                        <!-- M-Pesa Tab Button -->
                         <button type="button" id="btn-gw-kcb" onclick="selectGateway('kcb')"
-                            class="p-4 border-2 border-brand-500 bg-brand-500/10 rounded-2xl flex items-center gap-3 transition-all text-left">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                                <i data-lucide="smartphone" class="w-5 h-5 text-emerald-400"></i>
+                            class="p-3 rounded-2xl border-2 border-emerald-500 bg-emerald-500/10 flex items-center gap-2.5 transition-all text-left shadow-sm">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                                <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i>
                             </div>
-                            <div>
-                                <h4 class="text-sm font-bold text-white leading-tight">M-Pesa Paybill</h4>
-                                <p class="text-[11px] text-slate-400 mt-0.5 font-medium">Paybill <span
-                                        class="text-white font-mono font-bold" id="display-tab-paybill">522533</span> •
-                                    Acc <span class="text-white font-mono font-bold" id="display-tab-acc">8106675</span>
-                                    • <span class="text-emerald-400 font-bold" id="display-tab-name">JASPER
-                                        MARKETS</span></p>
+                            <div class="min-w-0">
+                                <h3 class="text-xs font-bold text-white leading-tight truncate">M-Pesa Paybill</h3>
+                                <p class="text-[10px] text-emerald-300 font-semibold truncate font-mono">522533 • 8106675</p>
                             </div>
                         </button>
 
-                        <!-- Card Gateway Tab -->
+                        <!-- Card Tab Button -->
                         <button type="button" id="btn-gw-card" onclick="selectGateway('card')"
-                            class="p-4 border border-slate-800 bg-slate-950/60 rounded-2xl flex items-center gap-3 transition-all text-left hover:border-slate-700">
-                            <div
-                                class="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
-                                <i data-lucide="credit-card" class="w-5 h-5 text-indigo-400"></i>
+                            class="p-3 rounded-2xl border border-slate-800 bg-slate-950/60 flex items-center gap-2.5 transition-all text-left hover:border-slate-700">
+                            <div class="w-8 h-8 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                                <i data-lucide="credit-card" class="w-4 h-4 text-indigo-400"></i>
                             </div>
-                            <div>
-                                <h4 class="text-sm font-bold text-slate-300 leading-tight">Credit / Debit Card</h4>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Visa / Mastercard / Stripe</p>
+                            <div class="min-w-0">
+                                <h3 class="text-xs font-bold text-slate-300 leading-tight truncate">Card Payment</h3>
+                                <p class="text-[10px] text-slate-500 truncate">Visa / Mastercard</p>
                             </div>
                         </button>
-
                     </div>
                 </div>
 
                 <!-- Active Referral Attribution Banner -->
                 <div id="checkout-referral-banner"
-                    class="hidden p-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl flex items-center justify-between gap-2 text-xs text-amber-300">
+                    class="hidden p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-between gap-2 text-xs text-amber-300">
                     <div class="flex items-center gap-2 min-w-0">
-                        <i data-lucide="gift" class="w-4 h-4 text-amber-400 shrink-0"></i>
-                        <span class="truncate">Invited by <strong id="checkout-referrer-name"
-                                class="font-mono text-white">@username</strong> (30% Commission Guarantee)</span>
+                        <i data-lucide="gift" class="w-3.5 h-3.5 text-amber-400 shrink-0"></i>
+                        <span class="truncate text-[11px]">Invited by <strong id="checkout-referrer-name" class="font-mono text-white">@username</strong> (30% Commission Active)</span>
                     </div>
-                    <span
-                        class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950 shrink-0">Attributed</span>
+                    <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-400 text-slate-950 shrink-0 uppercase">VIP</span>
                 </div>
 
-                <!-- Interactive Checkout Form -->
-                <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-5">
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                                Your Username <span class="text-brand-400">*</span> <span
-                                    class="text-[10px] text-slate-500 lowercase">(for referral ID)</span>
-                            </label>
-                            <div class="relative">
-                                <span
-                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold font-mono text-sm">@</span>
-                                <input type="text" id="input-customer-username" placeholder="e.g. alex_pro"
-                                    maxlength="20"
-                                    class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors font-mono">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                                Delivery Email <span class="text-brand-400">*</span> <span
-                                    class="text-[10px] text-slate-500 lowercase">(for license delivery)</span>
-                            </label>
-                            <div class="relative">
-                                <i data-lucide="mail"
-                                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-                                <input type="email" id="input-customer-email" required placeholder="name@yourdomain.com"
-                                    class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition-colors font-mono">
-                            </div>
-                        </div>
-                     <!-- M-Pesa Paybill Fields -->
-                    <div id="fields-kcb" class="space-y-4 rounded-3xl bg-slate-950/80 border border-slate-800/90 p-5 sm:p-6 shadow-xl">
+                <!-- Payment Form -->
+                <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-4">
+                    
+                    <!-- M-Pesa Paybill Box (High Visual Impact & Big Bold Typography) -->
+                    <div id="fields-kcb" class="space-y-4">
                         
-                        <!-- STK Push Maintenance Alert -->
-                        <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3.5 text-xs text-amber-200 shadow-sm">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/40">
-                                <i data-lucide="wrench" class="w-4 h-4 text-amber-300"></i>
-                            </div>
-                            <div class="space-y-1 min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <span class="font-extrabold text-amber-300 text-xs sm:text-sm">STK Push Temporarily Under Maintenance</span>
-                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">Maintenance Active</span>
-                                </div>
-                                <p class="text-slate-300 text-xs leading-relaxed">
-                                    Automatic STK popup prompt is undergoing maintenance. Please pay manually using <strong>M-Pesa Paybill</strong> (Step 1–4 below) and enter your <strong>M-Pesa Confirmation Code</strong> for instant automated security verification.
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Paybill Account Credentials Card -->
-                        <div class="p-4 rounded-2xl bg-[#0b101d] border border-slate-800 space-y-3">
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-800/80 gap-2">
-                                <div class="space-y-1">
-                                    <div class="text-xs font-semibold text-slate-300 flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                                        <span>Paybill Business No: <strong class="text-white font-mono text-sm tracking-wider" id="display-paybill">522533</strong></span>
-                                    </div>
-                                    <div class="text-xs text-slate-300 flex items-center gap-3">
-                                        <span>Account No: <strong class="text-white font-mono text-sm tracking-wider" id="display-account-no">8106675</strong></span>
-                                        <span>Account Name: <strong class="text-emerald-400 font-bold tracking-wide" id="display-account-name">JASPER MARKETS</strong></span>
-                                    </div>
-                                </div>
-                                <span class="inline-flex self-start sm:self-center text-[10px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/30">
-                                    MPESA PAYBILL
+                        <!-- Main Glowing Paybill Instructions Container -->
+                        <div class="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-slate-950 via-[#0a1224] to-slate-950 border-2 border-emerald-500/40 hover:border-emerald-500/60 shadow-[0_0_35px_-5px_rgba(16,185,129,0.2)] space-y-3.5 transition-all">
+                            
+                            <!-- Header Pill Banner -->
+                            <div class="flex items-center justify-between flex-wrap gap-2 pb-2.5 border-b border-slate-800/80">
+                                <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
+                                    <i data-lucide="smartphone" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span>M-Pesa Paybill Guide</span>
+                                </span>
+                                <span class="text-[11px] font-bold text-slate-400 flex items-center gap-1">
+                                    <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i> Instant Automated Verification
                                 </span>
                             </div>
 
-                            <!-- Step by Step Paybill Guide -->
-                            <div class="text-xs text-slate-300 space-y-1.5 pt-1">
-                                <div class="font-bold text-white flex items-center gap-1.5 pb-1 text-xs">
-                                    <i data-lucide="help-circle" class="w-4 h-4 text-emerald-400"></i>
-                                    <span>Quick M-Pesa Paybill Instructions:</span>
+                            <!-- STEP 1: BUSINESS NO / PAYBILL -->
+                            <div class="p-4 rounded-2xl bg-slate-900/90 border border-emerald-500/50 hover:border-emerald-400/80 shadow-lg space-y-2 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                                        <span class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-[11px] shadow-sm">1</span>
+                                        <span>Lipa na M-Pesa &rarr; Pay Bill</span>
+                                    </span>
+                                    <button type="button" onclick="copyToClipboard('instruction-paybill-num', 'Business Number (522533)')"
+                                        class="px-2.5 py-1 bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-300 text-[11px] font-bold rounded-lg border border-emerald-500/30 transition-all flex items-center gap-1 active:scale-95">
+                                        <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                                    </button>
                                 </div>
-                                <p>1. Open SIM ToolKit or M-Pesa App &rarr; <strong>Lipa na M-Pesa</strong> &rarr; <strong>Pay Bill</strong></p>
-                                <p>2. Enter Business Number: <strong class="text-emerald-400 font-mono text-xs" id="instruction-paybill-num">522533</strong></p>
-                                <p>3. Enter Account Number: <strong class="text-emerald-400 font-mono text-xs" id="instruction-account-no">8106675</strong> (Name: <strong class="text-emerald-400 font-bold" id="instruction-account-name">JASPER MARKETS</strong>)</p>
-                                <p>4. Enter Payable Amount: <span id="kcb-payable-amount" class="font-bold text-white text-xs font-mono">$3.99</span></p>
-                                <p>5. Enter your M-Pesa PIN and submit. Then paste/enter your SMS confirmation code below.</p>
+                                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pt-1">
+                                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Business Number:</span>
+                                    <span id="instruction-paybill-num" class="font-display text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-300 font-mono tracking-widest selectable-text select-all drop-shadow-[0_0_12px_rgba(16,185,129,0.35)]">522533</span>
+                                </div>
                             </div>
+
+                            <!-- STEP 2: ACCOUNT NUMBER & ACCOUNT NAME -->
+                            <div class="p-4 rounded-2xl bg-slate-900/90 border border-cyan-500/50 hover:border-cyan-400/80 shadow-lg space-y-2.5 transition-all">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-black text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+                                        <span class="w-5 h-5 rounded-full bg-cyan-500 text-slate-950 flex items-center justify-center font-black text-[11px] shadow-sm">2</span>
+                                        <span>Enter Account Number</span>
+                                    </span>
+                                    <button type="button" onclick="copyToClipboard('instruction-account-no', 'Account Number (8106675)')"
+                                        class="px-2.5 py-1 bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 text-[11px] font-bold rounded-lg border border-cyan-500/30 transition-all flex items-center gap-1 active:scale-95">
+                                        <i data-lucide="copy" class="w-3 h-3"></i> Copy
+                                    </button>
+                                </div>
+                                <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 pt-1">
+                                    <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Account Number:</span>
+                                    <span id="instruction-account-no" class="font-display text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 font-mono tracking-widest selectable-text select-all drop-shadow-[0_0_12px_rgba(6,182,212,0.35)]">8106675</span>
+                                </div>
+                                <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2 text-xs">
+                                    <span class="text-slate-400 font-medium">Account Name:</span>
+                                    <span id="instruction-account-name" class="px-3 py-1 rounded-xl text-xs font-black bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-500/40 inline-flex items-center gap-1.5 shadow-sm">
+                                        <i data-lucide="badge-check" class="w-3.5 h-3.5 text-emerald-400"></i> JASPER MARKETS
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3: AMOUNT & PIN -->
+                            <div class="p-3.5 rounded-2xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between flex-wrap gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center font-black text-[11px] shadow-sm shrink-0">3</span>
+                                    <span class="text-xs font-bold text-slate-300">Enter Payable Amount:</span>
+                                </div>
+                                <span id="kcb-payable-amount" class="text-base sm:text-lg font-black text-amber-300 font-mono bg-amber-950/60 px-3 py-1 rounded-xl border border-amber-800/50">$0.00</span>
+                            </div>
+
+                            <!-- Spans for JS syncing compatibility -->
+                            <span id="display-paybill" class="hidden">522533</span>
+                            <span id="display-account-no" class="hidden">8106675</span>
+                            <span id="display-account-name" class="hidden">JASPER MARKETS</span>
                         </div>
 
-                        <!-- Confirmation Code Input (Required for Paybill) -->
+                        <!-- M-Pesa Code Input -->
                         <div>
-                            <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                            <label class="block text-xs font-bold text-amber-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
                                 <span>M-Pesa Confirmation Code <span class="text-red-400">*</span></span>
-                                <span class="text-[10px] text-slate-400 font-normal lowercase">(e.g. SI82JD91LK or QDF98219)</span>
+                                <span class="text-[10px] text-slate-400 font-normal lowercase">(from SMS e.g. SI82JD91LK)</span>
                             </label>
                             <div class="relative">
-                                <i data-lucide="hash" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400"></i>
+                                <i data-lucide="hash" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400"></i>
                                 <input type="text" id="input-kcb-manual-ref"
                                     oninput="this.value = this.value.toUpperCase()"
-                                    placeholder="e.g. SI82JD91LK or QDF98219" maxlength="15"
-                                    class="w-full bg-slate-900 border-2 border-amber-500/50 focus:border-amber-400 rounded-xl pl-11 pr-4 py-3 text-sm text-white font-mono uppercase focus:outline-none transition-colors shadow-inner">
+                                    placeholder="e.g. SI82JD91LK" maxlength="15" required
+                                    class="w-full bg-slate-950 border-2 border-amber-500/60 focus:border-amber-400 rounded-xl pl-10 pr-3.5 py-2.5 text-sm text-white font-mono uppercase focus:outline-none transition-colors shadow-inner">
                             </div>
-                            <p class="text-[11px] text-slate-400 mt-1">Copy the 10-digit code from your M-Pesa confirmation SMS message.</p>
                         </div>
 
-                        <!-- Phone Number Field (For SMS & WhatsApp Tracking) -->
+                        <!-- Phone Number Input -->
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                                Your Phone Number <span class="text-[11px] text-slate-500 font-normal lowercase">(for WhatsApp & SMS confirmation)</span>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">
+                                Your Phone Number <span class="text-slate-500 text-[10px]">(for WhatsApp/SMS license dispatch)</span>
                             </label>
                             <div class="relative">
-                                <i data-lucide="phone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-                                <input type="tel" id="input-kcb-phone" placeholder="e.g. 0712345678 or 254712345678"
-                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-brand-500 transition-colors">
+                                <i data-lucide="phone" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                                <input type="tel" id="input-kcb-phone" placeholder="e.g. 0712345678"
+                                    class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white font-mono focus:outline-none focus:border-brand-500 transition-colors">
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- Card Gateway Fields -->
-                    <div id="fields-card"
-                        class="hidden space-y-4 rounded-3xl bg-slate-950/80 border border-slate-800/90 p-5 sm:p-6 shadow-xl">
+                    <!-- Card Payment Box -->
+                    <div id="fields-card" class="hidden space-y-3 p-4 rounded-2xl bg-slate-950 border border-slate-800">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Card Number</label>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Card Number</label>
                             <div class="relative">
-                                <i data-lucide="credit-card" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                                <i data-lucide="credit-card" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
                                 <input type="text" id="input-card-number" placeholder="4532 0000 0000 0000"
                                     maxlength="19" oninput="formatCardInput(this)"
-                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-brand-500 transition-colors">
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-3 py-2 text-xs sm:text-sm text-white font-mono focus:outline-none focus:border-brand-500">
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-2.5">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Expiry Date</label>
+                                <label class="block text-[11px] font-semibold text-slate-400 mb-1">Expiry Date</label>
                                 <input type="text" id="input-card-expiry" placeholder="MM/YY" maxlength="5"
                                     oninput="formatExpiryInput(this)"
-                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-brand-500 transition-colors">
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white font-mono focus:outline-none focus:border-brand-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">CVC / CVV</label>
+                                <label class="block text-[11px] font-semibold text-slate-400 mb-1">CVC / CVV</label>
                                 <input type="password" id="input-card-cvc" placeholder="•••" maxlength="4"
-                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white font-mono focus:outline-none focus:border-brand-500 transition-colors">
+                                    class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white font-mono focus:outline-none focus:border-brand-500">
                             </div>
                         </div>
                     </div>
 
-                    <div class="relative pt-2">
+                    <!-- Submit CTA Button -->
+                    <div class="pt-1">
                         <button type="submit" id="btn-submit-payment"
-                            class="w-full py-4 bg-gradient-to-r from-brand-600 via-indigo-600 to-brand-700 hover:from-brand-500 hover:to-indigo-500 text-white font-extrabold rounded-2xl transition-all shadow-xl shadow-brand-600/30 flex items-center justify-center gap-2 text-base">
+                            class="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-brand-600 hover:from-emerald-500 hover:to-brand-500 text-white font-extrabold rounded-2xl transition-all shadow-xl shadow-emerald-600/30 flex items-center justify-center gap-2 text-sm sm:text-base active:scale-[0.98]">
                             <i data-lucide="shield-check" class="w-5 h-5"></i>
-                            <span id="btn-submit-text">Submit Payment & Verify Code</span>
+                            <span id="btn-submit-text">Verify Payment & Unlock Download</span>
                         </button>
                     </div>
-                </form>
 
+                    <!-- Discreet WhatsApp Option -->
+                    <div class="text-center pt-1">
+                        <a id="checkout-whatsapp-link" href="https://wa.me/447455909204" target="_blank" rel="noopener noreferrer"
+                            class="text-xs text-slate-400 hover:text-emerald-400 transition-colors inline-flex items-center gap-1.5">
+                            <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                            <span>Prefer direct WhatsApp checkout? Chat with support</span>
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
@@ -853,198 +1006,107 @@
         <div class="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-3xl h-72 bg-gradient-to-r from-amber-500/10 via-brand-600/15 to-emerald-500/10 blur-3xl pointer-events-none -z-10"></div>
 
         <!-- STATE 1: PENDING ADMIN APPROVAL (Review & Verification) -->
-        <div id="fulfillment-pending-card" class="w-full space-y-6 sm:space-y-8 flex flex-col items-center">
+        <div id="fulfillment-pending-card" class="w-full max-w-2xl mx-auto space-y-6 flex flex-col items-center animate-fade-in">
             
-            <!-- Top Hero Animated Radar Badge -->
-            <div class="relative flex items-center justify-center">
-                <div class="absolute w-28 h-28 sm:w-36 sm:h-36 bg-gradient-to-tr from-amber-500/30 via-orange-500/20 to-amber-600/30 rounded-full blur-2xl animate-pulse"></div>
-                <div class="relative p-6 sm:p-7 bg-gradient-to-tr from-slate-900 via-amber-950/40 to-slate-900 text-amber-400 rounded-3xl border-2 border-amber-500/40 shadow-[0_0_50px_-10px_rgba(245,158,11,0.35)] ring-8 ring-amber-500/10">
-                    <div class="relative">
-                        <i data-lucide="shield-alert" class="w-12 h-12 sm:w-16 sm:h-16 text-amber-400 animate-pulse"></i>
-                        <span class="absolute -top-1 -right-1 flex h-4 w-4">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-4 w-4 bg-amber-500"></span>
-                        </span>
-                    </div>
+            <!-- Glowing Radar & Security Icon -->
+            <div class="relative flex items-center justify-center my-2">
+                <div class="absolute w-32 h-32 bg-gradient-to-tr from-amber-500/25 via-amber-400/20 to-orange-500/25 rounded-full blur-2xl animate-pulse"></div>
+                <div class="relative p-6 sm:p-7 bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-950 text-amber-400 rounded-3xl border-2 border-amber-500/40 shadow-[0_0_40px_-5px_rgba(245,158,11,0.3)] ring-4 ring-amber-500/10">
+                    <i data-lucide="shield-alert" class="w-12 h-12 sm:w-14 sm:h-14 text-amber-400 animate-pulse"></i>
                 </div>
             </div>
 
-            <!-- Header Titles & Sizable Status Pill -->
-            <div class="space-y-3.5 max-w-2xl mx-auto text-center">
-                <div class="flex items-center justify-center gap-2.5 flex-wrap">
-                    <span class="px-4 py-1.5 rounded-full text-xs font-black bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-widest inline-flex items-center gap-2 shadow-lg shadow-amber-500/10">
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span> Live Security Review Active
+            <!-- Header & Elapsed Timer -->
+            <div class="space-y-3 text-center">
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <span class="px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-amber-500/15 text-amber-300 border border-amber-500/30 inline-flex items-center gap-2 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                        <span>Verifying Payment</span>
                     </span>
-                    <span class="px-4 py-1.5 rounded-full text-xs font-mono font-black bg-slate-950/90 border border-slate-800 text-cyan-300 inline-flex items-center gap-2 shadow-inner">
-                        <i data-lucide="timer" class="w-4 h-4 text-cyan-400"></i>
-                        <span>Elapsed: <strong id="pending-elapsed-timer" class="text-white font-mono text-sm">00:00</strong></span>
+                    <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-slate-950 border border-slate-800 text-cyan-300 inline-flex items-center gap-1.5 shadow-inner">
+                        <i data-lucide="timer" class="w-3.5 h-3.5 text-cyan-400"></i>
+                        <span>Elapsed: <strong id="pending-elapsed-timer" class="text-white font-mono">00:00</strong></span>
                     </span>
                 </div>
                 
-                <h1 class="font-display text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    Payment Submitted — Under Security Check
+                <h1 class="font-display text-2xl sm:text-3xl font-black text-white tracking-tight">
+                    Payment Under Security Check
                 </h1>
-                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto">
-                    Order ID: <span id="pending-order-id" class="font-mono text-white font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">ORD-0000</span> • 
+                <p class="text-slate-400 text-xs sm:text-sm">
+                    Order <span id="pending-order-id" class="font-mono text-white font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800">ORD-0000</span> • 
                     Ref: <span id="pending-ref" class="font-mono text-amber-300 font-bold bg-amber-950/60 px-2.5 py-0.5 rounded border border-amber-800/50 selectable-text">MP-0000</span>
                 </p>
             </div>
 
-            <!-- 3-Step Interactive Timeline Stepper (Super Aligned) -->
-            <div class="w-full max-w-3xl bg-slate-900/90 backdrop-blur-2xl border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl space-y-4">
-                <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
-                    <span class="flex items-center gap-1.5 text-slate-300">
-                        <i data-lucide="activity" class="w-4 h-4 text-brand-400"></i> Live Verification Progress
-                    </span>
-                    <span class="text-amber-400 font-mono text-[11px] font-bold">Estimated Time: ~45 Secs</span>
-                </div>
-
-                <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center text-xs relative pt-2">
-                    <!-- Step 1: Sent -->
-                    <div class="space-y-2 relative">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-slate-950 border-2 border-emerald-400 flex items-center justify-center mx-auto font-black shadow-lg shadow-emerald-500/20">
-                            <i data-lucide="check" class="w-5 h-5 text-white"></i>
-                        </div>
-                        <span class="font-bold text-white text-xs sm:text-sm block">1. Payment Sent</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-block">Authorized</span>
-                    </div>
-
-                    <!-- Step 2: Review (Active) -->
-                    <div class="space-y-2 relative">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 text-white border-2 border-amber-300 flex items-center justify-center mx-auto font-black shadow-xl shadow-amber-500/40 ring-4 ring-amber-500/20 animate-pulse">
-                            <i data-lucide="scan-line" class="w-5 h-5 animate-spin" style="animation-duration: 4s;"></i>
-                        </div>
-                        <span class="font-bold text-amber-300 text-xs sm:text-sm block">2. Security Review</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-block animate-pulse">In Progress</span>
-                    </div>
-
-                    <!-- Step 3: Release -->
-                    <div class="space-y-2 relative">
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-slate-950 border-2 border-slate-800 text-slate-500 flex items-center justify-center mx-auto font-bold">
-                            <i data-lucide="lock" class="w-5 h-5 text-slate-600"></i>
-                        </div>
-                        <span class="font-bold text-slate-400 text-xs sm:text-sm block">3. Digital Release</span>
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-900 text-slate-500 border border-slate-800 inline-block">Unlocks on Approval</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4-Card Order & Telemetry Grid (Super Symmetrical & Aligned) -->
-            <div class="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+            <!-- Single Unified High-End Glass Order Summary Card -->
+            <div class="w-full bg-gradient-to-br from-slate-950 via-[#0a1224] to-slate-950 border-2 border-slate-800/90 rounded-3xl p-5 sm:p-6 text-left space-y-4 shadow-2xl">
                 
-                <!-- Card 1: Software Package -->
-                <div class="p-5 bg-gradient-to-br from-slate-900/95 via-slate-950 to-slate-900/95 border border-slate-800 hover:border-brand-500/40 rounded-3xl space-y-2 shadow-xl transition-all">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] text-brand-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <i data-lucide="package" class="w-4 h-4 text-brand-400"></i> Software Package
+                <!-- Item & Total Paid Row -->
+                <div class="flex items-center justify-between pb-3.5 border-b border-slate-800/80 gap-3">
+                    <div class="min-w-0">
+                        <span class="text-[10px] text-brand-300 uppercase font-bold tracking-wider block">Software Package</span>
+                        <h3 id="pending-app-title" class="font-extrabold text-sm sm:text-base text-white truncate">
+                            Telegram Premium Ultimate
+                        </h3>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Total Paid</span>
+                        <span id="pending-total-amount" class="font-mono font-black text-sm sm:text-base text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-xl border border-emerald-800/50 block">$2.15</span>
+                    </div>
+                </div>
+
+                <!-- 3 Concise Details Badges -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                    <div class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800/80 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block flex items-center gap-1">
+                            <i data-lucide="credit-card" class="w-3 h-3 text-emerald-400"></i> Gateway
                         </span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-brand-500/15 text-brand-300 border border-brand-500/30">License 1x</span>
+                        <span id="pending-payment-badge" class="font-bold text-white text-[11px] truncate block">M-Pesa Paybill 522533</span>
                     </div>
-                    <span id="pending-app-title" class="text-base sm:text-lg font-extrabold text-white block truncate">
-                        TaskFlow Pro Workspace
-                    </span>
-                    <div class="pt-1 flex items-center justify-between border-t border-slate-800/80">
-                        <span class="text-xs text-slate-400">Total Paid:</span>
-                        <span id="pending-total-amount" class="text-sm font-extrabold text-brand-300 font-mono">20 Ksh ($0.15)</span>
-                    </div>
-                </div>
-
-                <!-- Card 2: Payment Method & Ref -->
-                <div class="p-5 bg-gradient-to-br from-slate-900/95 via-slate-950 to-slate-900/95 border border-slate-800 hover:border-emerald-500/40 rounded-3xl space-y-2 shadow-xl transition-all">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] text-emerald-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <i data-lucide="credit-card" class="w-4 h-4 text-emerald-400"></i> Payment Gateway
+                    <div class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800/80 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block flex items-center gap-1">
+                            <i data-lucide="hash" class="w-3 h-3 text-amber-400"></i> Code
                         </span>
-                        <span id="pending-payment-badge" class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 truncate max-w-[140px]">
-                            M-Pesa Paybill 522533
+                        <span id="pending-ref-badge" class="font-mono font-black text-amber-300 text-[11px] truncate block selectable-text">QWERTYUUU</span>
+                    </div>
+                    <div class="p-3 bg-slate-900/80 rounded-2xl border border-slate-800/80 space-y-1">
+                        <span class="text-[10px] text-slate-400 uppercase font-bold block flex items-center gap-1">
+                            <i data-lucide="mail" class="w-3 h-3 text-indigo-400"></i> Delivery
                         </span>
-                    </div>
-                    <span class="text-base sm:text-lg font-extrabold text-white block truncate">
-                        Automated Gateway Matching
-                    </span>
-                    <div class="pt-1 flex items-center justify-between border-t border-slate-800/80">
-                        <span class="text-xs text-slate-400">Transaction Code:</span>
-                        <span id="pending-ref-badge" class="text-xs font-mono font-black text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/50">QDF98291KL</span>
+                        <span id="pending-customer-email" class="font-mono font-bold text-slate-200 text-[11px] truncate block">user@example.com</span>
                     </div>
                 </div>
 
-                <!-- Card 3: Customer Recipient -->
-                <div class="p-5 bg-gradient-to-br from-slate-900/95 via-slate-950 to-slate-900/95 border border-slate-800 hover:border-indigo-500/40 rounded-3xl space-y-2 shadow-xl transition-all">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] text-indigo-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i> Delivery Contact
-                        </span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Email Vault</span>
+                <!-- Discreet phone span for JS compatibility -->
+                <span id="pending-customer-phone" class="hidden"></span>
+
+                <!-- Fast Track Action Buttons -->
+                <div class="pt-2 space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button id="pending-support-chat-btn" onclick="openWhatsAppApproval()"
+                            class="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-xs sm:text-sm rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 hover:scale-[1.01] active:scale-95 border border-emerald-400/40">
+                            <i data-lucide="message-circle" class="w-4 h-4 fill-white text-emerald-600 shrink-0"></i>
+                            <span class="truncate">Fast-Track on WhatsApp</span>
+                        </button>
+
+                        <button onclick="checkCurrentOrderStatus()"
+                            class="w-full py-3.5 px-4 bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white font-extrabold text-xs sm:text-sm rounded-2xl transition-all flex items-center justify-center gap-2 border border-slate-800 active:scale-95 shadow-md">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 text-brand-300 shrink-0"></i>
+                            <span class="truncate">Check Status</span>
+                        </button>
                     </div>
-                    <span id="pending-customer-email" class="text-sm sm:text-base font-bold text-white font-mono block truncate">
-                        user@example.com
-                    </span>
-                    <div class="pt-1 flex items-center justify-between border-t border-slate-800/80">
-                        <span class="text-xs text-slate-400">Customer Phone:</span>
-                        <span id="pending-customer-phone" class="text-xs font-mono text-slate-300 font-semibold">Phone: +254 700 000000</span>
-                    </div>
+
+                    <p id="pending-longer-msg" class="text-center text-[11px] text-slate-500">
+                        License key & download token unlock automatically once payment is matched.
+                    </p>
                 </div>
-
-                <!-- Card 4: Verification Queue Telemetry -->
-                <div class="p-5 bg-gradient-to-br from-slate-900/95 via-slate-950 to-slate-900/95 border border-slate-800 hover:border-amber-500/40 rounded-3xl space-y-2 shadow-xl transition-all">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-amber-400"></i> Security Clearance
-                        </span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">In Queue</span>
-                    </div>
-                    <span class="text-sm sm:text-base font-extrabold text-amber-300 flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span> Real-Time Auto Refresh
-                    </span>
-                    <div class="pt-1 flex items-center justify-between border-t border-slate-800/80">
-                        <span class="text-xs text-slate-400">Avg Clearance:</span>
-                        <span class="text-xs font-mono font-bold text-emerald-400">30 – 60 Seconds</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Action CTA Container (Super Aligned & Colorful) -->
-            <div class="w-full max-w-3xl bg-[#0b101d] border-2 border-slate-800 hover:border-slate-700 rounded-3xl p-6 sm:p-8 text-left space-y-6 shadow-2xl">
-                
-                <!-- Notice Banner -->
-                <div class="p-4 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-950 to-emerald-950/40 border border-emerald-500/30 flex items-start sm:items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-500/40 shadow-sm">
-                        <i data-lucide="zap" class="w-5 h-5 text-emerald-400"></i>
-                    </div>
-                    <div class="space-y-0.5 min-w-0">
-                        <h4 class="text-xs sm:text-sm font-extrabold text-white">Want Immediate Instant Approval?</h4>
-                        <p class="text-[11px] sm:text-xs text-slate-300 leading-relaxed">
-                            Our active 24/7 Agent can fast-track and approve your order in seconds. Click below to message support with your pre-filled transaction details.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- 2 High-Contrast Aligned CTA Buttons -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-                    
-                    <!-- Fast-Track WhatsApp CTA -->
-                    <button id="pending-support-chat-btn" onclick="openWhatsAppApproval()"
-                        class="w-full py-4 px-5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold text-xs sm:text-sm rounded-2xl transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-600/30 hover:scale-[1.02] active:scale-95 border border-emerald-400/40 group">
-                        <i data-lucide="message-circle" class="w-5 h-5 fill-white text-emerald-600 shrink-0 group-hover:rotate-12 transition-transform"></i>
-                        <span class="truncate">Fast-Track Review on WhatsApp</span>
-                    </button>
-
-                    <!-- Live Check Status CTA -->
-                    <button onclick="checkCurrentOrderStatus()"
-                        class="w-full py-4 px-5 bg-gradient-to-r from-brand-600 via-indigo-600 to-brand-700 hover:from-brand-500 hover:to-indigo-500 text-white font-extrabold text-xs sm:text-sm rounded-2xl transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-brand-600/30 hover:scale-[1.02] active:scale-95 border border-brand-400/40">
-                        <i data-lucide="refresh-cw" class="w-5 h-5 text-brand-200 shrink-0"></i>
-                        <span class="truncate">Check Verification Status</span>
-                    </button>
-                </div>
-
             </div>
 
             <!-- Return Navigation -->
-            <div class="flex items-center justify-center gap-4 pt-1">
+            <div class="pt-1">
                 <button onclick="showPage('home')"
-                    class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Return to Storefront
+                    class="px-5 py-2 bg-slate-900/80 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white rounded-xl text-xs font-semibold transition-all inline-flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Return to Storefront
                 </button>
             </div>
         </div>
@@ -1154,8 +1216,6 @@
                     class="px-6 py-2.5 text-slate-400 hover:text-emerald-400 rounded-xl text-xs sm:text-sm font-semibold transition-colors flex items-center gap-2">
                     <i data-lucide="message-circle" class="w-4 h-4"></i> Need Help with this Order?
                 </button>
-            </div>
-        </div>button>
             </div>
         </div>
 
@@ -1328,74 +1388,161 @@
         </div>
     </div>
 
-    <!-- Customer Authentication / Email Identification & Username Modal -->
+    <!-- Enhanced Customer Authentication & Google Sign-In Modal -->
     <div id="modal-customer-auth"
-        class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in overflow-y-auto">
+        class="hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3.5 sm:p-6 animate-fade-in overflow-y-auto">
         <div
-            class="bg-[#0b101d] border border-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 space-y-6 relative my-auto">
+            class="bg-[#0b101d] border border-slate-800 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 space-y-5 relative my-auto">
             <button onclick="closeCustomerAuthModal()"
-                class="absolute top-6 right-6 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-700 transition-colors z-10">
+                class="absolute top-5 right-5 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-700 transition-colors z-10">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
 
-            <div class="text-center space-y-3">
+            <!-- Header Branding & Modal Title -->
+            <div class="text-center space-y-2">
                 <div
-                    class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-amber-500 p-0.5 mx-auto shadow-xl shadow-brand-500/20 flex items-center justify-center">
+                    class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-amber-500 p-0.5 mx-auto shadow-xl shadow-brand-500/20 flex items-center justify-center">
                     <div
                         class="w-full h-full bg-[#070b14] rounded-[14px] flex items-center justify-center text-brand-400">
-                        <i data-lucide="user-check" class="w-7 h-7"></i>
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
                     </div>
                 </div>
                 <div>
-                    <h3 class="font-display font-bold text-xl text-white">Customer Account & Referral ID</h3>
-                    <p class="text-xs text-slate-400 mt-1">Access your software vault and generate your 30% affiliate
-                        link</p>
+                    <h3 id="auth-modal-title" class="font-display font-bold text-xl text-white">Welcome to PremiumStore</h3>
+                    <p id="auth-modal-subtitle" class="text-xs text-slate-400 mt-0.5">Access your digital vault and license keys</p>
                 </div>
             </div>
 
-            <form id="customer-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4 text-xs">
-                <!-- Username Input (Unique Identifier for Referral Links) -->
+            <!-- Continue with Google Official Button -->
+            <div class="space-y-3">
+                <button type="button" id="btn-google-auth" onclick="handleGoogleSignIn()"
+                    class="w-full py-3 px-4 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-2xl flex items-center justify-center gap-3 transition-all shadow-md hover:shadow-lg active:scale-[0.98] border border-slate-200 text-xs sm:text-sm group">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span>Continue with Google</span>
+                </button>
+
+                <div class="relative flex items-center justify-center">
+                    <div class="border-t border-slate-800 w-full"></div>
+                    <span class="bg-[#0b101d] px-3 text-[11px] text-slate-500 uppercase font-semibold tracking-wider shrink-0">or continue with email</span>
+                    <div class="border-t border-slate-800 w-full"></div>
+                </div>
+            </div>
+
+            <!-- Tab Switcher (Sign In vs Sign Up) -->
+            <div class="flex p-1 bg-slate-950 rounded-2xl border border-slate-800/90 text-xs">
+                <button type="button" id="auth-tab-signin" onclick="switchAuthTab('signin')"
+                    class="flex-1 py-2 font-bold rounded-xl transition-all text-white bg-brand-600 shadow-sm">
+                    Sign In
+                </button>
+                <button type="button" id="auth-tab-signup" onclick="switchAuthTab('signup')"
+                    class="flex-1 py-2 font-bold rounded-xl transition-all text-slate-400 hover:text-white">
+                    Create Account
+                </button>
+            </div>
+
+            <!-- Inline Alert Box -->
+            <div id="auth-alert-box" class="hidden p-3 rounded-xl text-xs font-semibold flex items-center gap-2"></div>
+
+            <!-- Sign In Form -->
+            <form id="form-auth-signin" onsubmit="handleCustomerSignIn(event)" class="space-y-3.5 text-xs">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                        Unique Referral Username / Handle <span class="text-brand-400">*</span>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Account Email Address <span class="text-brand-400">*</span>
                     </label>
                     <div class="relative">
-                        <span
-                            class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold font-mono text-sm">@</span>
-                        <input type="text" id="auth-username-input" required placeholder="e.g. alex_pro or sam254"
-                            pattern="[a-zA-Z0-9_-]{3,20}" maxlength="20"
-                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-mono">
+                        <i data-lucide="mail" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="email" id="signin-email" required placeholder="name@yourdomain.com"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-sans">
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-1">Used in your shareable link: <span
-                            class="text-brand-400 font-mono">?ref=username</span></p>
                 </div>
 
-                <!-- Verified Email Input -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                        Delivery & Account Email <span class="text-brand-400">*</span>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                            Password <span class="text-brand-400">*</span>
+                        </label>
+                    </div>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="password" id="signin-password" required placeholder="Enter your password"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-sans">
+                        <button type="button" onclick="togglePasswordVisibility('signin-password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" id="signin-submit-btn"
+                    class="w-full py-3 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-[0.98]">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    <span>Sign In & Open Vault</span>
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="form-auth-signup" onsubmit="handleCustomerSignUp(event)" class="hidden space-y-3 text-xs">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">
+                        Username / Referral Handle <span class="text-brand-400">*</span>
                     </label>
                     <div class="relative">
-                        <i data-lucide="mail"
-                            class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
-                        <input type="email" id="auth-email-input" required placeholder="name@yourdomain.com"
-                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-11 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-mono">
+                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 font-bold font-mono text-sm">@</span>
+                        <input type="text" id="signup-username" required placeholder="e.g. alex_pro" pattern="[a-zA-Z0-9_-]{3,20}" maxlength="20"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-mono">
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-0.5">Used for your 30% affiliate link: <span class="text-brand-400 font-mono">?ref=username</span></p>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">
+                        Account & Delivery Email <span class="text-brand-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="email" id="signup-email" required placeholder="name@yourdomain.com"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-sans">
                     </div>
                 </div>
 
-                <div
-                    class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
-                    <span class="font-semibold text-slate-300 flex items-center gap-1.5">
-                        <i data-lucide="gift" class="w-3.5 h-3.5 text-amber-400"></i> 30% Commission + Permanent Vault
-                    </span>
-                    <p>Earn 30% cash payout on every invitee purchase and access all your digital software downloads in
-                        one place.</p>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">
+                        Phone Number <span class="text-slate-500 text-[10px] font-normal">(Optional for M-Pesa delivery)</span>
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="phone" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="tel" id="signup-phone" placeholder="e.g. +254700000000"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-sans">
+                    </div>
                 </div>
 
-                <button type="submit"
-                    class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2 text-xs">
-                    <i data-lucide="key" class="w-4 h-4"></i>
-                    <span>Authenticate & Open Vault</span>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">
+                        Password <span class="text-brand-400">*</span> <span class="text-slate-500 text-[10px] font-normal">(min 6 characters)</span>
+                    </label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500"></i>
+                        <input type="password" id="signup-password" required minlength="6" placeholder="Create a strong password"
+                            class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 transition-all font-sans">
+                        <button type="button" onclick="togglePasswordVisibility('signup-password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 flex items-center gap-2">
+                    <i data-lucide="gift" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                    <span>Includes 30% affiliate commissions on invites + unlimited vault storage.</span>
+                </div>
+
+                <button type="submit" id="signup-submit-btn"
+                    class="w-full py-3 bg-gradient-to-r from-emerald-600 via-teal-600 to-brand-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-[0.98]">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    <span>Create Account & Unlock Vault</span>
                 </button>
             </form>
         </div>
@@ -1644,115 +1791,253 @@
     <div id="mobile-nav-backdrop" onclick="toggleMobileNav()"
         class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300"></div>
 
-    <!-- Mobile Navigation Sidebar Drawer (Modern, Clean & Minimalist) -->
-    <aside id="mobile-nav-drawer" aria-label="Mobile Navigation Sidebar"
-        class="fixed top-0 left-0 z-50 h-full w-[82vw] max-w-[310px] bg-[#090d19]/95 backdrop-blur-2xl border-r border-slate-800/80 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between">
+    <!-- Main Navigation Sidebar Drawer (Standard Multi-Linked Collapsible Sections in Single Column Rows) -->
+    <aside id="mobile-nav-drawer" aria-label="Store Navigation Sidebar"
+        class="fixed top-0 left-0 z-50 h-full w-[88vw] max-w-[340px] bg-[#070b16]/98 backdrop-blur-2xl border-r border-indigo-500/20 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between overflow-hidden">
 
-        <!-- Top & Navigation Content (Scrollable) -->
+        <!-- Top Header & Collapsible Sections Content (Scrollable) -->
         <div class="flex-grow flex flex-col min-h-0 overflow-y-auto">
 
-            <!-- Clean Header -->
-            <div class="p-4 sm:p-5 border-b border-slate-800/80 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-500 to-indigo-600 p-[1.5px] shadow-md shadow-brand-500/20">
-                        <div class="w-full h-full bg-[#090d19] rounded-[9px] flex items-center justify-center">
-                            <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-400"></i>
+            <!-- Clean Glowing Header -->
+            <div class="p-4 sm:p-5 border-b border-slate-800/90 bg-gradient-to-r from-slate-900 via-[#0d1428] to-indigo-950/60 flex items-center justify-between shrink-0 relative overflow-hidden">
+                <div class="absolute -top-10 -left-10 w-28 h-28 bg-brand-500/15 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-center space-x-2.5 relative z-10">
+                    <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-brand-500 via-purple-500 to-pink-500 p-[1.5px] shadow-lg shadow-brand-500/25">
+                        <div class="w-full h-full bg-[#080d1a] rounded-[14px] flex items-center justify-center">
+                            <i data-lucide="shopping-bag" class="w-4 h-4 text-brand-300"></i>
                         </div>
                     </div>
-                    <span class="font-display font-bold text-base text-white tracking-tight">PremiumStore</span>
+                    <div>
+                        <span class="font-display font-black text-base bg-gradient-to-r from-white via-indigo-100 to-brand-300 bg-clip-text text-transparent tracking-tight block leading-none drop-shadow-sm">PremiumStore</span>
+                        <span class="text-[10px] font-bold text-emerald-400 font-mono flex items-center gap-1.5 mt-1 bg-emerald-950/80 border border-emerald-700/50 px-2 py-0.5 rounded-full w-fit">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Instant Vault 🟢
+                        </span>
+                    </div>
                 </div>
                 <button onclick="toggleMobileNav()"
-                    class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/80 transition-colors"
+                    class="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 hover:bg-slate-800 transition-all shadow-sm relative z-10"
                     title="Close Menu">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <i data-lucide="x" class="w-4.5 h-4.5"></i>
                 </button>
             </div>
 
-            <div class="p-4 sm:p-5 space-y-5">
-                <!-- User Profile / Account Quick Action -->
+            <div class="p-4 space-y-3.5">
+                <!-- User Profile / Account Quick Action Bar -->
                 <div onclick="handleCustomerAuthClick(); toggleMobileNav();"
-                    class="p-3 bg-slate-900/60 hover:bg-slate-900 border border-slate-800/80 hover:border-brand-500/30 rounded-2xl flex items-center gap-3 transition-all cursor-pointer group shadow-sm">
+                    class="p-3 bg-gradient-to-r from-indigo-950/70 via-slate-900 to-slate-900 border border-indigo-500/30 hover:border-indigo-400/60 rounded-2xl flex items-center gap-3 transition-all cursor-pointer group shadow-md hover:shadow-indigo-500/10">
                     <div id="mobile-drawer-avatar"
-                        class="w-9 h-9 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 flex items-center justify-center text-xs font-bold shrink-0">
-                        <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
+                        class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-brand-600 to-purple-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm border border-indigo-400/30">
+                        <i data-lucide="user" class="w-4 h-4 text-white"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-xs font-semibold text-white truncate" id="mobile-drawer-auth-email">Guest Account</p>
+                        <p class="text-xs font-bold text-white truncate" id="mobile-drawer-auth-email">Guest Account</p>
                         <p class="text-[11px] text-slate-400 flex items-center gap-1.5" id="mobile-drawer-auth-status">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span> Tap to sign in
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block"></span> Tap to sign in / unlock
                         </p>
                     </div>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-slate-300 transition-colors shrink-0"></i>
+                    <div class="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500/20 group-hover:text-indigo-300 transition-colors shrink-0">
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </div>
                 </div>
 
-                <!-- Clean Streamlined Navigation -->
-                <nav class="space-y-1">
-                    <button onclick="showPage('home'); toggleMobileNav();"
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all text-left group">
-                        <span class="flex items-center gap-3">
-                            <i data-lucide="store" class="w-4 h-4 text-brand-400 group-hover:scale-110 transition-transform"></i>
-                            <span>Storefront Catalog</span>
-                        </span>
-                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-400"></i>
-                    </button>
-
-                    <button onclick="openReferralHubModal(); toggleMobileNav();"
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 transition-all text-left group">
-                        <span class="flex items-center gap-3">
-                            <i data-lucide="gift" class="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform"></i>
-                            <span>VIP Referrals</span>
-                        </span>
-                        <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-2 py-0.5 rounded-full">30% Earn</span>
-                    </button>
-
-                    <button onclick="handleCustomerAuthClick(); toggleMobileNav();"
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all text-left group">
-                        <span class="flex items-center gap-3">
-                            <i data-lucide="key" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                            <span>Digital Vault & Licenses</span>
-                        </span>
-                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-400"></i>
-                    </button>
-
-                    <button onclick="toggleCart(); toggleMobileNav();"
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all text-left group">
-                        <span class="flex items-center gap-3">
-                            <i data-lucide="shopping-bag" class="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform"></i>
-                            <span>Shopping Cart</span>
-                        </span>
-                        <span id="mobile-drawer-cart-badge"
-                            class="text-[10px] bg-brand-600 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">0</span>
-                    </button>
-
-                    <button onclick="openWhatsAppSupport(); toggleMobileNav();"
-                        class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium text-emerald-300 hover:text-emerald-200 hover:bg-emerald-500/10 transition-all text-left group">
-                        <span class="flex items-center gap-3">
-                            <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"></i>
-                            <span>WhatsApp Support</span>
-                        </span>
-                        <span class="text-[10px] text-emerald-400/80 font-medium flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 24/7
-                        </span>
-                    </button>
-                </nav>
-
-                <!-- Clean Categories Section -->
-                <div class="space-y-2 pt-3 border-t border-slate-800/70">
-                    <p class="text-[10px] uppercase font-bold tracking-wider text-slate-500">Categories</p>
-                    <div class="flex flex-wrap gap-1.5" id="mobile-category-shortcuts">
-                        <!-- Dynamic category pills injected by JS -->
+                <!-- SINGLE COLUMN COLLAPSIBLE MULTI-LINKED SECTIONS -->
+                <div class="space-y-2.5">
+                    
+                    <!-- SECTION 1: CATALOG & MARKETPLACE (Collapsible) -->
+                    <div class="border border-indigo-500/30 rounded-2xl overflow-hidden bg-gradient-to-b from-indigo-950/40 via-slate-900/60 to-slate-900/40 shadow-md">
+                        <button type="button" onclick="toggleSidebarSection('sec-catalog')"
+                            class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-bold text-indigo-100 hover:text-white hover:bg-indigo-950/50 transition-all group">
+                            <span class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+                                    <i data-lucide="store" class="w-3.5 h-3.5"></i>
+                                </span>
+                                <span class="tracking-wide">Storefront & Catalog</span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-indigo-300 bg-indigo-950/90 border border-indigo-700/60 px-2 py-0.5 rounded-full">Explore</span>
+                                <i data-lucide="chevron-down" id="sec-catalog-chevron" class="w-4 h-4 text-indigo-400 transition-transform duration-200 rotate-180"></i>
+                            </div>
+                        </button>
+                        <div id="sec-catalog" class="px-2 pb-2.5 space-y-1.5 border-t border-indigo-500/20 pt-2 bg-slate-950/40">
+                            <button onclick="showPage('home'); selectCategory('All'); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-indigo-200 hover:text-white bg-indigo-950/30 hover:bg-indigo-900/40 border border-indigo-500/20 hover:border-indigo-400/50 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="grid" class="w-3.5 h-3.5 text-indigo-400 group-hover:text-indigo-300"></i>
+                                    <span class="font-semibold">All Applications</span>
+                                </span>
+                                <span class="text-[10px] font-bold text-indigo-300 bg-indigo-950 px-2 py-0.5 rounded-full border border-indigo-800">Browse</span>
+                            </button>
+                            <div id="mobile-category-shortcuts" class="space-y-1">
+                                <!-- Injected by renderMobileCategoryShortcuts() in single column rows -->
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- SECTION 2: CUSTOMER ACCOUNT & VAULT (Collapsible) -->
+                    <div class="border border-emerald-500/30 rounded-2xl overflow-hidden bg-gradient-to-b from-emerald-950/40 via-slate-900/60 to-slate-900/40 shadow-md">
+                        <button type="button" onclick="toggleSidebarSection('sec-vault')"
+                            class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-bold text-emerald-100 hover:text-white hover:bg-emerald-950/50 transition-all group">
+                            <span class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+                                    <i data-lucide="key" class="w-3.5 h-3.5"></i>
+                                </span>
+                                <span class="tracking-wide">Customer Vault & Licenses</span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-emerald-300 bg-emerald-950/90 border border-emerald-700/60 px-2 py-0.5 rounded-full">Encrypted</span>
+                                <i data-lucide="chevron-down" id="sec-vault-chevron" class="w-4 h-4 text-emerald-400 transition-transform duration-200"></i>
+                            </div>
+                        </button>
+                        <div id="sec-vault" class="hidden px-2 pb-2.5 space-y-1.5 border-t border-emerald-500/20 pt-2 bg-slate-950/40">
+                            <button onclick="handleCustomerAuthClick(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-emerald-200 hover:text-white bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-500/30 hover:border-emerald-400 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span class="font-semibold">My Download Locker</span>
+                                </span>
+                                <span class="text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full">Vault</span>
+                            </button>
+                            <button onclick="openReferralHubModal(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-amber-200 hover:text-white bg-gradient-to-r from-amber-950/40 to-slate-900/60 hover:from-amber-900/50 border border-amber-500/30 hover:border-amber-400 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="gift" class="w-3.5 h-3.5 text-amber-400"></i>
+                                    <span class="font-semibold">VIP 30% Affiliate Hub</span>
+                                </span>
+                                <span class="text-[10px] font-extrabold bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">30% Earn</span>
+                            </button>
+                            <button onclick="handleCustomerAuthClick(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800/70 border border-slate-800 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="user" class="w-3.5 h-3.5 text-indigo-400"></i>
+                                    <span>Sign In / Create Account</span>
+                                </span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 group-hover:text-indigo-300 transition-colors"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: ORDERS & M-PESA GATEWAY (Collapsible) -->
+                    <div class="border border-cyan-500/30 rounded-2xl overflow-hidden bg-gradient-to-b from-cyan-950/40 via-slate-900/60 to-slate-900/40 shadow-md">
+                        <button type="button" onclick="toggleSidebarSection('sec-orders')"
+                            class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-bold text-cyan-100 hover:text-white hover:bg-cyan-950/50 transition-all group">
+                            <span class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+                                    <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
+                                </span>
+                                <span class="tracking-wide">Cart & M-Pesa Paybill</span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-cyan-300 bg-cyan-950/90 border border-cyan-700/60 px-2 py-0.5 rounded-full">Checkout</span>
+                                <i data-lucide="chevron-down" id="sec-orders-chevron" class="w-4 h-4 text-cyan-400 transition-transform duration-200"></i>
+                            </div>
+                        </button>
+                        <div id="sec-orders" class="hidden px-2 pb-2.5 space-y-2 border-t border-cyan-500/20 pt-2 bg-slate-950/40">
+                            <button onclick="toggleCart(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-cyan-200 hover:text-white bg-cyan-950/40 hover:bg-cyan-900/50 border border-cyan-500/30 hover:border-cyan-400 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="shopping-bag" class="w-3.5 h-3.5 text-cyan-400"></i>
+                                    <span class="font-semibold">Shopping Cart</span>
+                                </span>
+                                <span id="mobile-drawer-cart-badge"
+                                    class="text-[10px] bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold px-2 py-0.5 rounded-full shadow-md shadow-cyan-500/20">0</span>
+                            </button>
+
+                            <!-- Lipa na M-Pesa Showcase Box in vibrant colors -->
+                            <div class="p-3 rounded-2xl bg-gradient-to-br from-[#012613] via-[#061e14] to-slate-950 border border-emerald-500/50 text-[11px] shadow-lg shadow-emerald-950/60 relative overflow-hidden space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-300 font-semibold text-[10px] uppercase tracking-wider">Lipa Na M-Pesa</span>
+                                    <span class="text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.5 rounded">Verified Paybill</span>
+                                </div>
+                                <div class="flex items-center justify-between text-slate-300 gap-2">
+                                    <div class="flex-1 bg-black/40 p-1.5 rounded-lg border border-emerald-500/30 text-center">
+                                        <span class="text-[9px] text-slate-400 block uppercase font-bold">Business No</span>
+                                        <strong class="text-emerald-300 font-mono font-black text-xs">522533</strong>
+                                    </div>
+                                    <div class="flex-1 bg-black/40 p-1.5 rounded-lg border border-slate-700 text-center">
+                                        <span class="text-[9px] text-slate-400 block uppercase font-bold">Account No</span>
+                                        <strong class="text-white font-mono font-black text-xs">8106675</strong>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-emerald-900/60 pt-1.5">
+                                    <span class="text-amber-300 font-bold">JASPER MARKETS</span>
+                                    <span class="text-emerald-400 font-bold flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Instant Approval
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button onclick="checkCurrentOrderStatus(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-amber-200 hover:text-white bg-amber-950/30 hover:bg-amber-900/40 border border-amber-500/30 hover:border-amber-400 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-amber-400"></i>
+                                    <span class="font-semibold">Check Order Status</span>
+                                </span>
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-amber-500/70 group-hover:text-amber-300 transition-colors"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 4: 24/7 SUPPORT & FAST-TRACK (Collapsible) -->
+                    <div class="border border-green-500/30 rounded-2xl overflow-hidden bg-gradient-to-b from-green-950/40 via-slate-900/60 to-slate-900/40 shadow-md">
+                        <button type="button" onclick="toggleSidebarSection('sec-support')"
+                            class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-bold text-green-100 hover:text-white hover:bg-green-950/50 transition-all group">
+                            <span class="flex items-center gap-2.5">
+                                <span class="w-7 h-7 rounded-xl bg-green-500/20 text-green-400 border border-green-500/30 flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
+                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                                </span>
+                                <span class="tracking-wide">24/7 Priority Support</span>
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold text-green-300 bg-green-950/90 border border-green-700/60 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span> Live 24/7
+                                </span>
+                                <i data-lucide="chevron-down" id="sec-support-chevron" class="w-4 h-4 text-green-400 transition-transform duration-200"></i>
+                            </div>
+                        </button>
+                        <div id="sec-support" class="hidden px-2 pb-2.5 space-y-1.5 border-t border-green-500/20 pt-2 bg-slate-950/40">
+                            <button onclick="openWhatsAppSupport(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-emerald-200 hover:text-white bg-gradient-to-r from-emerald-950/60 via-green-950/40 to-slate-900 border border-emerald-500/40 hover:border-emerald-400 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+                                    <span class="font-semibold">WhatsApp Direct Support</span>
+                                </span>
+                                <span class="text-[10px] font-mono text-emerald-300 font-bold bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-800 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Online
+                                </span>
+                            </button>
+                            <button onclick="openWhatsAppApproval(); toggleMobileNav();"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-amber-200 hover:text-white bg-gradient-to-r from-amber-950/50 to-orange-950/40 hover:from-amber-900/60 border border-amber-500/40 hover:border-amber-400 transition-all text-left group">
+                                <span class="flex items-center gap-2.5">
+                                    <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                                    <span class="font-semibold">Fast-Track Order Approval</span>
+                                </span>
+                                <span class="text-[10px] font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded-full shadow-sm">Instant ⚡</span>
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <!-- Sleek Bottom Footer -->
-        <div class="p-4 border-t border-slate-800/80 bg-slate-950/50 flex items-center justify-between text-xs text-slate-500 shrink-0">
-            <span class="text-[11px]">PremiumStore &copy; 2026</span>
-            <a href="admin/admin.html" target="_blank" title="Admin Security Console"
-                class="text-slate-500 hover:text-slate-300 transition-colors p-1.5 rounded-lg hover:bg-slate-800/50">
-                <i data-lucide="shield" class="w-4 h-4"></i>
-            </a>
+        <!-- Sleek Bottom Footer with Quick Currency Chip & Security -->
+        <div class="p-3.5 border-t border-slate-800/90 bg-[#070b16] flex items-center justify-between text-xs text-slate-400 shrink-0 gap-2">
+            <button onclick="toggleCurrencyDropdown(); toggleMobileNav();"
+                title="Switch Currency / Country"
+                class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-emerald-500/30 hover:border-emerald-400 text-slate-200 hover:text-white text-[11px] font-bold transition-all shadow-sm">
+                <span id="sidebar-currency-flag">🇰🇪</span>
+                <span id="sidebar-currency-code" class="text-emerald-400 font-mono">KES</span>
+                <span id="sidebar-currency-symbol" class="text-[10px] text-slate-400">(Ksh)</span>
+            </button>
+            <div class="flex items-center gap-2">
+                <span class="text-[11px] font-medium text-slate-400 flex items-center gap-1">
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> 256-Bit
+                </span>
+                <a href="admin/admin.html" target="_blank" title="Admin Security Console"
+                    class="text-slate-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-800/80">
+                    <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
         </div>
     </aside>
 
@@ -1958,6 +2243,7 @@
         let discountMultiplier = 1.0;
         let singleDirectItem = null;
         let currentActiveOrder = null;
+        let pendingCheckoutAction = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             initSecurityGuards();
@@ -1983,16 +2269,9 @@
             } catch (e) { }
         }
 
-        // Anti-Inspection & Right Click Security Core
+        // Platform Guards & Helper Utilities
         function initSecurityGuards() {
-            // 1. Prevent Right Click context menu
-            document.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                showToast('Security Alert: Right clicking is disabled.', 'warning');
-                return false;
-            });
-
-            // 2. Prevent Common Inspection Keyboard Shortcuts
+            // 1. Common Inspection Keyboard Shortcuts Notice
             document.addEventListener('keydown', (e) => {
                 // F12
                 if (e.key === 'F12' || e.keyCode === 123) {
@@ -2170,6 +2449,13 @@
             const codeEl = document.getElementById('header-currency-code');
             if (flagEl) flagEl.innerText = selected.flag;
             if (codeEl) codeEl.innerText = selected.code;
+
+            const sidebarFlagEl = document.getElementById('sidebar-currency-flag');
+            const sidebarCodeEl = document.getElementById('sidebar-currency-code');
+            const sidebarSymbolEl = document.getElementById('sidebar-currency-symbol');
+            if (sidebarFlagEl) sidebarFlagEl.innerText = selected.flag;
+            if (sidebarCodeEl) sidebarCodeEl.innerText = selected.code;
+            if (sidebarSymbolEl) sidebarSymbolEl.innerText = `(${selected.symbol.trim()})`;
         }
 
         function selectCurrency(currencyCode) {
@@ -2483,6 +2769,26 @@
         }
 
         // Picture-Dominated Apps Card Grid with Lively Animations & Currency Conversion
+        function getCategoryTheme(category) {
+            switch (category) {
+                case 'Utilities':
+                    return { bg: 'bg-indigo-500/20', text: 'text-indigo-300', border: 'border-indigo-500/40', glow: 'hover:border-indigo-500/60' };
+                case 'Entertainment':
+                    return { bg: 'bg-rose-500/20', text: 'text-rose-300', border: 'border-rose-500/40', glow: 'hover:border-rose-500/60' };
+                case 'VPN & Security':
+                    return { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/40', glow: 'hover:border-emerald-500/60' };
+                case 'AI Solutions':
+                    return { bg: 'bg-purple-500/20', text: 'text-purple-300', border: 'border-purple-500/40', glow: 'hover:border-purple-500/60' };
+                case 'Productivity':
+                    return { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', glow: 'hover:border-amber-500/60' };
+                case 'Social Apps':
+                    return { bg: 'bg-sky-500/20', text: 'text-sky-300', border: 'border-sky-500/40', glow: 'hover:border-sky-500/60' };
+                default:
+                    return { bg: 'bg-brand-500/20', text: 'text-brand-300', border: 'border-brand-500/40', glow: 'hover:border-brand-500/60' };
+            }
+        }
+
+        // Picture-Dominated Apps Card Grid with Lively Animations & Currency Conversion
         function renderAppsGrid() {
             const apps = getFilteredAndSortedApps();
             const grid = document.getElementById('apps-grid');
@@ -2505,69 +2811,90 @@
                 const origPriceVal = app.originalPrice || (app.price * 1.5);
                 const formattedOrigPrice = window.PremiumStore.formatPrice(origPriceVal);
                 const discountPct = Math.max(0, Math.round((1 - (app.price / origPriceVal)) * 100));
+                const catTheme = getCategoryTheme(app.category);
+                const downloadsFormatted = (app.downloads || 0) >= 1000 ? ((app.downloads / 1000).toFixed(1) + 'k') : (app.downloads || 0);
 
                 const card = document.createElement('article');
-                card.className = "glass-card rounded-3xl overflow-hidden transition-all duration-300 flex flex-col group hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-500/20 border border-slate-800/80 hover:border-brand-500/40 relative";
+                card.className = `glass-card rounded-3xl overflow-hidden transition-all duration-300 flex flex-col group hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-500/25 border border-slate-800/80 ${catTheme.glow} relative`;
                 card.innerHTML = `
+            <!-- Card Image Media & Top Badge Row -->
             <div class="relative h-48 sm:h-52 overflow-hidden bg-slate-950 cursor-pointer" onclick="openModal('${app.id}')">
                 <img src="${app.coverImage}" alt="${app.title}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
                 
-                <div class="absolute top-3 left-3 flex flex-col gap-1 items-start z-10">
-                    <span class="inline-flex items-center gap-1 bg-gradient-to-r from-red-600 to-rose-600 text-white text-[11px] font-black px-2.5 py-1 rounded-full shadow-lg shadow-red-600/50 border border-red-400/40 tracking-wide animate-pulse">
+                <!-- Top Badges -->
+                <div class="absolute top-3 left-3 flex flex-col gap-1.5 items-start z-10">
+                    <span class="inline-flex items-center gap-1 bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-full shadow-lg shadow-red-600/50 border border-red-400/40 tracking-wide animate-pulse">
                         <i data-lucide="flame" class="w-3 h-3 fill-white text-white"></i> OFFER • ${formattedPrice}
                     </span>
-                    <span class="bg-slate-950/85 backdrop-blur-md border border-slate-800/90 text-brand-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    <span class="${catTheme.bg} ${catTheme.text} ${catTheme.border} backdrop-blur-md border text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
                         ${app.category}
                     </span>
                 </div>
-                <div class="absolute top-3 right-3">
-                    <span class="bg-slate-950/85 backdrop-blur-md border border-amber-500/30 text-amber-400 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i> ${app.rating}
+
+                <!-- Rating Score Pill -->
+                <div class="absolute top-3 right-3 z-10">
+                    <span class="bg-slate-950/90 backdrop-blur-md border border-amber-500/40 text-amber-300 text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                        <i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400 text-amber-400"></i> ${app.rating}
                     </span>
                 </div>
 
-                <div class="absolute bottom-3 right-3">
-                    <span class="text-[10px] font-mono text-slate-300 bg-slate-900/90 border border-slate-800 px-2 py-0.5 rounded-md backdrop-blur-sm shadow-sm">
+                <!-- Specs Tags (Version & Downloads) -->
+                <div class="absolute bottom-2.5 left-3 right-3 flex items-center justify-between z-10">
+                    <span class="text-[10px] font-semibold text-slate-300 bg-slate-900/80 border border-slate-700/60 px-2 py-0.5 rounded-md backdrop-blur-sm shadow-sm flex items-center gap-1">
+                        <i data-lucide="download" class="w-3 h-3 text-brand-400"></i> ${downloadsFormatted}
+                    </span>
+                    <span class="text-[10px] font-mono text-slate-300 bg-slate-900/80 border border-slate-700/60 px-2 py-0.5 rounded-md backdrop-blur-sm shadow-sm">
                         v${app.version}
                     </span>
                 </div>
             </div>
 
-            <div class="p-5 sm:p-6 flex-grow flex flex-col justify-between space-y-4">
+            <!-- Card Content Body -->
+            <div class="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-4">
                 <div class="space-y-1.5">
-                    <h3 class="font-display font-bold text-lg text-white group-hover:text-brand-400 transition-colors cursor-pointer line-clamp-1" onclick="openModal('${app.id}')">
+                    <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-brand-300 transition-colors cursor-pointer line-clamp-1 leading-snug tracking-tight" onclick="openModal('${app.id}')">
                         ${app.title}
                     </h3>
-                    <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed font-normal">
+                    <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed font-normal min-h-[32px]">
                         ${app.tagline || app.description}
                     </p>
                 </div>
 
-                <div class="flex items-center justify-between pt-3 border-t border-slate-800/80">
-                    <div>
-                        <div class="flex items-center gap-1">
-                            <span class="text-[10px] font-black uppercase tracking-wider text-red-400 flex items-center gap-0.5">
-                                <i data-lucide="flame" class="w-3 h-3 fill-red-400 text-red-400"></i> Offer Price
-                            </span>
-                            ${discountPct > 0 ? `<span class="text-[9px] font-extrabold bg-red-500/20 text-red-300 border border-red-500/30 px-1 py-0.2 rounded">-${discountPct}%</span>` : ''}
+                <!-- Price & Action CTA Row -->
+                <div class="pt-3 border-t border-slate-800/80 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[9px] font-black uppercase tracking-wider text-rose-400 flex items-center gap-0.5">
+                                    <i data-lucide="sparkles" class="w-2.5 h-2.5 text-rose-400"></i> SPECIAL PRICE
+                                </span>
+                                ${discountPct > 0 ? `<span class="text-[9px] font-extrabold bg-red-500/20 text-red-300 border border-red-500/30 px-1.5 py-0.2 rounded-md">-${discountPct}%</span>` : ''}
+                            </div>
+                            <div class="flex items-baseline gap-1.5">
+                                <span class="font-display text-lg sm:text-xl font-black text-emerald-400 tracking-tight">${formattedPrice}</span>
+                                ${discountPct > 0 ? `<span class="text-xs text-slate-500 line-through font-normal">${formattedOrigPrice}</span>` : ''}
+                            </div>
                         </div>
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="font-display text-lg sm:text-xl font-extrabold text-white">${formattedPrice}</span>
-                            ${discountPct > 0 ? `<span class="text-xs text-slate-400 line-through font-normal">${formattedOrigPrice}</span>` : ''}
-                        </div>
+
+                        <!-- Micro platform badge -->
+                        <span class="text-[10px] text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-md">
+                            ${(app.platform || 'Cross-Platform').split('/')[0].trim()}
+                        </span>
                     </div>
-                    <div class="flex items-center space-x-1.5 sm:space-x-2">
+
+                    <!-- 3 Interactive Buttons -->
+                    <div class="grid grid-cols-12 gap-1.5 pt-0.5">
                         <a href="https://wa.me/447455909204?text=${encodeURIComponent(`Hello PremiumStore, I want to purchase "${app.title}" (${formattedPrice}) via WhatsApp.`)}" target="_blank" rel="noopener noreferrer" title="Order on WhatsApp (+447455909204)"
-                            class="p-2 sm:p-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 transition-all hover:scale-110 active:scale-95 flex items-center justify-center shadow-sm">
+                            class="col-span-3 p-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center shadow-sm">
                             <i data-lucide="message-circle" class="w-4 h-4"></i>
                         </a>
                         <button onclick="addToCart('${app.id}')" title="Add to Cart"
-                            class="p-2 sm:p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all hover:scale-110 active:scale-95 shadow-sm">
+                            class="col-span-3 p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-slate-600 transition-all hover:scale-105 active:scale-95 flex items-center justify-center shadow-sm">
                             <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                         </button>
                         <button onclick="initiateDirectBuy('${app.id}')"
-                            class="px-3 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-brand-600 hover:from-red-500 hover:to-brand-500 text-white text-xs font-bold transition-all shadow-md shadow-red-600/20 hover:scale-105 active:scale-95 flex items-center gap-1">
+                            class="col-span-6 py-2 px-2.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-brand-600 hover:from-red-500 hover:to-brand-500 text-white text-xs font-extrabold transition-all shadow-md shadow-red-600/25 hover:scale-105 active:scale-95 flex items-center justify-center gap-1">
                             <i data-lucide="zap" class="w-3.5 h-3.5"></i> Direct Buy
                         </button>
                     </div>
@@ -2803,32 +3130,51 @@
             lucide.createIcons();
         }
 
+        function toggleSidebarSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const chevron = document.getElementById(sectionId + '-chevron');
+            if (!section) return;
+            const isHidden = section.classList.contains('hidden');
+            if (isHidden) {
+                section.classList.remove('hidden');
+                if (chevron) chevron.classList.add('rotate-180');
+            } else {
+                section.classList.add('hidden');
+                if (chevron) chevron.classList.remove('rotate-180');
+            }
+            if (window.lucide) window.lucide.createIcons();
+        }
+
         function renderMobileCategoryShortcuts() {
             const container = document.getElementById('mobile-category-shortcuts');
             if (!container) return;
             const apps = window.PremiumStore.getApps().filter(a => a.status === 'published');
-            const categories = ['All', ...new Set(apps.map(a => a.category))];
+            const categories = [...new Set(apps.map(a => a.category))];
 
             container.innerHTML = '';
             categories.forEach(cat => {
                 const isActive = selectedCategory === cat;
-                const count = cat === 'All' ? apps.length : apps.filter(a => a.category === cat).length;
+                const count = apps.filter(a => a.category === cat).length;
                 const btn = document.createElement('button');
-                btn.className = `px-2.5 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${isActive
-                    ? 'bg-brand-600 text-white font-semibold shadow-sm shadow-brand-600/30'
-                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800/80'
+                btn.className = `w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all text-left ${isActive
+                    ? 'bg-gradient-to-r from-brand-600/30 via-indigo-600/25 to-purple-600/20 text-brand-200 font-bold border border-brand-500/50 shadow-md shadow-brand-500/10'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/70 border border-transparent hover:border-slate-700/60'
                 }`;
                 btn.innerHTML = `
-                    <span>${cat === 'All' ? 'All' : cat}</span>
-                    <span class="text-[10px] opacity-70">(${count})</span>
+                    <span class="flex items-center gap-2.5">
+                        <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-brand-400 ring-2 ring-brand-400/40 animate-pulse' : 'bg-slate-500'}"></span>
+                        <span class="${isActive ? 'text-white font-semibold' : 'text-slate-300'}">${cat}</span>
+                    </span>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-brand-500/30 text-brand-200 border border-brand-400/40' : 'bg-slate-950 text-slate-400 border border-slate-800'}">${count}</span>
                 `;
                 btn.onclick = () => {
                     selectCategory(cat);
+                    showPage('home');
                     toggleMobileNav();
                 };
                 container.appendChild(btn);
             });
-            lucide.createIcons();
+            if (window.lucide) window.lucide.createIcons();
         }
 
         // Cart Drawer Operations
@@ -2935,10 +3281,19 @@
             lucide.createIcons();
         }
 
-        // Checkout Portal Workflow
+        // Checkout Portal Workflow (Requires Authenticated Customer Account)
         function initiateDirectBuy(appId) {
             const app = window.PremiumStore.getAppById(appId);
             if (!app) return;
+
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            if (!authUser || !authUser.email) {
+                pendingCheckoutAction = { type: 'direct_buy', appId: appId };
+                openCustomerAuthModal('signin', 'purchase_required');
+                showToast('Please sign in or create an account to proceed with your order.', 'info');
+                return;
+            }
+
             singleDirectItem = app;
             renderCheckoutView([app]);
             showPage('checkout');
@@ -2947,6 +3302,16 @@
         function proceedCartToCheckout() {
             const cart = window.PremiumStore.getCart();
             if (cart.length === 0) return;
+
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            if (!authUser || !authUser.email) {
+                pendingCheckoutAction = { type: 'cart_checkout' };
+                toggleCart();
+                openCustomerAuthModal('signin', 'purchase_required');
+                showToast('Please sign in or create an account to proceed with your cart order.', 'info');
+                return;
+            }
+
             singleDirectItem = null;
             toggleCart();
             renderCheckoutView(cart);
@@ -2962,16 +3327,24 @@
             items.forEach(item => {
                 subtotalUsd += item.price;
                 const row = document.createElement('div');
-                row.className = "flex items-center justify-between p-3 bg-slate-950/70 rounded-xl border border-slate-800/60";
+                row.className = "flex items-center justify-between p-3.5 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800/80 hover:border-brand-500/40 rounded-2xl transition-all shadow-sm group";
                 row.innerHTML = `
-            <div class="flex items-center space-x-3 min-w-0">
-                <img src="${item.coverImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-9 h-9 rounded-lg object-cover border border-slate-800 shrink-0" alt="item">
-                <div class="min-w-0">
-                    <h4 class="font-bold text-xs text-white truncate">${item.title}</h4>
-                    <span class="text-[10px] text-slate-500 uppercase">${item.category}</span>
+            <div class="flex items-center space-x-3.5 min-w-0">
+                <div class="relative shrink-0">
+                    <img src="${item.coverImage}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80';" class="w-11 h-11 rounded-xl object-cover border border-slate-700/80 shadow-md group-hover:scale-105 transition-transform" alt="item">
+                    <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+                </div>
+                <div class="min-w-0 space-y-0.5">
+                    <h4 class="font-extrabold text-xs sm:text-sm text-white truncate group-hover:text-brand-300 transition-colors">${item.title}</h4>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-300 border border-brand-500/30">${item.category}</span>
+                        <span class="text-[10px] text-slate-400 font-medium">Digital License</span>
+                    </div>
                 </div>
             </div>
-            <span class="font-bold text-xs text-white">${window.PremiumStore.formatPrice(item.price)}</span>
+            <div class="text-right shrink-0 pl-2">
+                <span class="font-mono font-black text-xs sm:text-sm text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-800/50 block">${window.PremiumStore.formatPrice(item.price)}</span>
+            </div>
         `;
                 container.appendChild(row);
             });
@@ -2980,15 +3353,44 @@
             if (countEl) countEl.innerText = `${items.length} Item${items.length > 1 ? 's' : ''}`;
             updateCheckoutTotals(subtotalUsd);
 
-            // Auto pre-fill verified customer username & email if user is authenticated
+            // Display verified customer account in checkout view
             const authUser = window.PremiumStore.getAuthenticatedUser();
             const emailInput = document.getElementById('input-customer-email');
             const usernameInput = document.getElementById('input-customer-username');
-            if (authUser && authUser.email && emailInput && !emailInput.value) {
-                emailInput.value = authUser.email;
-            }
-            if (authUser && authUser.username && usernameInput && !usernameInput.value) {
-                usernameInput.value = authUser.username;
+            const verifiedBox = document.getElementById('checkout-verified-user-box');
+            const verifiedEmail = document.getElementById('checkout-verified-email');
+            const verifiedUsername = document.getElementById('checkout-verified-username');
+            const userAvatar = document.getElementById('checkout-user-avatar');
+            const authBadge = document.getElementById('checkout-auth-badge');
+
+            if (authUser && authUser.email) {
+                const uName = authUser.username || authUser.email.split('@')[0];
+                const initial = uName.charAt(0).toUpperCase();
+
+                if (emailInput) {
+                    emailInput.value = authUser.email;
+                    emailInput.readOnly = true;
+                    emailInput.classList.add('bg-slate-950/80', 'text-slate-300');
+                }
+                if (usernameInput) {
+                    usernameInput.value = uName;
+                }
+                if (verifiedBox) verifiedBox.classList.remove('hidden');
+                if (verifiedEmail) verifiedEmail.innerText = authUser.email;
+                if (verifiedUsername) verifiedUsername.innerText = `@${uName} • Digital Vault Linked`;
+                if (authBadge) {
+                    authBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified Account`;
+                    authBadge.className = "text-[10px] font-bold text-emerald-300 uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center gap-1";
+                }
+                if (userAvatar) {
+                    userAvatar.innerHTML = authUser.avatar ? `<img src="${authUser.avatar}" class="w-full h-full object-cover rounded-xl">` : `<span class="font-bold text-xs">${initial}</span>`;
+                }
+            } else {
+                if (verifiedBox) verifiedBox.classList.add('hidden');
+                if (authBadge) {
+                    authBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span> Sign In Required`;
+                    authBadge.className = "text-[10px] font-bold text-amber-300 uppercase px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center gap-1";
+                }
             }
 
             // Check if there is an active referrer
@@ -3010,6 +3412,10 @@
                 const total = window.PremiumStore.formatPrice(subtotalUsd);
                 const msg = encodeURIComponent(`Hello PremiumStore, I am at checkout and would like to order directly on WhatsApp:\nItems: ${itemNames}\nTotal: ${total}`);
                 waCheckout.href = `https://wa.me/${phone}?text=${msg}`;
+            }
+
+            if (window.lucide) {
+                window.lucide.createIcons();
             }
         }
 
@@ -3123,10 +3529,23 @@
 
         function processCheckout(e) {
             e.preventDefault();
+
+            // Enforce authenticated customer account requirement for purchase submissions
+            const authUser = window.PremiumStore.getAuthenticatedUser();
+            if (!authUser || !authUser.email) {
+                pendingCheckoutAction = { 
+                    type: singleDirectItem ? 'direct_buy' : 'cart_checkout', 
+                    appId: singleDirectItem ? singleDirectItem.id : null 
+                };
+                openCustomerAuthModal('signin', 'purchase_required');
+                showToast('Customer account required. Please sign in or register before completing your order.', 'warning');
+                return;
+            }
+
             const usernameInput = document.getElementById('input-customer-username');
             const emailInput = document.getElementById('input-customer-email');
             let username = usernameInput ? usernameInput.value.trim().toLowerCase().replace(/^@/, '') : '';
-            const email = emailInput ? emailInput.value.trim() : '';
+            const email = (authUser.email || (emailInput ? emailInput.value.trim() : '')).toLowerCase();
             const phoneInput = document.getElementById('input-kcb-phone');
             let phone = phoneInput ? phoneInput.value.trim() : '';
             const manualRefInput = document.getElementById('input-kcb-manual-ref');
@@ -3369,11 +3788,11 @@
                 if (pPhone) pPhone.innerText = `Phone: ${order.customerPhone || 'N/A'}`;
 
                 const pTotal = document.getElementById('pending-total-amount');
-                if (pTotal) pTotal.innerText = `Total Paid: ${order.formattedTotal || ('$' + (order.totalAmount || 0))}`;
+                if (pTotal) pTotal.innerText = order.formattedTotal || ('$' + (order.totalAmount || 0));
 
                 const pBadge = document.getElementById('pending-payment-badge');
                 if (pBadge) {
-                    pBadge.innerText = order.paymentMethod === 'kcb' ? 'M-Pesa (Paybill 522533 / JASPER MARKETS)' : 'Credit/Debit Card';
+                    pBadge.innerText = (order.paymentMethod === 'kcb' || order.paymentMethod === 'mpesa') ? 'M-Pesa Paybill 522533' : 'Credit/Debit Card';
                 }
 
                 // Start elapsed timer for live review tracking
@@ -3499,8 +3918,252 @@
         }
 
         // ==========================================
-        // Customer Identification & Library Vault
+        // Customer Identification, Sign In, Sign Up & Google Auth
         // ==========================================
+        let activeAuthTab = 'signin';
+
+        function switchAuthTab(tab) {
+            activeAuthTab = tab;
+            const tabSignIn = document.getElementById('auth-tab-signin');
+            const tabSignUp = document.getElementById('auth-tab-signup');
+            const formSignIn = document.getElementById('form-auth-signin');
+            const formSignUp = document.getElementById('form-auth-signup');
+            const titleEl = document.getElementById('auth-modal-title');
+            const subTitleEl = document.getElementById('auth-modal-subtitle');
+            const alertBox = document.getElementById('auth-alert-box');
+
+            if (alertBox) alertBox.classList.add('hidden');
+
+            if (tab === 'signin') {
+                if (tabSignIn) tabSignIn.className = 'flex-1 py-2 font-bold rounded-xl transition-all text-white bg-brand-600 shadow-sm';
+                if (tabSignUp) tabSignUp.className = 'flex-1 py-2 font-bold rounded-xl transition-all text-slate-400 hover:text-white';
+                if (formSignIn) formSignIn.classList.remove('hidden');
+                if (formSignUp) formSignUp.classList.add('hidden');
+                if (titleEl) titleEl.innerText = 'Welcome Back';
+                if (subTitleEl) subTitleEl.innerText = 'Sign in to access your digital software vault';
+                setTimeout(() => document.getElementById('signin-email')?.focus(), 50);
+            } else {
+                if (tabSignUp) tabSignUp.className = 'flex-1 py-2 font-bold rounded-xl transition-all text-white bg-brand-600 shadow-sm';
+                if (tabSignIn) tabSignIn.className = 'flex-1 py-2 font-bold rounded-xl transition-all text-slate-400 hover:text-white';
+                if (formSignUp) formSignUp.classList.remove('hidden');
+                if (formSignIn) formSignIn.classList.add('hidden');
+                if (titleEl) titleEl.innerText = 'Create Customer Account';
+                if (subTitleEl) subTitleEl.innerText = 'Generate your 30% affiliate link & access your vault';
+                setTimeout(() => document.getElementById('signup-username')?.focus(), 50);
+            }
+            lucide.createIcons();
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.innerHTML = isPassword ? `<i data-lucide="eye-off" class="w-4 h-4"></i>` : `<i data-lucide="eye" class="w-4 h-4"></i>`;
+            lucide.createIcons();
+        }
+
+        function showAuthAlert(message, type = 'error') {
+            const box = document.getElementById('auth-alert-box');
+            if (!box) return;
+            box.classList.remove('hidden');
+            if (type === 'error') {
+                box.className = 'p-3 bg-red-950/80 border border-red-500/40 text-red-200 rounded-xl text-xs flex items-center gap-2';
+                box.innerHTML = `<i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-red-400"></i> <span>${message}</span>`;
+            } else {
+                box.className = 'p-3 bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 rounded-xl text-xs flex items-center gap-2';
+                box.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4 shrink-0 text-emerald-400"></i> <span>${message}</span>`;
+            }
+            lucide.createIcons();
+        }
+
+        function onAuthSuccess(user, message) {
+            showToast(message || (user ? `Welcome, @${user.username}!` : 'Signed in successfully!'), 'success');
+            updateCustomerAuthUI();
+            closeCustomerAuthModal();
+
+            if (pendingCheckoutAction) {
+                const pending = pendingCheckoutAction;
+                pendingCheckoutAction = null;
+                if (pending.type === 'direct_buy' && pending.appId) {
+                    initiateDirectBuy(pending.appId);
+                } else {
+                    proceedCartToCheckout();
+                }
+            } else {
+                openCustomerLibraryModal();
+            }
+        }
+
+        async function handleCustomerSignIn(e) {
+            if (e) e.preventDefault();
+            const emailInput = document.getElementById('signin-email');
+            const passInput = document.getElementById('signin-password');
+            const submitBtn = document.getElementById('signin-submit-btn');
+
+            const email = emailInput ? emailInput.value.trim() : '';
+            const password = passInput ? passInput.value : '';
+
+            if (!email || !window.PremiumStore.isValidEmail(email)) {
+                showAuthAlert('Please enter a valid email address.');
+                emailInput?.focus();
+                return;
+            }
+
+            if (!password) {
+                showAuthAlert('Please enter your account password.');
+                passInput?.focus();
+                return;
+            }
+
+            const origBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> <span>Signing In...</span>`;
+
+            const res = await window.PremiumStore.signinUser(email, password);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origBtnText;
+
+            if (res.success) {
+                onAuthSuccess(res.user, res.message);
+            } else {
+                showAuthAlert(res.message);
+                showToast(res.message, 'error');
+            }
+            lucide.createIcons();
+        }
+
+        async function handleCustomerSignUp(e) {
+            if (e) e.preventDefault();
+            const userInput = document.getElementById('signup-username');
+            const emailInput = document.getElementById('signup-email');
+            const phoneInput = document.getElementById('signup-phone');
+            const passInput = document.getElementById('signup-password');
+            const submitBtn = document.getElementById('signup-submit-btn');
+
+            const username = userInput ? userInput.value.trim().toLowerCase().replace(/^@/, '') : '';
+            const email = emailInput ? emailInput.value.trim() : '';
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            const password = passInput ? passInput.value : '';
+
+            if (!username || !window.PremiumStore.isValidUsername(username)) {
+                showAuthAlert('Username must be 3-20 characters (letters, numbers, underscores).');
+                userInput?.focus();
+                return;
+            }
+
+            if (!email || !window.PremiumStore.isValidEmail(email)) {
+                showAuthAlert('Please provide a valid delivery email.');
+                emailInput?.focus();
+                return;
+            }
+
+            if (!password || password.length < 6) {
+                showAuthAlert('Password must be at least 6 characters long.');
+                passInput?.focus();
+                return;
+            }
+
+            const origBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> <span>Creating Account...</span>`;
+
+            const res = await window.PremiumStore.signupUser(email, password, username, phone);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origBtnText;
+
+            if (res.success) {
+                onAuthSuccess(res.user, res.message);
+            } else {
+                showAuthAlert(res.message);
+                showToast(res.message, 'error');
+            }
+            lucide.createIcons();
+        }
+
+        const GOOGLE_CLIENT_ID = '992469514893-v4kffnij6lb9hn98j9tdt63s81m5li3e.apps.googleusercontent.com';
+
+        async function handleGoogleSignIn() {
+            try {
+                if (typeof google !== 'undefined' && google.accounts) {
+                    // Try OAuth2 Token Popup client
+                    if (google.accounts.oauth2) {
+                        const tokenClient = google.accounts.oauth2.initTokenClient({
+                            client_id: GOOGLE_CLIENT_ID,
+                            scope: 'email profile openid',
+                            callback: async (tokenResponse) => {
+                                if (tokenResponse && tokenResponse.access_token) {
+                                    try {
+                                        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                                            headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+                                        });
+                                        if (userInfoRes.ok) {
+                                            const userInfo = await userInfoRes.json();
+                                            const res = await window.PremiumStore.loginWithGoogle({
+                                                email: userInfo.email,
+                                                name: userInfo.name || userInfo.given_name || userInfo.email.split('@')[0],
+                                                picture: userInfo.picture || '',
+                                                sub: userInfo.sub
+                                            });
+                                            if (res.success) {
+                                                onAuthSuccess(res.user, res.message);
+                                                return;
+                                            } else {
+                                                showAuthAlert(res.message);
+                                                return;
+                                            }
+                                        }
+                                    } catch (fetchErr) {
+                                        showAuthAlert('Unable to fetch Google profile. Please try again.');
+                                    }
+                                }
+                            }
+                        });
+                        tokenClient.requestAccessToken({ prompt: 'select_account' });
+                        return;
+                    }
+
+                    // Fallback to Google ID Token One-Tap
+                    if (google.accounts.id) {
+                        google.accounts.id.initialize({
+                            client_id: GOOGLE_CLIENT_ID,
+                            callback: async (response) => {
+                                if (response.credential) {
+                                    const res = await window.PremiumStore.loginWithGoogle({ credential: response.credential });
+                                    if (res.success) {
+                                        onAuthSuccess(res.user, res.message);
+                                    } else {
+                                        showAuthAlert(res.message);
+                                    }
+                                }
+                            }
+                        });
+                        google.accounts.id.prompt();
+                        return;
+                    }
+                }
+
+                // Fallback prompt for local/offline testing
+                const fallbackEmail = prompt('Enter your Google email address to authenticate:');
+                if (fallbackEmail && window.PremiumStore.isValidEmail(fallbackEmail)) {
+                    const fallbackName = fallbackEmail.split('@')[0];
+                    const res = await window.PremiumStore.loginWithGoogle({
+                        email: fallbackEmail,
+                        name: fallbackName,
+                        picture: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+                        sub: 'g_' + Math.random().toString(36).substring(2, 10)
+                    });
+                    if (res.success) {
+                        onAuthSuccess(res.user, `Signed in with Google as @${res.user.username}!`);
+                    } else {
+                        showAuthAlert(res.message);
+                    }
+                }
+            } catch (err) {
+                showAuthAlert('Unable to complete Google Sign-In.');
+            }
+        }
+
         function updateCustomerAuthUI() {
             const container = document.getElementById('customer-auth-container');
             if (!container) return;
@@ -3509,22 +4172,26 @@
             if (authUser && authUser.email) {
                 const username = authUser.username || authUser.email.split('@')[0];
                 const initial = username.charAt(0).toUpperCase();
+                const avatarImg = authUser.avatar ? `<img src="${authUser.avatar}" class="w-6 h-6 rounded-lg object-cover">` : `<span class="text-xs font-bold text-white">${initial}</span>`;
+
                 container.innerHTML = `
-            <button onclick="openCustomerLibraryModal()" title="View My Purchases & License Keys (@${username})"
-                class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 border border-brand-500/30 text-white transition-all text-xs font-semibold group shadow-sm">
-                <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow">
-                    ${initial}
+            <button onclick="openCustomerLibraryModal()" title="View My Purchases & Digital Vault (@${username})"
+                class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/30 text-white transition-all text-xs font-semibold group shadow-sm">
+                <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow shrink-0 overflow-hidden">
+                    ${avatarImg}
                 </div>
                 <span class="hidden sm:inline max-w-[120px] truncate text-slate-200 group-hover:text-white font-medium">@${username}</span>
-                <span class="px-1.5 py-0.5 rounded-md bg-brand-500/20 text-brand-300 text-[10px] font-bold">Vault</span>
+                <span class="px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Vault
+                </span>
             </button>
         `;
             } else {
                 container.innerHTML = `
-            <button onclick="openCustomerAuthModal()" title="Sign In with Username & Email to Access Purchased Downloads"
+            <button onclick="openCustomerAuthModal('signin')" title="Sign In or Register to Access Your Software Vault"
                 class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white transition-all text-xs font-semibold shadow-sm">
                 <i data-lucide="user-check" class="w-4 h-4 text-brand-400"></i>
-                <span>My Library</span>
+                <span>Sign In / Vault</span>
             </button>
         `;
             }
@@ -3539,24 +4206,32 @@
             if (authUser && authUser.email) {
                 openCustomerLibraryModal();
             } else {
-                openCustomerAuthModal();
+                openCustomerAuthModal('signin');
             }
         }
 
-        function openCustomerAuthModal() {
+        function openCustomerAuthModal(initialTab = 'signin', reason = '') {
             const modal = document.getElementById('modal-customer-auth');
             if (modal) {
+                switchAuthTab(initialTab);
+                const titleEl = document.getElementById('auth-modal-title');
+                const subTitleEl = document.getElementById('auth-modal-subtitle');
+                if (reason === 'purchase_required') {
+                    if (titleEl) titleEl.innerText = 'Account Required for Purchase';
+                    if (subTitleEl) subTitleEl.innerText = 'Please sign in or create an account to secure your license keys & vault.';
+                }
                 const authUser = window.PremiumStore.getAuthenticatedUser();
-                const usernameInput = document.getElementById('auth-username-input');
-                const emailInput = document.getElementById('auth-email-input');
-                if (usernameInput && authUser && authUser.username) usernameInput.value = authUser.username;
-                if (emailInput && authUser && authUser.email) emailInput.value = authUser.email;
+                const signinEmail = document.getElementById('signin-email');
+                const signupEmail = document.getElementById('signup-email');
+                const signupUser = document.getElementById('signup-username');
+
+                if (authUser && authUser.email) {
+                    if (signinEmail) signinEmail.value = authUser.email;
+                    if (signupEmail) signupEmail.value = authUser.email;
+                    if (signupUser && authUser.username) signupUser.value = authUser.username;
+                }
 
                 modal.classList.remove('hidden');
-                setTimeout(() => {
-                    if (usernameInput && !usernameInput.value) usernameInput.focus();
-                    else if (emailInput) emailInput.focus();
-                }, 100);
             }
             lucide.createIcons();
         }
@@ -3564,35 +4239,6 @@
         function closeCustomerAuthModal() {
             const modal = document.getElementById('modal-customer-auth');
             if (modal) modal.classList.add('hidden');
-        }
-
-        function submitCustomerAuth(e) {
-            if (e) e.preventDefault();
-            const usernameInput = document.getElementById('auth-username-input');
-            const emailInput = document.getElementById('auth-email-input');
-
-            let username = usernameInput ? usernameInput.value.trim().toLowerCase().replace(/^@/, '') : '';
-            const email = emailInput ? emailInput.value.trim() : '';
-
-            if (!username || !window.PremiumStore.isValidUsername(username)) {
-                showToast('Please enter a valid unique username (3-20 alphanumeric characters, underscores, or dashes).', 'error');
-                usernameInput?.focus();
-                return;
-            }
-
-            if (!email || !window.PremiumStore.isValidEmail(email)) {
-                showToast('Please provide a valid delivery email (e.g. yourname@domain.com)', 'error');
-                emailInput?.focus();
-                return;
-            }
-
-            // Register/update referral profile and set authenticated session
-            window.PremiumStore.registerReferralProfile(username, email);
-            window.PremiumStore.setAuthenticatedUser(email, username);
-            updateCustomerAuthUI();
-            closeCustomerAuthModal();
-            showToast(`Welcome @${username}! Software vault & 30% affiliate link activated.`, 'success');
-            openCustomerLibraryModal();
         }
 
         function openCustomerLibraryModal() {
@@ -4050,6 +4696,7 @@
                 setTimeout(() => toast.remove(), 400);
             }, 3500);
         }
+
     </script>
 </body>
 
