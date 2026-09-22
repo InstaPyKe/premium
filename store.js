@@ -18,7 +18,8 @@
         AUTH_USER: 'premiumstore_auth_user_v2',
         REFERRALS: 'premiumstore_referrals_v1',
         ACTIVE_REFERRER: 'premiumstore_active_referrer_v1',
-        VISITORS: 'premiumstore_visitors_v1'
+        VISITORS: 'premiumstore_visitors_v1',
+        CUSTOMERS: 'premiumstore_customers_v1'
     };
 
     // Supported Countries & Currencies with Live Conversion Matrix
@@ -47,10 +48,10 @@
         return deviceId;
     }
 
-    // Backend REST API Connector
-    const API_BASE = (typeof window !== 'undefined' && window.location && (window.location.port === '5000' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+    // Backend REST API Connector - dynamically resolves to current origin /api in browser
+    const API_BASE = (typeof window !== 'undefined' && window.location && window.location.origin)
         ? `${window.location.origin}/api`
-        : 'http://localhost:5000/api';
+        : '/api';
 
     async function apiRequest(endpoint, options = {}) {
         try {
@@ -58,7 +59,14 @@
                 headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
                 ...options
             });
-            if (!res.ok) return null;
+            if (!res.ok) {
+                try {
+                    const errData = await res.json();
+                    return errData;
+                } catch (_) {
+                    return { success: false, status: res.status, message: `Request failed with status ${res.status}` };
+                }
+            }
             return await res.json();
         } catch (e) {
             return null;
@@ -1445,7 +1453,7 @@
             };
         },
 
-        requestReferralPayout(username, payoutDetails = {}) {
+        requestReferralPayout(username, payoutDetails = {}, legacyNote = '') {
             const clean = (username || '').trim().toLowerCase();
             if (!this.isValidUsername(clean)) {
                 return { success: false, message: 'Invalid referral account username.' };
@@ -1457,6 +1465,19 @@
                 return { success: false, message: 'No available commission balance to withdraw.' };
             }
 
+            let phone = '';
+            let note = '';
+            let method = 'mpesa';
+
+            if (typeof payoutDetails === 'string') {
+                phone = payoutDetails.trim();
+                note = (typeof legacyNote === 'string' ? legacyNote : '').trim();
+            } else if (typeof payoutDetails === 'object' && payoutDetails !== null) {
+                phone = (payoutDetails.mpesaNumber || payoutDetails.phone || '').trim();
+                note = (payoutDetails.accountDetails || payoutDetails.note || '').trim();
+                method = payoutDetails.paymentMethod || 'mpesa';
+            }
+
             const requestedAmountUsd = profile.balanceUsd;
             const payoutId = 'PAY-' + Math.floor(1000 + Math.random() * 9000);
             const payoutRecord = {
@@ -1464,9 +1485,10 @@
                 username: clean,
                 email: profile.email,
                 amountUsd: requestedAmountUsd,
-                paymentMethod: payoutDetails.paymentMethod || 'mpesa',
-                mpesaNumber: payoutDetails.mpesaNumber || payoutDetails.phone || '',
-                accountDetails: payoutDetails.accountDetails || '',
+                paymentMethod: method,
+                mpesaNumber: phone,
+                phone: phone,
+                accountDetails: note,
                 status: 'pending',
                 requestedAt: new Date().toISOString(),
                 paidAt: null
@@ -1482,10 +1504,10 @@
                 method: 'POST',
                 body: JSON.stringify({
                     username: clean,
-                    paymentMethod: payoutDetails.paymentMethod || 'mpesa',
-                    mpesaNumber: payoutDetails.mpesaNumber || payoutDetails.phone || '',
-                    phone: payoutDetails.phone || payoutDetails.mpesaNumber || '',
-                    accountDetails: payoutDetails.accountDetails || ''
+                    paymentMethod: method,
+                    mpesaNumber: phone,
+                    phone: phone,
+                    accountDetails: note
                 })
             }).catch(() => {});
 
@@ -1666,7 +1688,36 @@
             const authUser = this.getAuthenticatedUser();
             const map = {};
 
-            // 1. Ingest real customer purchase transactions
+            // 1. Ingest backend PostgreSQL registered customers
+            try {
+                const storedCustomers = JSON.parse(localStorage.getItem(STORAGE_KEYS.CUSTOMERS) || '[]');
+                if (Array.isArray(storedCustomers)) {
+                    storedCustomers.forEach(u => {
+                        const email = (u.email || '').trim().toLowerCase();
+                        if (email) {
+                            map[email] = {
+                                id: u.id,
+                                email: email,
+                                username: (u.username || email.split('@')[0]).trim().toLowerCase(),
+                                phone: u.phone || '',
+                                avatar: u.avatar || '',
+                                authProvider: u.auth_provider || 'local',
+                                totalOrders: parseInt(u.total_orders || 0, 10),
+                                clearedOrders: parseInt(u.cleared_orders || 0, 10),
+                                clearedOrdersCount: parseInt(u.cleared_orders || 0, 10),
+                                pendingOrders: parseInt(u.pending_orders || 0, 10),
+                                pendingOrdersCount: parseInt(u.pending_orders || 0, 10),
+                                totalSpend: parseFloat(u.total_spend || 0),
+                                firstSeen: u.created_at || new Date().toISOString(),
+                                lastActive: u.last_active || new Date().toISOString(),
+                                orders: []
+                            };
+                        }
+                    });
+                }
+            } catch (e) {}
+
+            // 2. Ingest real customer purchase transactions
             orders.forEach(o => {
                 const email = (o.customerEmail || 'customer@store.app').trim().toLowerCase();
                 const username = (o.customerUsername || (email.includes('@') ? email.split('@')[0].slice(0, 20) : 'customer')).trim().toLowerCase();
@@ -1687,24 +1738,27 @@
                     };
                 }
                 const c = map[email];
-                c.totalOrders += 1;
+                c.totalOrders = Math.max(c.totalOrders || 0, (c.orders ? c.orders.length + 1 : 1));
                 if (o.paymentStatus === 'cleared') {
-                    c.clearedOrders += 1;
-                    c.clearedOrdersCount += 1;
-                    c.totalSpend += (o.totalAmount || 0);
+                    c.clearedOrders = (c.clearedOrders || 0) + 1;
+                    c.clearedOrdersCount = c.clearedOrders;
+                    c.totalSpend = (c.totalSpend || 0) + (o.totalAmount || 0);
                 } else if (o.paymentStatus === 'pending') {
-                    c.pendingOrders += 1;
-                    c.pendingOrdersCount += 1;
+                    c.pendingOrders = (c.pendingOrders || 0) + 1;
+                    c.pendingOrdersCount = c.pendingOrders;
                 }
                 if (new Date(o.createdAt) > new Date(c.lastActive)) {
                     c.lastActive = o.createdAt;
                 }
                 if (o.customerPhone && !c.phone) c.phone = o.customerPhone;
                 if (o.customerUsername && (!c.username || c.username === 'customer')) c.username = o.customerUsername;
-                c.orders.push(o);
+                c.orders = c.orders || [];
+                if (!c.orders.some(ex => ex.id === o.id)) {
+                    c.orders.push(o);
+                }
             });
 
-            // 2. Ingest active authenticated customer session
+            // 3. Ingest active authenticated customer session
             if (authUser && authUser.email) {
                 const authEmail = authUser.email.trim().toLowerCase();
                 const authUsername = (authUser.username || (authEmail.includes('@') ? authEmail.split('@')[0].slice(0, 20) : 'customer')).trim().toLowerCase();
@@ -1729,7 +1783,7 @@
                 }
             }
 
-            // 3. Ingest registered affiliate / referral partners
+            // 4. Ingest registered affiliate / referral partners
             Object.entries(referrals).forEach(([handle, ref]) => {
                 const refEmail = (ref.email || `${handle}@customer.store`).trim().toLowerCase();
                 if (!map[refEmail]) {
@@ -2216,6 +2270,13 @@
                         localStorage.setItem(STORAGE_KEYS.VISITORS, JSON.stringify(mappedVisitors));
                         this.dispatchUpdate('visitors_updated', mappedVisitors);
                     }
+                }
+
+                // 6. Sync registered customer accounts from PostgreSQL
+                const customersRes = await apiRequest('/auth/customers');
+                if (customersRes && customersRes.success && Array.isArray(customersRes.data)) {
+                    localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customersRes.data));
+                    this.dispatchUpdate('customers_updated', customersRes.data);
                 }
             } catch (e) {
                 // Silently keep local state if offline
